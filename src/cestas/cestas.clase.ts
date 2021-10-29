@@ -112,7 +112,7 @@ export class CestaClase {
   /* Guarda la cesta en Mongo */
   setCesta(cesta: CestasInterface): Promise<boolean> {
     for(let i = 0; i < cesta.lista.length; i++) {
-      cesta.lista[i].subtotal = Number(cesta.lista[i].subtotal.toFixed(2));
+      cesta.lista[i].subtotal = Number(Number(cesta.lista[i].subtotal).toFixed(2));
     }
     return schCestas.setCesta(cesta).then((res) => {
       if (res.acknowledged) {
@@ -256,16 +256,17 @@ export class CestaClase {
                     let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
                     if(infoArticulo) //AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
                     {
-                        cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                      cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
                     }
                     else
                     {
-                        // vueToast.abrir('error', 'Este artículo tiene errores');
+                      // vueToast.abrir('error', 'Este artículo tiene errores');
                     }
-                }
-                else //TIPO PESO
-                {
-                    cestaRetornar = await this.insertarArticuloCesta(infoAPeso.infoArticulo, 1, idCesta, infoAPeso);
+                  }
+                  else //TIPO PESO
+                  {
+                    let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
+                    cestaRetornar = await this.insertarArticuloCesta(infoArticulo, 1, idCesta, infoAPeso);
                 }
             }
             catch(err)
