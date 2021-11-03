@@ -89,7 +89,7 @@ export class CestasController {
 
     @Post('clickTeclaArticulo')
     clickTeclaArticulo(@Body() params) {
-        return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta).then((res) => {
+        return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoAPeso, params.idCesta).then((res) => {
             return {
                 error: false,
                 bloqueado: false,
