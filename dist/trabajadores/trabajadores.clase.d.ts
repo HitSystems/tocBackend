@@ -12,5 +12,6 @@ export declare class TrabajadoresClase {
     desficharTrabajador(idTrabajador: number): Promise<boolean>;
     nuevoFichajesSincro(tipo: "ENTRADA" | "SALIDA", idTrabajador: number): Promise<import("mongodb").InsertOneResult<import("bson").Document>>;
     getFichados(): Promise<TrabajadoresInterface[]>;
+    insertarTrabajadores(arrayTrabajadores: any): Promise<boolean>;
 }
 export declare const trabajadoresInstance: TrabajadoresClase;

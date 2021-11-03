@@ -8,6 +8,7 @@ import { MovimientosInterface } from "../movimientos/movimientos.interface";
 import { trabajadoresInstance } from "../trabajadores/trabajadores.clase";
 import { parametrosInstance } from "../parametros/parametros.clase";
 import { movimientosInstance } from "../movimientos/movimientos.clase";
+import { impresoraInstance } from "../impresora/impresora.class";
 
 const TIPO_ENTRADA = 'ENTRADA';
 const TIPO_SALIDA = 'SALIDA';
@@ -49,7 +50,7 @@ export class CajaClase {
 
     cajaAbierta(): Promise<boolean> {
         return this.getInfoCaja().then((infoCaja) => {
-            if (infoCaja == null) {
+            if (infoCaja == null || infoCaja.inicioTime == null) {
                 return false;
             } else {
                 return true;
@@ -155,10 +156,8 @@ export class CajaClase {
     }
 
     borrarCaja() {
-        const unaCaja: CajaInterface  = cajaVacia;
-
-        return schCajas.setInfoCaja(unaCaja).then((result) => {
-            if (result.acknowledged) {
+        return schCajas.borrarCaja().then((result) => {
+            if (result) {
                 return true;
             } else {
                 return false;
@@ -206,6 +205,7 @@ export class CajaClase {
                 }
             }
         }
+        console.log('Tamaño de arrayTickets: ', arrayTicketsCaja.length);
         for(let i = 0; i < arrayTicketsCaja.length; i++) {
             nClientes++;
             totalTickets += arrayTicketsCaja[i].total;
@@ -224,7 +224,7 @@ export class CajaClase {
             }
         }
         
-        currentCaja.calaixFetZ = totalTickets;
+        currentCaja['calaixFetZ'] = totalTickets;
         currentCaja.infoExtra['cambioFinal'] = cambioFinal;
         currentCaja.infoExtra['cambioInicial'] = cambioInicial;
         currentCaja.infoExtra['totalSalidas'] = totalSalidas;
@@ -256,8 +256,20 @@ export class CajaClase {
 
         // vuePantallaCierre.setVariables(objImpresion); ESTO ENVÍA EL DETALLE DEL CIERRE AL FRONTEND
         try {
-            // this.imprimirCierreCaja(objImpresion);
-            console.log("Importante, falta imprimir");
+            impresoraInstance.imprimirCaja(
+                objImpresion.calaixFet,
+                objImpresion.nombreTrabajador,
+                objImpresion.descuadre,
+                objImpresion.nClientes,
+                objImpresion.recaudado,
+                objImpresion.arrayMovimientos,
+                objImpresion.nombreTienda,
+                objImpresion.fechaInicio,
+                objImpresion.fechaFinal,
+                objImpresion.cInicioCaja,
+                objImpresion.cFinalCaja,
+                objImpresion.impresora,
+            );
         }
         catch(err) {
             // vueToast.abrir('error', 'Impresora no detectada');
@@ -267,7 +279,10 @@ export class CajaClase {
         unaCaja.descuadre = descuadre;
         unaCaja.nClientes = nClientes;
         unaCaja.recaudado = recaudado;
-
+        unaCaja.primerTicket = currentCaja.primerTicket;
+        unaCaja.ultimoTicket = currentCaja.ultimoTicket;
+        unaCaja.infoExtra = currentCaja.infoExtra;
+        unaCaja.calaixFetZ = currentCaja.calaixFetZ;
         return unaCaja;
     }
 }

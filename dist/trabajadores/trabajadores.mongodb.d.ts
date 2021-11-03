@@ -1,3 +1,4 @@
+import { InsertManyResult } from "mongodb";
 export declare function getCurrentIdTrabajador(): Promise<import("bson").Document>;
 export declare function buscar(busqueda: string): Promise<import("bson").Document[]>;
 export declare function getTrabajador(idTrabajador: number): Promise<any>;
@@ -8,3 +9,5 @@ export declare function ficharTrabajador(idTrabajador: number): Promise<import("
 export declare function desficharTrabajador(idTrabajador: number): Promise<import("mongodb").UpdateResult>;
 export declare function insertNuevoFichaje(data: any): Promise<import("mongodb").InsertOneResult<import("bson").Document>>;
 export declare function buscarTrabajadoresFichados(): Promise<any>;
+export declare function borrarTrabajadores(): Promise<boolean>;
+export declare function insertarTrabajadores(arrayTrabajadores: any): Promise<InsertManyResult<import("bson").Document>>;

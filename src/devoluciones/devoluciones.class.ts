@@ -21,8 +21,14 @@ export class Devoluciones {
             tipoPago: "DEVOLUCION",
             idTrabajador: infoTrabajador._id,
             tiposIva: cesta.tiposIva,
+            enviado: false,
+            enTransito: false
         }
-        return await this.insertarDevolucion(objDevolucion);
+        if (this.insertarDevolucion(objDevolucion)) {
+            return await cestas.borrarCesta(idCesta);
+        } else {
+            return false;
+        }
     }
 
     private insertarDevolucion(data: DevolucionesInterface): Promise<boolean> {

@@ -3,6 +3,7 @@ export declare class CajaController {
         error: boolean;
     } | {
         error: boolean;
+        mensaje: string;
     }>;
     abrirCaja(params: any): Promise<{
         error: boolean;
@@ -14,5 +15,6 @@ export declare class CajaController {
         error: boolean;
     } | {
         error: boolean;
+        mensaje: string;
     }>;
 }

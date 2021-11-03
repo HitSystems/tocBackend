@@ -15,6 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InstaladorController = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = require("axios");
+const parametros_clase_1 = require("../parametros/parametros.clase");
+const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
+const articulos_clase_1 = require("../articulos/articulos.clase");
+const clientes_clase_1 = require("../clientes/clientes.clase");
+const familias_class_1 = require("../familias/familias.class");
+const promociones_clase_1 = require("../promociones/promociones.clase");
+const params_ticket_class_1 = require("../params-ticket/params-ticket.class");
+const menus_clase_1 = require("../menus/menus.clase");
+const teclado_clase_1 = require("../teclado/teclado.clase");
 let InstaladorController = class InstaladorController {
     instalador(params) {
         return axios_1.default.post('parametros/instaladorLicencia', {
@@ -22,15 +31,71 @@ let InstaladorController = class InstaladorController {
             numLlicencia: params.numLlicencia
         }).then((res) => {
             if (!res.data.error) {
-                return { error: false, info: res.data.info };
+                const objParams = {
+                    _id: 'PARAMETROS',
+                    licencia: params.numLlicencia,
+                    tipoImpresora: params.tipoImpresora,
+                    tipoDatafono: params.tipoDatafono,
+                    impresoraCafeteria: params.impresoraCafeteria,
+                    ultimoTicket: res.data.info.ultimoTicket,
+                    codigoTienda: res.data.info.codigoTienda,
+                    nombreEmpresa: res.data.info.nombreEmpresa,
+                    nombreTienda: res.data.info.nombreTienda,
+                    prohibirBuscarArticulos: res.data.info.prohibirBuscarArticulos,
+                    token: res.data.info.token,
+                    database: res.data.info.database,
+                    botonesConPrecios: res.data.info.botonesConPrecios,
+                    idCurrentTrabajador: null
+                };
+                return parametros_clase_1.parametrosInstance.setParametros(objParams).then((res2) => {
+                    if (res2) {
+                        return { error: false };
+                    }
+                    else {
+                        return { error: true, mensaje: 'Backend: Error en instalador/pedirDatos > setParametros' };
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: No se ha podido setear parametros' };
+                });
             }
             else {
                 return { error: true, mensaje: res.data.mensaje };
             }
-            return {};
         }).catch((err) => {
             console.log(err);
-            return { error: true, mensaje: 'Error en pedir parametros/instaladorLicencia' };
+            return { error: true, mensaje: 'Error en pedir parametros/instaladorLicencia de sanPedro' };
+        });
+    }
+    async descargarTodo() {
+        const parametros = parametros_clase_1.parametrosInstance.getParametros();
+        return axios_1.default.post('datos/cargarTodo', {
+            database: parametros.database,
+            codigoTienda: parametros.codigoTienda,
+            licencia: parametros.licencia
+        }).then(async (res) => {
+            if (res.data.error === false) {
+                const info1 = await trabajadores_clase_1.trabajadoresInstance.insertarTrabajadores(res.data.info.dependientas);
+                const info2 = await articulos_clase_1.articulosInstance.insertarArticulos(res.data.info.articulos);
+                const info3 = await clientes_clase_1.clienteInstance.insertarClientes(res.data.info.clientes);
+                const info4 = await familias_class_1.familiasInstance.insertarFamilias(res.data.info.familias);
+                const info5 = await promociones_clase_1.ofertas.insertarPromociones(res.data.info.promociones);
+                const info6 = await params_ticket_class_1.paramsTicketInstance.insertarParametrosTicket(res.data.info.parametrosTicket);
+                const info7 = await menus_clase_1.menusInstance.insertarMenus(res.data.info.menus);
+                const info8 = await teclado_clase_1.tecladoInstance.insertarTeclas(res.data.info.teclas);
+                if (info1 && info2 && info3 && info4 && info5 && info6 && info7 && info8) {
+                    return { error: false };
+                }
+                else {
+                    return { error: true, mensaje: `Backend: res1: ${info1}, res2: ${info2}, res3: ${info3}, res4: ${info4}, res5: ${info5}, res6: ${info6}, res7: ${info7}, res8: ${info8}` };
+                }
+            }
+            else {
+                return { error: true, mensaje: res.data.mensaje };
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Errro en instalador/descargarTodo. Mirar log' };
         });
     }
 };
@@ -41,6 +106,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], InstaladorController.prototype, "instalador", null);
+__decorate([
+    (0, common_1.Post)('descargarTodo'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], InstaladorController.prototype, "descargarTodo", null);
 InstaladorController = __decorate([
     (0, common_1.Controller)('instalador')
 ], InstaladorController);

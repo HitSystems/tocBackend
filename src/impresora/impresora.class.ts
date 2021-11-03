@@ -368,5 +368,83 @@ export class Impresora {
             console.log(err);
         }
     }
+
+    imprimirCaja(calaixFet, nombreTrabajador, descuadre, nClientes, recaudado, arrayMovimientos: any[], nombreTienda, fI, fF, cInicioCaja, cFinalCaja, tipoImpresora) {
+        try {
+            var fechaInicio = new Date(fI);
+            var fechaFinal = new Date(fF);
+            var sumaTarjetas = 0;
+            var textoMovimientos = '';
+            for (let i = 0; i < arrayMovimientos.length; i++) {
+                var auxFecha = new Date(arrayMovimientos[i]._id);
+                if (arrayMovimientos[i].tipo === TIPO_SALIDA_DINERO) {
+                    if(arrayMovimientos[i].concepto == 'Targeta' || arrayMovimientos[i].concepto == 'Targeta 3G') {
+                        sumaTarjetas += arrayMovimientos[i].valor;
+                    } else {
+                        textoMovimientos += `${i + 1}: Salida:\n           Cantidad: -${arrayMovimientos[i].valor.toFixed(2)}\n           Fecha: ${auxFecha.getDate()}/${auxFecha.getMonth()}/${auxFecha.getFullYear()}  ${auxFecha.getHours()}:${auxFecha.getMinutes()}\n           Concepto: ${arrayMovimientos[i].concepto}\n`;
+                    }
+                }
+                if (arrayMovimientos[i].tipo === TIPO_ENTRADA_DINERO) {
+                    textoMovimientos += `${i + 1}: Entrada:\n            Cantidad: +${arrayMovimientos[i].valor.toFixed(2)}\n            Fecha: ${auxFecha.getDate()}/${auxFecha.getMonth()}/${auxFecha.getFullYear()}  ${auxFecha.getHours()}:${auxFecha.getMinutes()}\n            Concepto: ${arrayMovimientos[i].concepto}\n`;
+                }
+            }
+            textoMovimientos = `\nTotal targeta:      ${sumaTarjetas.toFixed(2)}\n` + textoMovimientos;
+    
+            exec('echo sa | sudo -S sh /home/hit/tocGame/scripts/permisos.sh');
+            if(tipoImpresora === 'USB') {
+                var device = new escpos.USB('0x4B8', '0x202'); //USB
+            }
+            else {
+                if(tipoImpresora === 'SERIE')
+                {
+                    var device = new escpos.Serial('/dev/ttyS0', {
+                        baudRate: 115000,
+                        stopBit: 2
+                      })
+                }
+            }
+            
+            var options = { encoding: "ISO-8859-15" }; //"GB18030" };
+            var printer = new escpos.Printer(device, options);
+            let mesInicial = fechaInicio.getMonth()+1;
+            let mesFinal = fechaFinal.getMonth()+1;
+            device.open(function () {
+                printer
+                    .font('a')
+                    .style('b')
+                    .align('CT')
+                    .size(1, 1)
+                    .text('BOTIGA : ' + nombreTienda)
+                    .size(0, 0)
+                    .text('Resum caixa')
+                    .text('')
+                    .align('LT')
+                    .text('Resp.   : ' + nombreTrabajador)
+                    .text(`Inici: ${fechaInicio.getDate()}-${mesInicial}-${fechaInicio.getFullYear()} ${(fechaInicio.getHours()<10?'0':'') + fechaInicio.getHours()}:${(fechaInicio.getMinutes()<10?'0':'') + fechaInicio.getMinutes()}`)
+                    .text(`Final: ${fechaFinal.getDate()}-${mesFinal}-${fechaFinal.getFullYear()} ${(fechaFinal.getHours()<10?'0':'') + fechaFinal.getHours()}:${(fechaFinal.getMinutes()<10?'0':'') + fechaFinal.getMinutes()}`)
+                    .text('')
+                    .size(0, 1)
+                    .text('Calaix fet       :      ' + calaixFet.toFixed(2))
+                    .text('Descuadre        :      ' + descuadre.toFixed(2))
+                    .text('Clients atesos   :      ' + nClientes)
+                    .text('Recaudat         :      ' + recaudado.toFixed(2))
+                    .text('Canvi inicial    :      ' + cInicioCaja.toFixed(2))
+                    .text('Canvi final      :      ' + cFinalCaja.toFixed(2))
+                    .text('')
+                    .size(0, 0)
+                    .text('Moviments de caixa')
+                    .text('')
+                    .text('')
+                    .text(textoMovimientos)
+                    .text('')
+                    .cut()
+                    .close()
+    
+            });
+        }
+        catch (err) {
+            console.log(err);
+        } 
+    }
 }
 export const impresoraInstance = new Impresora();

@@ -56,12 +56,12 @@ const parametrosVacios: ParametrosInterface = {
     }
 
     setParametros(params: ParametrosInterface): Promise<boolean> {
-        this.parametros.licencia = params.licencia;
-        this.parametros.tipoImpresora = params.tipoImpresora;
-        this.parametros.tipoDatafono = params.tipoDatafono;
-        this.parametros.impresoraCafeteria = params.impresoraCafeteria;
-        this.parametros.ultimoTicket = params.ultimoTicket;
-
+        // this.parametros.licencia = params.licencia;
+        // this.parametros.tipoImpresora = params.tipoImpresora;
+        // this.parametros.tipoDatafono = params.tipoDatafono;
+        // this.parametros.impresoraCafeteria = params.impresoraCafeteria;
+        // this.parametros.ultimoTicket = params.ultimoTicket;
+        this.parametros = params;
         return schParametros.setParametros(this.parametros).then((res) => {
             return res.acknowledged;
         }).catch((err) => {

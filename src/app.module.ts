@@ -17,6 +17,7 @@ import { DevolucionesController } from './devoluciones/devoluciones.controller';
 import { MovimientosController } from './movimientos/movimientos.controller';
 import { PruebasController } from './pruebas/pruebas.controller';
 import { InstaladorController } from './instalador/instalador.controller';
+import { FamiliasController } from './familias/familias.controller';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { InstaladorController } from './instalador/instalador.controller';
     CestasController, 
     ParametrosController, 
     TicketsController, 
-    TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController],
+    TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController, FamiliasController],
   providers: [SocketGateway]  
 })
 export class AppModule {}

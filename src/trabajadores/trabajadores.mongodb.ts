@@ -1,3 +1,4 @@
+import { InsertManyResult } from "mongodb";
 import { conexion } from "../conexion/mongodb";
 
 export async function getCurrentIdTrabajador() {
@@ -37,7 +38,7 @@ export async function getTrabajadorPorNombre(nombre: string) {
 export async function setCurrentIdTrabajador(idTrabajador: number) {
     const database = (await conexion).db('tocgame');
     const parametros = database.collection('parametros');
-
+    console.log("LLEGA ID TRABAJADOR: ", idTrabajador);
     const resultado = await parametros.updateOne({_id: "PARAMETROS"}, { $set: { "idCurrentTrabajador": idTrabajador }}, {upsert: true} );
 
     return resultado;
@@ -83,3 +84,38 @@ export async function buscarTrabajadoresFichados(): Promise<any> {
     return resultado;
 }
 
+
+
+export async function borrarTrabajadores() {
+    try {
+        const database = (await conexion).db('tocgame');
+        const trabajadores = database.collection('trabajadores');
+        const resultado = await trabajadores.drop();
+        
+        return resultado;
+    } catch(err) {
+        if (err.codeName == 'NamespaceNotFound') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}
+
+export async function insertarTrabajadores(arrayTrabajadores) {
+    if (await borrarTrabajadores()) {
+        const database = (await conexion).db('tocgame');
+        const trabajadores = database.collection('trabajadores');
+        const resultado = await trabajadores.insertMany(arrayTrabajadores);
+        return resultado;
+    } else {
+        const res: InsertManyResult<any> = {
+            acknowledged: false,
+            insertedCount: 0,
+            insertedIds: null
+        } 
+        return res;
+    }
+
+}

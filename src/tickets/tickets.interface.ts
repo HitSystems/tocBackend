@@ -25,8 +25,8 @@ export interface TicketsInterface {
         importe2: number,
         importe3: number
     },
-    enviado?: boolean,
-    enTransito?: boolean,
+    enviado: boolean,
+    enTransito: boolean,
     cliente?: string,
     infoClienteVip?: {
         esVip: boolean,

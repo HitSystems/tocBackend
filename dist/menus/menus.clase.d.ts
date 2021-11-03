@@ -5,5 +5,6 @@ export declare class MenusClase {
     getBloqueado(): boolean;
     getMenus(): Promise<any>;
     setBloqueado(x: boolean): void;
+    insertarMenus(arrayMenus: any): Promise<boolean>;
 }
 export declare const menusInstance: MenusClase;

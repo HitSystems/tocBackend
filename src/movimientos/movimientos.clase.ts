@@ -36,7 +36,7 @@ export class MovimientosClase {
         const parametros = parametrosInstance.getParametros();
         let codigoBarras = "";
         try {
-            if (tipoExtra != 'TARJETA' && tipoExtra != 'TKRS') {
+            if (tipoExtra != 'TARJETA' && tipoExtra != 'TKRS' && tipoExtra != 'DEUDA') {
                 codigoBarras = await this.generarCodigoBarrasSalida();
                 codigoBarras = String(Ean13Utils.generate(codigoBarras));
             } 
@@ -108,6 +108,12 @@ export class MovimientosClase {
 
     private async generarCodigoBarrasSalida() {
         const parametros = parametrosInstance.getParametros();
+        const ultimoCodigoDeBarras = await schMovimientos.getUltimoCodigoBarras();
+        if (ultimoCodigoDeBarras == null) {
+            if((await schMovimientos.resetContadorCodigoBarras()).acknowledged == false)
+                throw 'Error en inicializar contador de codigo de barras';
+        }
+
         let objCodigoBarras = (await schMovimientos.getUltimoCodigoBarras()).ultimo;
         if(objCodigoBarras == 999) {
             const resResetContador = await schMovimientos.resetContadorCodigoBarras();

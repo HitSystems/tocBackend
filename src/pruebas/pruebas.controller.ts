@@ -1,5 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { ese } from '../sockets.gateway';
+import { socketInterno } from '../sockets.gateway';
 import { socket } from '../sanPedro';
 import axios from 'axios';
 

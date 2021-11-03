@@ -33,7 +33,7 @@ export class ClientesController {
     @Post('comprobarVIP')
     comprobarVIP(@Body() params) {
         const parametros = parametrosInstance.getParametros();
-        return axios.post('clientes/comprobarVIP', { idCliente: params.idCliente, parametros }).then((res: any) => {
+        return axios.post('clientes/comprobarVIP', { database: parametros.database, idClienteFinal: params.idClienteFinal }).then((res: any) => {
             if (res.data.error === false) {
                 return { error: false, info: res.data.info };
             } else {

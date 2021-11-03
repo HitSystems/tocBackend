@@ -91,7 +91,7 @@ let CestasController = class CestasController {
         return { okey: true };
     }
     clickTeclaArticulo(params) {
-        return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoAPeso, params.idCesta).then((res) => {
+        return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta).then((res) => {
             return {
                 error: false,
                 bloqueado: false,

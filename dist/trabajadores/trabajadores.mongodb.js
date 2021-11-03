@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buscarTrabajadoresFichados = exports.insertNuevoFichaje = exports.desficharTrabajador = exports.ficharTrabajador = exports.getTrabajadoresFichados = exports.setCurrentIdTrabajador = exports.getTrabajadorPorNombre = exports.getTrabajador = exports.buscar = exports.getCurrentIdTrabajador = void 0;
+exports.insertarTrabajadores = exports.borrarTrabajadores = exports.buscarTrabajadoresFichados = exports.insertNuevoFichaje = exports.desficharTrabajador = exports.ficharTrabajador = exports.getTrabajadoresFichados = exports.setCurrentIdTrabajador = exports.getTrabajadorPorNombre = exports.getTrabajador = exports.buscar = exports.getCurrentIdTrabajador = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getCurrentIdTrabajador() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -34,6 +34,7 @@ exports.getTrabajadorPorNombre = getTrabajadorPorNombre;
 async function setCurrentIdTrabajador(idTrabajador) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const parametros = database.collection('parametros');
+    console.log("LLEGA ID TRABAJADOR: ", idTrabajador);
     const resultado = await parametros.updateOne({ _id: "PARAMETROS" }, { $set: { "idCurrentTrabajador": idTrabajador } }, { upsert: true });
     return resultado;
 }
@@ -74,4 +75,38 @@ async function buscarTrabajadoresFichados() {
     return resultado;
 }
 exports.buscarTrabajadoresFichados = buscarTrabajadoresFichados;
+async function borrarTrabajadores() {
+    try {
+        const database = (await mongodb_1.conexion).db('tocgame');
+        const trabajadores = database.collection('trabajadores');
+        const resultado = await trabajadores.drop();
+        return resultado;
+    }
+    catch (err) {
+        if (err.codeName == 'NamespaceNotFound') {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}
+exports.borrarTrabajadores = borrarTrabajadores;
+async function insertarTrabajadores(arrayTrabajadores) {
+    if (await borrarTrabajadores()) {
+        const database = (await mongodb_1.conexion).db('tocgame');
+        const trabajadores = database.collection('trabajadores');
+        const resultado = await trabajadores.insertMany(arrayTrabajadores);
+        return resultado;
+    }
+    else {
+        const res = {
+            acknowledged: false,
+            insertedCount: 0,
+            insertedIds: null
+        };
+        return res;
+    }
+}
+exports.insertarTrabajadores = insertarTrabajadores;
 //# sourceMappingURL=trabajadores.mongodb.js.map

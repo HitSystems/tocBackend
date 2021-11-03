@@ -24,6 +24,15 @@ export class Articulos {
             return await schArticulos.getInfoArticuloTarifaEspecial(idArticulo);
         }
     }
+
+    insertarArticulos(arrayArticulos) {
+        return schArticulos.insertarArticulos(arrayArticulos).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 const articulosInstance = new Articulos();
 export { articulosInstance };

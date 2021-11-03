@@ -219,6 +219,15 @@ export class OfertasClase {
             precioRealPrincipal: (precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta*cantidadPrincipal
         };
     }
+
+    insertarPromociones(arrayPromociones) {
+        return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 
 const ofertas = new OfertasClase();

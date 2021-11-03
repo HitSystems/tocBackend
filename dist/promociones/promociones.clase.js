@@ -173,6 +173,14 @@ class OfertasClase {
             precioRealPrincipal: (precioSinOfertaPrincipal - (precioSinOfertaPrincipal * dto)) * unidadesOferta * cantidadPrincipal
         };
     }
+    insertarPromociones(arrayPromociones) {
+        return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 exports.OfertasClase = OfertasClase;
 const ofertas = new OfertasClase();

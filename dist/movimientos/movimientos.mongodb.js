@@ -26,7 +26,7 @@ exports.getUltimoCodigoBarras = getUltimoCodigoBarras;
 async function resetContadorCodigoBarras() {
     const database = (await mongodb_1.conexion).db('tocgame');
     const codigoBarras = database.collection('codigo-barras');
-    const resultado = await codigoBarras.updateOne({ _id: 'CUENTA' }, { ultimo: 0 }, { upsert: true });
+    const resultado = await codigoBarras.updateOne({ _id: 'CUENTA' }, { $set: { "ultimo": 0 } }, { upsert: true });
     return resultado;
 }
 exports.resetContadorCodigoBarras = resetContadorCodigoBarras;

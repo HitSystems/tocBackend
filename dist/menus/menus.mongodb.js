@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTecladoMain = exports.getMenus = void 0;
+exports.insertarMenus = exports.borrarMenus = exports.getTecladoMain = exports.getMenus = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getMenus() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -16,4 +16,38 @@ async function getTecladoMain(nombreMenu) {
     return resultado;
 }
 exports.getTecladoMain = getTecladoMain;
+async function borrarMenus() {
+    try {
+        const database = (await mongodb_1.conexion).db('tocgame');
+        const menus = database.collection('menus');
+        const resultado = await menus.drop();
+        return resultado;
+    }
+    catch (err) {
+        if (err.codeName == 'NamespaceNotFound') {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+}
+exports.borrarMenus = borrarMenus;
+async function insertarMenus(arrayMenus) {
+    if (await borrarMenus()) {
+        const database = (await mongodb_1.conexion).db('tocgame');
+        const menus = database.collection('menus');
+        const resultado = menus.insertMany(arrayMenus);
+        return resultado;
+    }
+    else {
+        const res = {
+            acknowledged: false,
+            insertedCount: 0,
+            insertedIds: null
+        };
+        return res;
+    }
+}
+exports.insertarMenus = insertarMenus;
 //# sourceMappingURL=menus.mongodb.js.map

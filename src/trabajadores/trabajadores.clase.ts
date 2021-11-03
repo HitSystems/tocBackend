@@ -191,6 +191,15 @@ export class TrabajadoresClase {
         //     }
         // });
     }
+
+    insertarTrabajadores(arrayTrabajadores) {
+        return schTrabajadores.insertarTrabajadores(arrayTrabajadores).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 
 export const trabajadoresInstance = new TrabajadoresClase();

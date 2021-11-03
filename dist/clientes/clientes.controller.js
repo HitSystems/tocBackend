@@ -43,7 +43,7 @@ let ClientesController = class ClientesController {
     }
     comprobarVIP(params) {
         const parametros = parametros_clase_1.parametrosInstance.getParametros();
-        return axios_1.default.post('clientes/comprobarVIP', { idCliente: params.idCliente, parametros }).then((res) => {
+        return axios_1.default.post('clientes/comprobarVIP', { database: parametros.database, idClienteFinal: params.idClienteFinal }).then((res) => {
             if (res.data.error === false) {
                 return { error: false, info: res.data.info };
             }

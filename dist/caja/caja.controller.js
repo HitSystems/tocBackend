@@ -16,19 +16,32 @@ exports.CajaController = void 0;
 const common_1 = require("@nestjs/common");
 const caja_clase_1 = require("./caja.clase");
 let CajaController = class CajaController {
-    cerrarCaja(params) {
-        return caja_clase_1.cajaInstance.cerrarCaja(params.total, params.detalle, params.infoDinero, params.cantidad3G).then((res) => {
-            if (res) {
-                return { error: false };
+    async cerrarCaja(params) {
+        console.log("Soy cerrar caja");
+        const cajaAbierta = await caja_clase_1.cajaInstance.cajaAbierta();
+        if (params.total != undefined, params.detalle != undefined, params.infoDinero != undefined, params.cantidad3G != undefined) {
+            if (cajaAbierta) {
+                return caja_clase_1.cajaInstance.cerrarCaja(params.total, params.detalle, params.infoDinero, params.cantidad3G).then((res) => {
+                    if (res) {
+                        return { error: false };
+                    }
+                    else {
+                        return { error: true };
+                    }
+                }).catch((err) => {
+                    return { error: true };
+                });
             }
             else {
-                return { error: true };
+                return { error: true, mensaje: 'No hay ninguna caja abierta' };
             }
-        }).catch((err) => {
-            return { error: true };
-        });
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Faltan datos en caja/cerrarCaja' };
+        }
     }
     abrirCaja(params) {
+        console.log("Soy abrir caja");
         return caja_clase_1.cajaInstance.abrirCaja(params).then((res) => {
             if (res) {
                 return { error: false };
@@ -51,7 +64,7 @@ let CajaController = class CajaController {
             }
         }).catch((err) => {
             console.log(err);
-            return { error: true };
+            return { error: true, mensaje: 'Backend: Error en caja/estadoCaja CATCH' };
         });
     }
 };
@@ -60,7 +73,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], CajaController.prototype, "cerrarCaja", null);
 __decorate([
     (0, common_1.Post)('abrirCaja'),

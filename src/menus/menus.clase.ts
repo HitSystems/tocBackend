@@ -22,6 +22,15 @@ export class MenusClase {
     setBloqueado(x: boolean) {
         this.bloqueado = x;
     }
+
+    insertarMenus(arrayMenus) {
+        return schMenus.insertarMenus(arrayMenus).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 
 export const menusInstance = new MenusClase();

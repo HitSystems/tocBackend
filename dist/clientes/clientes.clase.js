@@ -24,6 +24,14 @@ class Clientes {
             return null;
         });
     }
+    insertarClientes(arrayClientes) {
+        return schClientes.insertarClientes(arrayClientes).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 exports.Clientes = Clientes;
 exports.clienteInstance = new Clientes();

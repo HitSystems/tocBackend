@@ -21,8 +21,15 @@ class Devoluciones {
             tipoPago: "DEVOLUCION",
             idTrabajador: infoTrabajador._id,
             tiposIva: cesta.tiposIva,
+            enviado: false,
+            enTransito: false
         };
-        return await this.insertarDevolucion(objDevolucion);
+        if (this.insertarDevolucion(objDevolucion)) {
+            return await cestas_clase_1.cestas.borrarCesta(idCesta);
+        }
+        else {
+            return false;
+        }
     }
     insertarDevolucion(data) {
         return schDevoluciones.insertarDevolucion(data).then((res) => {

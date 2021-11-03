@@ -177,6 +177,14 @@ class TrabajadoresClase {
             return null;
         });
     }
+    insertarTrabajadores(arrayTrabajadores) {
+        return schTrabajadores.insertarTrabajadores(arrayTrabajadores).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 exports.TrabajadoresClase = TrabajadoresClase;
 exports.trabajadoresInstance = new TrabajadoresClase();
