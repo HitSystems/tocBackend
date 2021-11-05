@@ -198,7 +198,6 @@ export class CestaClase {
             for(let i = 0; i < miCesta.lista.length; i++) {
                 if(miCesta.lista[i]._id === infoArticulo._id) {
                     var viejoIva = miCesta.tiposIva;
-                    
                     if(infoAPeso == null)
                     {
                         miCesta.lista[i].unidades += unidades;
@@ -207,8 +206,9 @@ export class CestaClase {
                     }
                     else
                     {
-                        miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
-                        miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
+                      miCesta.lista[i].subtotal += Number(infoAPeso.precioAplicado);
+                      console.log(miCesta.lista[i].subtotal);
+                      miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
                     }  
                    
                     encontrado = true;

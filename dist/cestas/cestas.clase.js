@@ -179,7 +179,8 @@ class CestaClase {
                         miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva);
                     }
                     else {
-                        miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
+                        miCesta.lista[i].subtotal += Number(infoAPeso.precioAplicado);
+                        console.log(miCesta.lista[i].subtotal);
                         miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva, infoAPeso);
                     }
                     encontrado = true;

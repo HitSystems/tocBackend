@@ -8,7 +8,7 @@ const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
 const clientes_clase_1 = require("../clientes/clientes.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const escpos = require('escpos');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const os = require('os');
 escpos.USB = require('escpos-usb');
 escpos.Serial = require('escpos-serialport');
@@ -108,7 +108,7 @@ class Impresora {
         const infoClienteVip = info.infoClienteVip;
         const infoCliente = info.infoCliente;
         try {
-            exec('echo sa | sudo -S sh /home/hit/tocGame/scripts/permisos.sh');
+            exec('echo sa | sudo -S chmod -R 777 /dev/');
             if (tipoImpresora === 'USB') {
                 var device = new escpos.USB('0x4B8', '0x202');
             }
