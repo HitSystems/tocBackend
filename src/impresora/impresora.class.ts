@@ -8,7 +8,7 @@ import { clienteInstance } from "../clientes/clientes.clase";
 import { parametrosInstance } from "../parametros/parametros.clase";
 
 const escpos = require('escpos');
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const os = require('os');
 escpos.USB = require('escpos-usb');
 escpos.Serial = require('escpos-serialport');
@@ -120,7 +120,7 @@ export class Impresora {
         const infoCliente = info.infoCliente;
 
         try {
-            exec('echo sa | sudo -S sh /home/hit/tocGame/scripts/permisos.sh');
+            exec('echo sa | sudo -S chmod -R 777 /dev/');
             if(tipoImpresora === 'USB')
             {
                 var device = new escpos.USB('0x4B8', '0x202'); //USB
