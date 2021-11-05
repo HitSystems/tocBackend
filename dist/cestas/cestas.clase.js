@@ -62,9 +62,10 @@ class CestaClase {
             });
         });
     }
-    nuevaCestaVacia() {
+    nuevaCestaVacia(nombreCesta = 'Principal') {
         const nuevaCesta = {
             _id: Date.now(),
+            nombre: nombreCesta,
             tiposIva: {
                 base1: 0,
                 base2: 0,
@@ -80,10 +81,15 @@ class CestaClase {
         };
         return nuevaCesta;
     }
+    async crearNuevaCesta(nombreCesta) {
+        const nuevaCesta = await this.nuevaCestaVacia(nombreCesta);
+        this.setCesta(nuevaCesta);
+        return nuevaCesta;
+    }
     getTodasCestas() {
         return schCestas.getAllCestas();
     }
-    borrarCesta(idCestaBorrar) {
+    borrarCesta(idCestaBorrar, eliminarCesta = false) {
         return schCestas.borrarCesta(idCestaBorrar).then((res) => {
             if (res.acknowledged) {
                 return true;
@@ -132,6 +138,20 @@ class CestaClase {
                 return false;
             });
             return cesta;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    async borrarArticulosCesta(idCesta) {
+        const cestaActual = await this.getCesta(idCesta);
+        cestaActual.lista = [];
+        for (let key in cestaActual.tiposIva)
+            cestaActual.tiposIva[key] = 0;
+        return this.setCesta(cestaActual).then((result) => {
+            if (result)
+                return cestaActual;
+            return false;
         }).catch((err) => {
             console.log(err);
             return false;

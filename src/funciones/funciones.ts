@@ -65,6 +65,7 @@ export function convertirPuntosEnDinero(puntos: number): number {
 export function crearCestaVacia() {
     const cestaVacia = {
         _id: Date.now(),
+        nombre: 'Principal',
         tiposIva: {
             base1: 0,
             base2: 0,

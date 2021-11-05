@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { cestas } from './cestas.clase';
 
 @Controller('cestas')
@@ -66,12 +66,37 @@ export class CestasController {
         });
     }
 
-    @Post('getCesta')
-    getCesta() {
-        // params.id = 1631781881687; // para postman
-        // params.idArticulo = 8571;
+    @Post('borrarArticulosCesta')
+    borrarArticulosCesta(@Body() params) {
+        return cestas.borrarArticulosCesta(params.id).then((res) => {
+            return {
+                okey: true,
+                cestaNueva: res,
+            }
+        }).catch((err) => {
+            console.log(err);
+            return {
+                okey: false,
+                error: 'Error en borrarArticulosCesta'
+            }
+        })
+    }
 
-        return cestas.getCestaRandom().then((res) => {
+    @Post('getCesta')
+    getCesta(@Body() params) {
+        // params.id = 1631781881687; // para postman
+        console.log(params.id)
+        if(params.id === -1) {
+            return cestas.getCestaRandom().then((res) => {
+                return res;
+            }).catch((err) => {
+                return {
+                    okey: false,
+                    error: "Error en borrarItemCesta"
+                };
+            });
+        }
+        return cestas.getCesta(params.id).then((res) => {
             return res;
         }).catch((err) => {
             return {
@@ -101,5 +126,37 @@ export class CestasController {
                 bloqueado: false
             };
         });
+    }
+
+    @Post('crearCesta')
+    crearCesta(@Body() params) {
+        return cestas.crearNuevaCesta(params.nombreCesta).then((res) => {
+            return {
+                error: false,
+                bloqueado: false,
+                cesta: res,
+            }
+        }).catch((err) => {
+            return {
+                error: true,
+                bloqueado: false,
+            }
+        })
+    }
+
+    @Get('getCestas')
+    getCestas() {
+        return cestas.getTodasCestas().then((res) => {
+            return {
+                error: false,
+                bloqueado: false,
+                cestas: res,
+            };
+        }).catch((err) => {
+            return {
+                error: true,
+                bloqueado: false,
+            }
+        })
     }
 }

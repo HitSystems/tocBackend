@@ -13,6 +13,7 @@ export declare function construirObjetoIvas(infoArticulo: any, unidades: any, ti
 export declare function convertirPuntosEnDinero(puntos: number): number;
 export declare function crearCestaVacia(): {
     _id: number;
+    nombre: string;
     tiposIva: {
         base1: number;
         base2: number;

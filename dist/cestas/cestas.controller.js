@@ -76,8 +76,33 @@ let CestasController = class CestasController {
             };
         });
     }
-    getCesta() {
-        return cestas_clase_1.cestas.getCestaRandom().then((res) => {
+    borrarArticulosCesta(params) {
+        return cestas_clase_1.cestas.borrarArticulosCesta(params.id).then((res) => {
+            return {
+                okey: true,
+                cestaNueva: res,
+            };
+        }).catch((err) => {
+            console.log(err);
+            return {
+                okey: false,
+                error: 'Error en borrarArticulosCesta'
+            };
+        });
+    }
+    getCesta(params) {
+        console.log(params.id);
+        if (params.id === -1) {
+            return cestas_clase_1.cestas.getCestaRandom().then((res) => {
+                return res;
+            }).catch((err) => {
+                return {
+                    okey: false,
+                    error: "Error en borrarItemCesta"
+                };
+            });
+        }
+        return cestas_clase_1.cestas.getCesta(params.id).then((res) => {
             return res;
         }).catch((err) => {
             return {
@@ -104,6 +129,34 @@ let CestasController = class CestasController {
             };
         });
     }
+    crearCesta(params) {
+        return cestas_clase_1.cestas.crearNuevaCesta(params.nombreCesta).then((res) => {
+            return {
+                error: false,
+                bloqueado: false,
+                cesta: res,
+            };
+        }).catch((err) => {
+            return {
+                error: true,
+                bloqueado: false,
+            };
+        });
+    }
+    getCestas() {
+        return cestas_clase_1.cestas.getTodasCestas().then((res) => {
+            return {
+                error: false,
+                bloqueado: false,
+                cestas: res,
+            };
+        }).catch((err) => {
+            return {
+                error: true,
+                bloqueado: false,
+            };
+        });
+    }
 };
 __decorate([
     (0, common_1.Post)('borrarCesta'),
@@ -120,9 +173,17 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "borrarItemCesta", null);
 __decorate([
-    (0, common_1.Post)('getCesta'),
+    (0, common_1.Post)('borrarArticulosCesta'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "borrarArticulosCesta", null);
+__decorate([
+    (0, common_1.Post)('getCesta'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "getCesta", null);
 __decorate([
@@ -139,6 +200,19 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "clickTeclaArticulo", null);
+__decorate([
+    (0, common_1.Post)('crearCesta'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "crearCesta", null);
+__decorate([
+    (0, common_1.Get)('getCestas'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "getCestas", null);
 CestasController = __decorate([
     (0, common_1.Controller)('cestas')
 ], CestasController);

@@ -34,8 +34,9 @@ async function setCesta(cesta) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const unaCesta = database.collection('cestas');
     const resultado = await unaCesta.replaceOne({ _id: cesta._id }, {
+        nombre: cesta.nombre,
         tiposIva: cesta.tiposIva,
-        lista: cesta.lista
+        lista: cesta.lista,
     }, { upsert: true });
     return resultado;
 }

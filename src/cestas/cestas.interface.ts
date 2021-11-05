@@ -1,5 +1,6 @@
 export interface CestasInterface {
     _id: number,
+    nombre: String,
     tiposIva: {
         base1: number,
         base2: number,

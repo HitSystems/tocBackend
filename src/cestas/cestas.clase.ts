@@ -73,9 +73,10 @@ export class CestaClase {
 
   }
 
-  nuevaCestaVacia() {
+  nuevaCestaVacia(nombreCesta = 'Principal') {
     const nuevaCesta: CestasInterface = {
         _id: Date.now(),
+        nombre: nombreCesta,
         tiposIva: {
             base1: 0,
             base2: 0,
@@ -92,11 +93,17 @@ export class CestaClase {
     return nuevaCesta;
   }
 
+  async crearNuevaCesta(nombreCesta) {
+    const nuevaCesta = await this.nuevaCestaVacia(nombreCesta);
+    this.setCesta(nuevaCesta);
+    return nuevaCesta;
+  }
+
   getTodasCestas(): Promise<CestasInterface[]> {
     return schCestas.getAllCestas();
   }
 
-  borrarCesta(idCestaBorrar): Promise<boolean> {
+  borrarCesta(idCestaBorrar, eliminarCesta = false): Promise<boolean> {
     return schCestas.borrarCesta(idCestaBorrar).then((res) => {
       if (res.acknowledged) {
         return true;
@@ -150,6 +157,19 @@ export class CestaClase {
         console.log(err);
         return false;
     });
+  }
+
+  async borrarArticulosCesta(idCesta: number) {
+    const cestaActual = await this.getCesta(idCesta);
+    cestaActual.lista = [];
+    for(let key in cestaActual.tiposIva) cestaActual.tiposIva[key] = 0;
+    return this.setCesta(cestaActual).then((result) => {
+      if(result) return cestaActual;
+      return false;
+    }).catch((err) => {
+      console.log(err);
+      return false;
+    })
   }
 
   // cambiarCurrentCesta(data: CestasInterface) {

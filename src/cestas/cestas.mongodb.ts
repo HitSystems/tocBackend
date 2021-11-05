@@ -36,8 +36,9 @@ export async function setCesta(cesta: CestasInterface) {
     const database = (await conexion).db('tocgame');
     const unaCesta = database.collection('cestas');
     const resultado = await unaCesta.replaceOne({_id: cesta._id}, {
+        nombre: cesta.nombre,
         tiposIva: cesta.tiposIva,
-        lista: cesta.lista
+        lista: cesta.lista,
     }, {upsert: true});
     
     return resultado;
