@@ -230,13 +230,20 @@ class CestaClase {
         const temporal = await promociones_clase_1.ofertas.buscarOfertas(miCesta, viejoIva);
         return temporal;
     }
-    async addItem(idArticulo, idBoton, aPeso, infoAPeso, idCesta, unidades = 1) {
+    async addItem(idArticulo, idBoton, aPeso, infoAPeso, idCesta, idSuplemento, unidades = 1) {
         var cestaRetornar = null;
+        let precioSuplemento = 0;
         if (caja_clase_1.cajaInstance.cajaAbierta()) {
             try {
                 if (!aPeso) {
                     let infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
                     if (infoArticulo) {
+                        if (idSuplemento !== undefined) {
+                            const consultaSumplemento = (await articulos_clase_1.articulosInstance.getInfoSuplemento(idArticulo, idSuplemento));
+                            const infoSuplemento = consultaSumplemento.suplementos.filter(x => x.id === idSuplemento);
+                            precioSuplemento = infoSuplemento[0].precio;
+                        }
+                        infoArticulo.precioConIva += precioSuplemento;
                         cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
                     }
                     else {

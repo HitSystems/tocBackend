@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CestasController = void 0;
 const common_1 = require("@nestjs/common");
 const cestas_clase_1 = require("./cestas.clase");
+const articulos_clase_1 = require("../articulos/articulos.clase");
 let CestasController = class CestasController {
     borrarCesta(params) {
         return cestas_clase_1.cestas.borrarCesta(params.id).then((res) => {
@@ -116,17 +117,30 @@ let CestasController = class CestasController {
         return { okey: true };
     }
     clickTeclaArticulo(params) {
-        return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.unidades).then((res) => {
-            return {
-                error: false,
-                bloqueado: false,
-                cesta: res
-            };
-        }).catch((err) => {
-            return {
-                error: true,
-                bloqueado: false
-            };
+        return articulos_clase_1.articulosInstance.getSuplementosArticulo(params.idArticulo).then((res) => {
+            if (res === null || params.suplementosOk) {
+                console.log(params.suplemento);
+                return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.suplemento, params.unidades).then((res) => {
+                    return {
+                        error: false,
+                        bloqueado: false,
+                        cesta: res
+                    };
+                }).catch((err) => {
+                    return {
+                        error: true,
+                        bloqueado: false
+                    };
+                });
+            }
+            else {
+                return {
+                    error: false,
+                    bloqueado: false,
+                    modalSuplementos: true,
+                    suplementos: res.suplementos,
+                };
+            }
         });
     }
     crearCesta(params) {

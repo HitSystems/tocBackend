@@ -1,5 +1,6 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { cestas } from './cestas.clase';
+import { articulosInstance } from '../articulos/articulos.clase';
 
 @Controller('cestas')
 export class CestasController {
@@ -114,17 +115,29 @@ export class CestasController {
 
     @Post('clickTeclaArticulo')
     clickTeclaArticulo(@Body() params) {
-        return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.unidades).then((res) => {
-            return {
-                error: false,
-                bloqueado: false,
-                cesta: res
-            };
-        }).catch((err) => {
-            return {
-                error: true,
-                bloqueado: false
-            };
+        return articulosInstance.getSuplementosArticulo(params.idArticulo).then((res) => {
+            if(res === null || params.suplementosOk) {
+                console.log(params.suplemento);
+                return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.suplemento, params.unidades).then((res) => {
+                    return {
+                        error: false,
+                        bloqueado: false,
+                        cesta: res
+                    };
+                }).catch((err) => {
+                    return {
+                        error: true,
+                        bloqueado: false
+                    };
+                });
+            } else {
+                return {
+                    error: false,
+                    bloqueado: false,
+                    modalSuplementos: true,
+                    suplementos: res.suplementos,
+                }
+            }
         });
     }
 

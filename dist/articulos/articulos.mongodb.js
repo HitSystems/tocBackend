@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInfoArticuloTarifaEspecial = exports.borrarArticulos = exports.insertarArticulos = exports.getInfoArticulo = void 0;
+exports.getInfoSuplemento = exports.getSuplementosArticulo = exports.getInfoArticuloTarifaEspecial = exports.borrarArticulos = exports.insertarArticulos = exports.getInfoArticulo = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getInfoArticulo(idArticulo) {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -52,4 +52,18 @@ async function getInfoArticuloTarifaEspecial(idArticulo) {
     return resultado;
 }
 exports.getInfoArticuloTarifaEspecial = getInfoArticuloTarifaEspecial;
+async function getSuplementosArticulo(idArticulo) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const articulos = database.collection('articulos');
+    const resultado = await articulos.findOne({ _id: idArticulo, suplementos: { $exists: true, $ne: [] } });
+    return resultado;
+}
+exports.getSuplementosArticulo = getSuplementosArticulo;
+async function getInfoSuplemento(idArticulo, idSuplemento) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const articulos = database.collection('articulos');
+    const resultado = await articulos.findOne({ _id: idArticulo, suplementos: { $elemMatch: { id: { $eq: idSuplemento } } } });
+    return resultado;
+}
+exports.getInfoSuplemento = getInfoSuplemento;
 //# sourceMappingURL=articulos.mongodb.js.map

@@ -267,22 +267,26 @@ export class CestaClase {
         return temporal; //await ofertas.buscarOfertas(miCesta, viejoIva);
     }
 
-    async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number, unidades: number = 1) {
-        var cestaRetornar: CestasInterface = null;
+    async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number, idSuplemento: number, unidades: number = 1) {
+      var cestaRetornar: CestasInterface = null;
+      let precioSuplemento = 0;
         if(cajaInstance.cajaAbierta()) {
-          
             try {
                 if(!aPeso) { // TIPO NORMAL                  
-                  
-                    let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
-                    if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
-                      
-                      cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
-                      
-                    } else {
-                      
-                      // vueToast.abrir('error', 'Este artículo tiene errores');
+                  let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
+                  if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
+                    if(idSuplemento !== undefined) {
+                      const consultaSumplemento = (await articulosInstance.getInfoSuplemento(idArticulo, idSuplemento));
+                      const infoSuplemento = consultaSumplemento.suplementos.filter(x => x.id === idSuplemento);
+                      precioSuplemento = infoSuplemento[0].precio;
                     }
+                    infoArticulo.precioConIva += precioSuplemento;
+                    cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                      
+                  } else {
+                    
+                    // vueToast.abrir('error', 'Este artículo tiene errores');
+                  }
                 }
                 else { //TIPO PESO
                   let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);

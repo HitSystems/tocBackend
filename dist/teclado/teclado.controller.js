@@ -15,9 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TecladoController = void 0;
 const common_1 = require("@nestjs/common");
 const cestas_clase_1 = require("../cestas/cestas.clase");
+const articulos_clase_1 = require("../articulos/articulos.clase");
 let TecladoController = class TecladoController {
     clickTecla(params) {
-        return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta).then((res) => {
+        const suplementos = articulos_clase_1.articulosInstance.getSuplementosArticulo(params.idArticulo);
+        console.log(params.idArticulo, suplementos);
+        return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.id, params.unidades).then((res) => {
             return {
                 error: false,
                 bloqueado: false,
