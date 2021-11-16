@@ -1,6 +1,6 @@
 export interface CestasInterface {
     _id: number;
-    nombre: String;
+    nombre: string;
     tiposIva: {
         base1: number;
         base2: number;
@@ -12,6 +12,7 @@ export interface CestasInterface {
         importe2: number;
         importe3: number;
     };
+    regalo?: boolean;
     lista: {
         _id: number;
         nombre: string;

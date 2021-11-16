@@ -59,4 +59,22 @@ export declare class CestasController {
         error: boolean;
         bloqueado: boolean;
     }>;
+    regalarProducto(params: any): Promise<{
+        error: boolean;
+        cesta: import("./cestas.interface").CestasInterface;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+        cesta?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
 }

@@ -18,15 +18,16 @@ export class Articulos {
 
     /* Devuelve un articulo */
     async getInfoArticulo(idArticulo: number): Promise<ArticulosInterface> {
-        if(!this.getEstadoTarifaEspecial()) {
+        if(this.getEstadoTarifaEspecial() != true) {
             return await schArticulos.getInfoArticulo(idArticulo);
         } else {
             return await schArticulos.getInfoArticuloTarifaEspecial(idArticulo);
         }
     }
 
-    insertarArticulos(arrayArticulos) {
-        return schArticulos.insertarArticulos(arrayArticulos).then((res) => {
+    /* InsertMany de articulos o articulosEspeciales */
+    insertarArticulos(arrayArticulos, esTarifaEspecial = false) {
+        return schArticulos.insertarArticulos(arrayArticulos, esTarifaEspecial).then((res) => {
             return res.acknowledged;
         }).catch((err) => {
             console.log(err);

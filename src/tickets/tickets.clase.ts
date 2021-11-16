@@ -4,6 +4,8 @@ import { trabajadoresInstance } from "../trabajadores/trabajadores.clase";
 import { cestas } from "../cestas/cestas.clase";
 import { parametrosInstance } from "../parametros/parametros.clase";
 import { movimientosInstance } from "../movimientos/movimientos.clase";
+import { articulosInstance } from "../articulos/articulos.clase";
+import axios from "axios";
 
 export class TicketsClase {
 
@@ -38,6 +40,18 @@ export class TicketsClase {
     insertarTicket(ticket: TicketsInterface) {
         return schTickets.nuevoTicket(ticket).then((res) => {
             if (res.acknowledged) {
+                if (ticket.regalo == true) {
+                    axios.post('clientes/resetPuntosCliente', { database: parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado: any) => {
+                        if (resultado.data.error == false) {
+                            console.log('Puntos reseteados');
+                        } else {
+                            console.log(resultado.data.mensaje);
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                }
+                articulosInstance.setEstadoTarifaEspecial(false);
                 return true;
             } else {
                 return false;
@@ -52,7 +66,7 @@ export class TicketsClase {
         const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
         const nuevoIdTicket = (await this.getUltimoTicket()) + 1;
         const cesta = await cestas.getCesta(idCesta);
-        console.log("La cesta es", cesta, idCesta);
+        
         if (cesta == null || cesta.lista.length == 0) {
             console.log("Error, la cesta es null o está vacía");
             return false;
@@ -76,16 +90,16 @@ export class TicketsClase {
                 ciudad: ''
             },
             enviado: false,
-            enTransito: false
+            enTransito: false,
+            regalo: (cesta.regalo == true && idCliente != '' && idCliente != null) ? (true): (false)
         }
 
-        console.log("ABRIR CAJÓN");
         if (await this.insertarTicket(objTicket)) {
             if (await cestas.borrarCesta(idCesta)) {
                 if (await parametrosInstance.setUltimoTicket(objTicket._id)) {
                     return true;
                 } else {
-                    console.log("Errorm no se ha podido cambiar el último id ticket");
+                    console.log("Error no se ha podido cambiar el último id ticket");
                 }
             } else {
                 console.log("Error, no se ha podido borrar la cesta");
@@ -100,7 +114,6 @@ export class TicketsClase {
         const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
         const nuevoIdTicket = (await this.getUltimoTicket()) + 1;
         const cesta = await cestas.getCesta(idCesta);
-        console.log("La cesta es", cesta, idCesta);
         if (cesta == null || cesta.lista.length == 0) {
             console.log("Error, la cesta es null o está vacía");
             return false;
@@ -124,10 +137,10 @@ export class TicketsClase {
                 ciudad: ''
             },
             enviado: false,
-            enTransito: false
+            enTransito: false,
+            regalo: (cesta.regalo == true && idCliente != '' && idCliente != null) ? (true): (false)
         }
 
-        console.log("ABRIR CAJÓN");
         if (await this.insertarTicket(objTicket)) {
             if (await cestas.borrarCesta(idCesta)) {
                 if (await parametrosInstance.setUltimoTicket(objTicket._id)) {
@@ -149,7 +162,7 @@ export class TicketsClase {
         const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
         const nuevoIdTicket = (await this.getUltimoTicket()) + 1;
         const cesta = await cestas.getCesta(idCesta);
-        console.log("La cesta es", cesta, idCesta);
+        
         if (cesta == null || cesta.lista.length == 0) {
             console.log("Error, la cesta es null o está vacía");
             return false;

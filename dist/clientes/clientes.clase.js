@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clienteInstance = exports.Clientes = void 0;
 const schClientes = require("./clientes.mongodb");
+const axios_1 = require("axios");
+const parametros_clase_1 = require("../parametros/parametros.clase");
 class Clientes {
     buscar(cadena) {
         return schClientes.buscar(cadena).then((res) => {
@@ -30,6 +32,20 @@ class Clientes {
         }).catch((err) => {
             console.log(err);
             return false;
+        });
+    }
+    getPuntosCliente(idClienteFinal) {
+        return axios_1.default.post('clientes/getPuntosCliente', { database: parametros_clase_1.parametrosInstance.getParametros().database, idClienteFinal }).then((res) => {
+            if (res.data.error == false) {
+                return res.data.info;
+            }
+            else {
+                console.log(res.data.error);
+                return 0;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return 0;
         });
     }
 }

@@ -17,23 +17,31 @@ const common_1 = require("@nestjs/common");
 const caja_clase_1 = require("./caja.clase");
 let CajaController = class CajaController {
     async cerrarCaja(params) {
-        console.log("Soy cerrar caja");
         const cajaAbierta = await caja_clase_1.cajaInstance.cajaAbierta();
         if (params.total != undefined, params.detalle != undefined, params.infoDinero != undefined, params.cantidad3G != undefined) {
             if (cajaAbierta) {
                 return caja_clase_1.cajaInstance.cerrarCaja(params.total, params.detalle, params.infoDinero, params.cantidad3G).then((res) => {
                     if (res) {
-                        return { error: false };
+                        return caja_clase_1.cajaInstance.guardarMonedas(params.infoDinero, 'CLAUSURA').then((res2) => {
+                            if (res2) {
+                                return { error: false };
+                            }
+                            return { error: true, mensaje: 'Backend: Error en caja/cerrarCaja > Comprobar log' };
+                        }).catch((err) => {
+                            console.log(err);
+                            return { error: true, mensaje: 'Error en catch caja/cerrarCaja > guardaMonedas' };
+                        });
                     }
                     else {
-                        return { error: true };
+                        return { error: true, mensaje: 'Backend: No se ha podido cerrar caja' };
                     }
                 }).catch((err) => {
-                    return { error: true };
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: Error CATCH caja/cerrarCaja' };
                 });
             }
             else {
-                return { error: true, mensaje: 'No hay ninguna caja abierta' };
+                return { error: true, mensaje: 'Backend: No hay ninguna caja abierta' };
             }
         }
         else {
@@ -41,18 +49,22 @@ let CajaController = class CajaController {
         }
     }
     abrirCaja(params) {
-        console.log("Soy abrir caja");
-        return caja_clase_1.cajaInstance.abrirCaja(params).then((res) => {
-            if (res) {
-                return { error: false };
-            }
-            else {
+        if (params.total != undefined && params.detalle != undefined) {
+            return caja_clase_1.cajaInstance.abrirCaja(params).then((res) => {
+                if (res) {
+                    return { error: false };
+                }
+                else {
+                    return { error: true };
+                }
+            }).catch((err) => {
+                console.log(err);
                 return { error: true };
-            }
-        }).catch((err) => {
-            console.log(err);
-            return { error: true };
-        });
+            });
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Faltan datos en caja/abrirCaja' };
+        }
     }
     estadoCaja() {
         return caja_clase_1.cajaInstance.cajaAbierta().then((res) => {
@@ -65,6 +77,14 @@ let CajaController = class CajaController {
         }).catch((err) => {
             console.log(err);
             return { error: true, mensaje: 'Backend: Error en caja/estadoCaja CATCH' };
+        });
+    }
+    getMonedasUltimoCierre() {
+        return caja_clase_1.cajaInstance.getMonedas('CLAUSURA').then((res) => {
+            return { error: false, info: res };
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en caja/getMonedasUltimoCierre > CATCH' };
         });
     }
 };
@@ -88,6 +108,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], CajaController.prototype, "estadoCaja", null);
+__decorate([
+    (0, common_1.Post)('getMonedasUltimoCierre'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CajaController.prototype, "getMonedasUltimoCierre", null);
 CajaController = __decorate([
     (0, common_1.Controller)('caja')
 ], CajaController);

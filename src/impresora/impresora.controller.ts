@@ -8,4 +8,9 @@ export class ImpresoraController {
         const idTicket: number = params.idTicket;
         impresoraInstance.imprimirTicket(idTicket);
     }
+
+    @Post('abrirCajon')
+    abrirCajon() {
+        impresoraInstance.abrirCajon();
+    }
 }

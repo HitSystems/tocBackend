@@ -36,5 +36,6 @@ export interface TicketsInterface {
         direccion: string,
         ciudad: string
     },
-    cantidadTkrs?: number
+    cantidadTkrs?: number,
+    regalo?: boolean
 }

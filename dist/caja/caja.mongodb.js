@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nuevoItemSincroCajas = exports.borrarCaja = exports.setInfoCaja = exports.getInfoCaja = void 0;
+exports.nuevoItemSincroCajas = exports.borrarCaja = exports.setInfoCaja = exports.getMonedas = exports.guardarMonedas = exports.getInfoCaja = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getInfoCaja() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -9,10 +9,23 @@ async function getInfoCaja() {
     return resultado;
 }
 exports.getInfoCaja = getInfoCaja;
+async function guardarMonedas(arrayMonedas, tipo) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const caja = database.collection('infoMonedas');
+    const resultado = await caja.updateOne({ _id: tipo }, { $set: { "array": arrayMonedas } }, { upsert: true });
+    return resultado;
+}
+exports.guardarMonedas = guardarMonedas;
+async function getMonedas(tipo) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const caja = database.collection('infoMonedas');
+    const resultado = await caja.findOne({ _id: tipo });
+    return resultado;
+}
+exports.getMonedas = getMonedas;
 async function setInfoCaja(data) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const caja = database.collection('cajas');
-    console.log("Llego para imprimir el inicioTime: ", data.inicioTime);
     const resultado = await caja.replaceOne({
         _id: "CAJA"
     }, data, { upsert: true });

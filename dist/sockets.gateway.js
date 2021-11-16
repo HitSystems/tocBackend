@@ -25,6 +25,19 @@ let SocketGateway = class SocketGateway {
     test() {
         this.server.emit('test', 'O Rei Eze');
     }
+    consultarPuntos(params) {
+        if (params != undefined) {
+            if (params.idClienteFinal != undefined) {
+                this.server.emit('resConsultaPuntos', { error: false, info: 69 });
+            }
+            else {
+                this.server.emit('resConsultaPuntos', { error: true, mensaje: 'Backend: Faltan datos en socket > consultarPuntos' });
+            }
+        }
+        else {
+            this.server.emit('resConsultaPuntos', { error: true, mensaje: 'Backend: Faltan datos en socket > consultarPuntos' });
+        }
+    }
     async cobrarConClearone(params) {
         if (params != undefined) {
             if (params.total != undefined && params.idCesta != undefined) {
@@ -60,6 +73,7 @@ let SocketGateway = class SocketGateway {
                     },
                     enviado: false,
                     enTransito: false,
+                    regalo: (cesta.regalo == true && idClienteFinal != '' && idClienteFinal != null) ? (true) : (false)
                 };
                 const client = new net.Socket();
                 const aux = this;
@@ -92,7 +106,6 @@ let SocketGateway = class SocketGateway {
                     const tipoOperacion = 1;
                     const importe = Number((info.total * 100).toFixed(2)).toString();
                     const venta_t = `\x02${ventaCliente};${tienda};${tpv};ezequiel;${numeroTicket};${tipoOperacion};${importe};;;;;;;\x03`;
-                    console.log('cliente: ', ventaCliente, ' tienda: ', tienda, ' tpv: ', tpv, ' tipoOperacion: ', tipoOperacion, ' numeroTicket: ', numeroTicket, ' nombreDependienta: ', nombreDependienta, ' importe: ', importe);
                     client.write(venta_t);
                 });
                 client.on('error', function (err) {
@@ -108,7 +121,6 @@ let SocketGateway = class SocketGateway {
                         objTicket: info,
                         idCesta: idCesta
                     };
-                    console.log('Recibido: ' + data);
                     let respuestaTexto = "";
                     for (let i = 0; i < objEnviar.data.length; i++) {
                         respuestaTexto += String.fromCharCode(objEnviar.data[i]);
@@ -144,7 +156,7 @@ let SocketGateway = class SocketGateway {
                         }
                     }
                     else {
-                        console.log("Data clearOne: ", objEnviar.data);
+                        console.log("Denegada: ", objEnviar.data);
                         aux.server.emit('resDatafono', {
                             error: true,
                             mensaje: 'Error, operación DENEGADA'
@@ -183,6 +195,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], SocketGateway.prototype, "test", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('consultarPuntos'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], SocketGateway.prototype, "consultarPuntos", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('enviarAlDatafono'),
     __param(0, (0, websockets_1.MessageBody)()),

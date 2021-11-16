@@ -3,7 +3,7 @@ import * as schParamsTicket from './params-ticket.mongo';
 export class ParamsTicketClass {
     insertarParametrosTicket(data) {
         return schParamsTicket.insertarParametrosTicket(data).then((res) => {
-            if(res.acknowledged) {
+            if(res) {
                 return true;
             } else {
                 return false;

@@ -116,7 +116,7 @@ let CestasController = class CestasController {
         return { okey: true };
     }
     clickTeclaArticulo(params) {
-        return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoAPeso, params.idCesta).then((res) => {
+        return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.unidades).then((res) => {
             return {
                 error: false,
                 bloqueado: false,
@@ -156,6 +156,35 @@ let CestasController = class CestasController {
                 bloqueado: false,
             };
         });
+    }
+    regalarProducto(params) {
+        if (params.idCesta != undefined && params.index != undefined) {
+            return cestas_clase_1.cestas.getCesta(params.idCesta).then((cesta) => {
+                if (cesta != null) {
+                    cesta.lista[params.index].subtotal = 0;
+                    cesta['regalo'] = true;
+                    console.log(cesta);
+                    return cestas_clase_1.cestas.setCesta(cesta).then((res) => {
+                        if (res) {
+                            return { error: false, cesta: cesta };
+                        }
+                        return { error: true, mensaje: 'Backend: Error en cestas/regalarProductos > setCesta' };
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en cestas/regalarProductos > setCesta CATCH' };
+                    });
+                }
+                else {
+                    return { error: true, mensaje: 'Backend: Error, cesta vacía' };
+                }
+            }).catch((err) => {
+                console.log(err);
+                return { error: true, mensaje: 'Backend: Error en cestas/regalarProducto > getCesta CATCH' };
+            });
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Error: faltan datos en cestas/regalarProducto' };
+        }
     }
 };
 __decorate([
@@ -213,6 +242,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "getCestas", null);
+__decorate([
+    (0, common_1.Post)('regalarProducto'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "regalarProducto", null);
 CestasController = __decorate([
     (0, common_1.Controller)('cestas')
 ], CestasController);

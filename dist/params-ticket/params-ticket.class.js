@@ -5,7 +5,7 @@ const schParamsTicket = require("./params-ticket.mongo");
 class ParamsTicketClass {
     insertarParametrosTicket(data) {
         return schParamsTicket.insertarParametrosTicket(data).then((res) => {
-            if (res.acknowledged) {
+            if (res) {
                 return true;
             }
             else {

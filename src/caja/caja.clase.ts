@@ -79,6 +79,28 @@ export class CajaClase {
         });
     }
 
+    guardarMonedas(arrayMonedas: any, tipo: 'APERTURA' | 'CLAUSURA') {
+        return schCajas.guardarMonedas(arrayMonedas, tipo).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+
+    getMonedas(tipo: 'APERTURA' | 'CLAUSURA') {
+        return schCajas.getMonedas(tipo).then((res) => {
+            if (res != null) {
+                return res.array;
+            } else {
+                return null;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return null;
+        });
+    }
+
     nuevoItemSincroCajas(caja: CajaInterface) {
         let cajaInsertar: CajaForSincroInterface | {} = {};
         cajaInsertar['_id'] = Date.now();
@@ -106,7 +128,7 @@ export class CajaClase {
 
     async cerrarCaja(total: number, detalleCierre, guardarInfoMonedas, totalDatafono3G: number) { //Promise<boolean> {
         let estaAbierta = await this.cajaAbierta();
-
+        
         if (estaAbierta) {
             let cajaActual: CajaInterface = await this.getInfoCaja();
             cajaActual.totalCierre = total;
@@ -130,7 +152,7 @@ export class CajaClase {
                 deudaDeliveroo: deudaDeliveroo,
                 totalTkrs: totalTkrs
             }
-            console.log("Eo: ", cajaActual.detalleCierre);
+
             const res = await this.nuevoItemSincroCajas(cajaActual);
             if (res.acknowledged) {
                 // ipcRenderer.send('enviar-email', objEmail);
@@ -178,6 +200,7 @@ export class CajaClase {
         var nClientes = 0;
         const params = parametrosInstance.getParametros();
         let currentCaja = await this.getInfoCaja();
+        
         if(arrayTicketsCaja.length > 0) {
             currentCaja.primerTicket = arrayTicketsCaja[0]._id;
             currentCaja.ultimoTicket = arrayTicketsCaja[arrayTicketsCaja.length-1]._id;
@@ -188,7 +211,7 @@ export class CajaClase {
         var totalTarjeta = 0;
         var totalEnEfectivo = 0;
         var cambioInicial = currentCaja.totalApertura;
-        var cambioFinal = currentCaja.totalCierre;
+        var cambioFinal = unaCaja.totalCierre;
         var totalSalidas = 0;
         var totalEntradas = 0;
         var recaudado = 0; //this.caja.totalCierre-this.caja.totalApertura + totalSalidas - totalEntradas;
@@ -205,7 +228,6 @@ export class CajaClase {
                 }
             }
         }
-        console.log('Tamaño de arrayTickets: ', arrayTicketsCaja.length);
         for(let i = 0; i < arrayTicketsCaja.length; i++) {
             nClientes++;
             totalTickets += arrayTicketsCaja[i].total;
@@ -255,6 +277,7 @@ export class CajaClase {
         };
 
         // vuePantallaCierre.setVariables(objImpresion); ESTO ENVÍA EL DETALLE DEL CIERRE AL FRONTEND
+
         try {
             impresoraInstance.imprimirCaja(
                 objImpresion.calaixFet,

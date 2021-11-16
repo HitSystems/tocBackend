@@ -20,6 +20,9 @@ let ImpresoraController = class ImpresoraController {
         const idTicket = params.idTicket;
         impresora_class_1.impresoraInstance.imprimirTicket(idTicket);
     }
+    abrirCajon() {
+        impresora_class_1.impresoraInstance.abrirCajon();
+    }
 };
 __decorate([
     (0, common_1.Post)('imprimirTicket'),
@@ -28,6 +31,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ImpresoraController.prototype, "imprimirTicket", null);
+__decorate([
+    (0, common_1.Post)('abrirCajon'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], ImpresoraController.prototype, "abrirCajon", null);
 ImpresoraController = __decorate([
     (0, common_1.Controller)('impresora')
 ], ImpresoraController);

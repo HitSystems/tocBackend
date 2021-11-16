@@ -9,10 +9,11 @@ async function getInfoArticulo(idArticulo) {
     return resultado;
 }
 exports.getInfoArticulo = getInfoArticulo;
-async function insertarArticulos(arrayArticulos) {
-    if (await borrarArticulos()) {
+async function insertarArticulos(arrayArticulos, esTarifaEspecial = false) {
+    const apuntoColeccion = (esTarifaEspecial == true) ? ('articulosTarifaEspecial') : ('articulos');
+    if (await borrarArticulos(esTarifaEspecial)) {
         const database = (await mongodb_1.conexion).db('tocgame');
-        const articulos = database.collection('articulos');
+        const articulos = database.collection(apuntoColeccion);
         const resultado = await articulos.insertMany(arrayArticulos);
         return resultado;
     }
@@ -26,10 +27,11 @@ async function insertarArticulos(arrayArticulos) {
     }
 }
 exports.insertarArticulos = insertarArticulos;
-async function borrarArticulos() {
+async function borrarArticulos(esTarifaEspecial) {
     try {
+        const apuntoColeccion = (esTarifaEspecial == true) ? ('articulosTarifaEspecial') : ('articulos');
         const database = (await mongodb_1.conexion).db('tocgame');
-        const articulos = database.collection('articulos');
+        const articulos = database.collection(apuntoColeccion);
         const resultado = await articulos.drop();
         return resultado;
     }
@@ -45,7 +47,7 @@ async function borrarArticulos() {
 exports.borrarArticulos = borrarArticulos;
 async function getInfoArticuloTarifaEspecial(idArticulo) {
     const database = (await mongodb_1.conexion).db('tocgame');
-    const articulos = database.collection('ArticulosTarifaEspecial');
+    const articulos = database.collection('articulosTarifaEspecial');
     const resultado = await articulos.findOne({ _id: idArticulo });
     return resultado;
 }

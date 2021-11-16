@@ -8,13 +8,26 @@ import { clienteInstance } from "../clientes/clientes.clase";
 import { parametrosInstance } from "../parametros/parametros.clase";
 
 const escpos = require('escpos');
-const { exec } = require('child_process');
+const exec = require('child_process').exec;
 const os = require('os');
 escpos.USB = require('escpos-usb');
 escpos.Serial = require('escpos-serialport');
 escpos.Screen = require('escpos-screen');
 const TIPO_ENTRADA_DINERO = 'ENTRADA';
 const TIPO_SALIDA_DINERO = 'SALIDA';
+
+function permisosImpresora() {
+    try {
+        exec(`  echo sa | sudo -S chmod 777 -R /dev/bus/usb/
+        echo sa | sudo -S chmod 777 -R /dev/ttyS0
+        echo sa | sudo -S chmod 777 -R /dev/ttyS1
+        echo sa | sudo -S chmod 777 -R /dev/    
+    `);
+    } catch(err) {
+        console.log(err);
+    }
+
+}
 
 /* Función auxiliar */
 function dateToString2(fecha) {
@@ -62,9 +75,10 @@ export class Impresora {
             const infoClienteAux = await clienteInstance.getClienteByID(infoTicket.cliente);
             const infoCliente = infoClienteAux;
             var auxNombre = '';
-
+            var puntosCliente = 0;
             if(infoCliente != null) {
                 auxNombre = infoCliente.nombre;
+                puntosCliente = await clienteInstance.getPuntosCliente(infoTicket.cliente);
             } else {
                 auxNombre = '';
             }
@@ -82,7 +96,7 @@ export class Impresora {
                 infoClienteVip: infoTicket.infoClienteVip,
                 infoCliente: {
                     nombre: auxNombre,
-                    puntos: 0
+                    puntos: puntosCliente
                 }
             };
             this._venta(sendObject);
@@ -118,12 +132,22 @@ export class Impresora {
         const tipoImpresora = info.impresora;
         const infoClienteVip = info.infoClienteVip;
         const infoCliente = info.infoCliente;
-
+        console.log("Se imprime: ", info);
         try {
-            exec('echo sa | sudo -S chmod -R 777 /dev/');
+            permisosImpresora();
+
             if(tipoImpresora === 'USB')
             {
-                var device = new escpos.USB('0x4B8', '0x202'); //USB
+                const arrayDevices = escpos.USB.findPrinter();
+                if (arrayDevices.length > 0) {
+                    /* Solo puede haber un dispositivo USB */
+                    const dispositivoUnico = arrayDevices[0];
+                    var device = new escpos.USB(dispositivoUnico); //USB
+                } else if (arrayDevices.length == 0) {
+                    throw 'Error, no hay ningún dispositivo USB conectado';
+                } else {
+                    throw 'Error, hay más de un dispositivo USB conectado';
+                }
             }
             else
             {
@@ -275,16 +299,27 @@ export class Impresora {
             });
         }
         catch (err) {
-            console.log(err);
+            console.log("Error impresora: ", err);
         }
     }
 
     imprimirSalida(cantidad: number, fecha: number, nombreTrabajador: string, nombreTienda: string, concepto: string, tipoImpresora: string, codigoBarras: string) {
         try {
             const fechaStr = dateToString2(fecha);
-            exec('echo sa | sudo -S sh /home/hit/tocGame/scripts/permisos.sh');
-            if(tipoImpresora === 'USB') {
-                var device = new escpos.USB('0x4B8', '0x202'); // USB
+            permisosImpresora();
+
+            if(tipoImpresora === 'USB')
+            {
+                const arrayDevices = escpos.USB.findPrinter();
+                if (arrayDevices.length > 0) {
+                    /* Solo puede haber un dispositivo USB */
+                    const dispositivoUnico = arrayDevices[0];
+                    var device = new escpos.USB(dispositivoUnico); //USB
+                } else if (arrayDevices.length == 0) {
+                    throw 'Error, no hay ningún dispositivo USB conectado';
+                } else {
+                    throw 'Error, hay más de un dispositivo USB conectado';
+                }
             }
             else if(tipoImpresora === 'SERIE') {
                 var device = new escpos.Serial('/dev/ttyS0', {
@@ -329,9 +364,19 @@ export class Impresora {
         const parametros = parametrosInstance.getParametros();
         try  {
             const fechaStr = dateToString2(fecha);
-            exec('echo sa | sudo -S sh /home/hit/tocGame/scripts/permisos.sh');
-            if(parametros.tipoImpresora === 'USB') {
-                var device = new escpos.USB('0x4B8', '0x202'); // USB
+            permisosImpresora();
+            if(parametros.tipoImpresora === 'USB')
+            {
+                const arrayDevices = escpos.USB.findPrinter();
+                if (arrayDevices.length > 0) {
+                    /* Solo puede haber un dispositivo USB */
+                    const dispositivoUnico = arrayDevices[0];
+                    var device = new escpos.USB(dispositivoUnico); //USB
+                } else if (arrayDevices.length == 0) {
+                    throw 'Error, no hay ningún dispositivo USB conectado';
+                } else {
+                    throw 'Error, hay más de un dispositivo USB conectado';
+                }
             }
             else if(parametros.tipoImpresora === 'SERIE') {
                 var device = new escpos.Serial('/dev/ttyS0', {
@@ -390,9 +435,19 @@ export class Impresora {
             }
             textoMovimientos = `\nTotal targeta:      ${sumaTarjetas.toFixed(2)}\n` + textoMovimientos;
     
-            exec('echo sa | sudo -S sh /home/hit/tocGame/scripts/permisos.sh');
-            if(tipoImpresora === 'USB') {
-                var device = new escpos.USB('0x4B8', '0x202'); //USB
+            permisosImpresora();
+            if(tipoImpresora === 'USB')
+            {
+                const arrayDevices = escpos.USB.findPrinter();
+                if (arrayDevices.length > 0) {
+                    /* Solo puede haber un dispositivo USB */
+                    const dispositivoUnico = arrayDevices[0];
+                    var device = new escpos.USB(dispositivoUnico); //USB
+                } else if (arrayDevices.length == 0) {
+                    throw 'Error, no hay ningún dispositivo USB conectado';
+                } else {
+                    throw 'Error, hay más de un dispositivo USB conectado';
+                }
             }
             else {
                 if(tipoImpresora === 'SERIE')
@@ -445,6 +500,46 @@ export class Impresora {
         catch (err) {
             console.log(err);
         } 
+    }
+
+    abrirCajon() {
+        const parametros = parametrosInstance.getParametros();
+        try {
+            if(os.platform() === 'linux') {
+                permisosImpresora();
+                if(parametros.tipoImpresora === 'USB')
+                {
+                    const arrayDevices = escpos.USB.findPrinter();
+                    if (arrayDevices.length > 0) {
+                        /* Solo puede haber un dispositivo USB */
+                        const dispositivoUnico = arrayDevices[0];
+                        var device = new escpos.USB(dispositivoUnico); //USB
+                    } else if (arrayDevices.length == 0) {
+                        throw 'Error, no hay ningún dispositivo USB conectado';
+                    } else {
+                        throw 'Error, hay más de un dispositivo USB conectado';
+                    }
+                } else {
+                    if(parametros.tipoImpresora === 'SERIE') {
+                        var device = new escpos.Serial('/dev/ttyS0', {
+                            baudRate: 115000,
+                            stopBit: 2
+                          });
+                    }
+                }
+        
+                var printer = new escpos.Printer(device);
+        
+                device.open(function () {
+                    printer
+                        .cashdraw(2)
+                        .close()
+                });
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
 }
 export const impresoraInstance = new Impresora();

@@ -73,6 +73,27 @@ class CajaClase {
             return false;
         });
     }
+    guardarMonedas(arrayMonedas, tipo) {
+        return schCajas.guardarMonedas(arrayMonedas, tipo).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    getMonedas(tipo) {
+        return schCajas.getMonedas(tipo).then((res) => {
+            if (res != null) {
+                return res.array;
+            }
+            else {
+                return null;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return null;
+        });
+    }
     nuevoItemSincroCajas(caja) {
         let cajaInsertar = {};
         cajaInsertar['_id'] = Date.now();
@@ -119,7 +140,6 @@ class CajaClase {
                 deudaDeliveroo: deudaDeliveroo,
                 totalTkrs: totalTkrs
             };
-            console.log("Eo: ", cajaActual.detalleCierre);
             const res = await this.nuevoItemSincroCajas(cajaActual);
             if (res.acknowledged) {
                 const res2 = await schMonedas.setMonedas({
@@ -177,7 +197,7 @@ class CajaClase {
         var totalTarjeta = 0;
         var totalEnEfectivo = 0;
         var cambioInicial = currentCaja.totalApertura;
-        var cambioFinal = currentCaja.totalCierre;
+        var cambioFinal = unaCaja.totalCierre;
         var totalSalidas = 0;
         var totalEntradas = 0;
         var recaudado = 0;
@@ -194,7 +214,6 @@ class CajaClase {
                 }
             }
         }
-        console.log('Tamaño de arrayTickets: ', arrayTicketsCaja.length);
         for (let i = 0; i < arrayTicketsCaja.length; i++) {
             nClientes++;
             totalTickets += arrayTicketsCaja[i].total;

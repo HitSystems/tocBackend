@@ -37,4 +37,5 @@ export interface TicketsInterface {
         ciudad: string;
     };
     cantidadTkrs?: number;
+    regalo?: boolean;
 }

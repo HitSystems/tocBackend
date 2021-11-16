@@ -74,6 +74,7 @@ export class CestaClase {
   }
 
   nuevaCestaVacia(nombreCesta = 'Principal') {
+    console.log(nombreCesta)
     const nuevaCesta: CestasInterface = {
         _id: Date.now(),
         nombre: nombreCesta,
@@ -103,7 +104,7 @@ export class CestaClase {
     return schCestas.getAllCestas();
   }
 
-  borrarCesta(idCestaBorrar, eliminarCesta = false): Promise<boolean> {
+  borrarCesta(idCestaBorrar): Promise<boolean> {
     return schCestas.borrarCesta(idCestaBorrar).then((res) => {
       if (res.acknowledged) {
         return true;
@@ -119,7 +120,7 @@ export class CestaClase {
   /* Guarda la cesta en Mongo */
   setCesta(cesta: CestasInterface): Promise<boolean> {
     for(let i = 0; i < cesta.lista.length; i++) {
-      cesta.lista[i].subtotal = Number(Number(cesta.lista[i].subtotal).toFixed(2));
+      cesta.lista[i].subtotal = Number(cesta.lista[i].subtotal.toFixed(2));
     }
     return schCestas.setCesta(cesta).then((res) => {
       if (res.acknowledged) {
@@ -171,7 +172,6 @@ export class CestaClase {
       return false;
     })
   }
-
   // cambiarCurrentCesta(data: CestasInterface) {
   //   for(let i = 0; i < data.lista.length; i++) {
   //       data.lista[i].subtotal = Number(data.lista[i].subtotal.toFixed(2));
@@ -211,13 +211,14 @@ export class CestaClase {
   }
     async insertarArticuloCesta(infoArticulo, unidades: number, idCesta: number, infoAPeso = null) {
         var miCesta = await this.getCesta(idCesta);
-        console.log("El ID de la cesta es: ", idCesta);
+
         if(miCesta.lista.length > 0)
         {
             let encontrado = false;
             for(let i = 0; i < miCesta.lista.length; i++) {
                 if(miCesta.lista[i]._id === infoArticulo._id) {
                     var viejoIva = miCesta.tiposIva;
+                    
                     if(infoAPeso == null)
                     {
                         miCesta.lista[i].unidades += unidades;
@@ -226,9 +227,8 @@ export class CestaClase {
                     }
                     else
                     {
-                      miCesta.lista[i].subtotal += Number(infoAPeso.precioAplicado);
-                      console.log(miCesta.lista[i].subtotal);
-                      miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
+                        miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
+                        miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
                     }  
                    
                     encontrado = true;
@@ -262,29 +262,29 @@ export class CestaClase {
                 miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, miCesta.tiposIva, infoAPeso);
             }            
         }
-        return await ofertas.buscarOfertas(miCesta, viejoIva);
+        const temporal = await ofertas.buscarOfertas(miCesta, viejoIva);
+
+        return temporal; //await ofertas.buscarOfertas(miCesta, viejoIva);
     }
 
-    async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number) {
-        var unidades = this.udsAplicar;
+    async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number, unidades: number = 1) {
         var cestaRetornar: CestasInterface = null;
-        if(cajaInstance.cajaAbierta())
-        {
-            try
-            {
+        if(cajaInstance.cajaAbierta()) {
+          
+            try {
                 if(!aPeso) { // TIPO NORMAL                  
-                  let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
-                  if(infoArticulo) //AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
-                    {
-                        cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
-                    }
-                    else
-                    {
-                        // vueToast.abrir('error', 'Este artículo tiene errores');
+                  
+                    let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
+                    if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
+                      
+                      cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                      
+                    } else {
+                      
+                      // vueToast.abrir('error', 'Este artículo tiene errores');
                     }
                 }
-                else //TIPO PESO
-                {
+                else { //TIPO PESO
                   let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
                   cestaRetornar = await this.insertarArticuloCesta(infoArticulo, 1, idCesta, infoAPeso);
                 }
@@ -298,9 +298,11 @@ export class CestaClase {
         }
         else
         {
+          console.log('Error: La caja está cerrada, no se puede insertar un articulo en la cesta');
             // vueToast.abrir('danger', 'Se requiere una caja abierta para cobrar');
         }
         this.udsAplicar = 1;
+        
         return cestaRetornar;
     }
     setUnidadesAplicar(unidades: number) {

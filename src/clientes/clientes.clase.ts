@@ -1,5 +1,7 @@
 import * as schClientes from './clientes.mongodb';
 import { ClientesInterface } from './clientes.interface';
+import axios from 'axios';
+import { parametrosInstance } from 'src/parametros/parametros.clase';
 
 export class Clientes {
     /* Busca tanto nombres como tarjeta cliente */
@@ -31,6 +33,20 @@ export class Clientes {
         }).catch((err) => {
             console.log(err);
             return false;
+        });
+    }
+
+    getPuntosCliente(idClienteFinal: string) {
+        return axios.post('clientes/getPuntosCliente', { database: parametrosInstance.getParametros().database, idClienteFinal }).then((res: any) => {
+            if (res.data.error == false) {
+                return res.data.info;
+            } else {
+                console.log(res.data.error);
+                return 0;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return 0;
         });
     }
 }

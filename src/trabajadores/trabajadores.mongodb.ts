@@ -38,7 +38,6 @@ export async function getTrabajadorPorNombre(nombre: string) {
 export async function setCurrentIdTrabajador(idTrabajador: number) {
     const database = (await conexion).db('tocgame');
     const parametros = database.collection('parametros');
-    console.log("LLEGA ID TRABAJADOR: ", idTrabajador);
     const resultado = await parametros.updateOne({_id: "PARAMETROS"}, { $set: { "idCurrentTrabajador": idTrabajador }}, {upsert: true} );
 
     return resultado;
@@ -55,7 +54,6 @@ export async function getTrabajadoresFichados() {
 export async function ficharTrabajador(idTrabajador: number) {
     const database = (await conexion).db('tocgame');
     const trabajadores = database.collection('trabajadores');
-    console.log("ID TRABAJADOR A FICHAR: ", idTrabajador);
     const resultado = trabajadores.updateOne({_id: idTrabajador}, {$set: { "fichado": true} });
     
     return resultado;

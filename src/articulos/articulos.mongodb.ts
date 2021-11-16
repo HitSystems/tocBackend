@@ -9,10 +9,11 @@ export async function getInfoArticulo(idArticulo: number): Promise<any> {
     return resultado;
 }
 
-export async function insertarArticulos(arrayArticulos) {
-    if (await borrarArticulos()) {
+export async function insertarArticulos(arrayArticulos, esTarifaEspecial = false) {
+    const apuntoColeccion = (esTarifaEspecial == true) ? ('articulosTarifaEspecial') : ('articulos');
+    if (await borrarArticulos(esTarifaEspecial)) {
         const database = (await conexion).db('tocgame');
-        const articulos = database.collection('articulos');
+        const articulos = database.collection(apuntoColeccion);
         const resultado = await articulos.insertMany(arrayArticulos);
         
         return resultado;
@@ -26,10 +27,11 @@ export async function insertarArticulos(arrayArticulos) {
     }
 }
 
-export async function borrarArticulos() {
+export async function borrarArticulos(esTarifaEspecial: boolean) {
     try {
+        const apuntoColeccion = (esTarifaEspecial == true) ? ('articulosTarifaEspecial') : ('articulos');
         const database = (await conexion).db('tocgame');
-        const articulos = database.collection('articulos');
+        const articulos = database.collection(apuntoColeccion);
         const resultado = await articulos.drop();
         return resultado;
     } catch(err) {
@@ -43,7 +45,7 @@ export async function borrarArticulos() {
 
 export async function getInfoArticuloTarifaEspecial(idArticulo: number): Promise<any> {
     const database = (await conexion).db('tocgame');
-    const articulos = database.collection('ArticulosTarifaEspecial');
+    const articulos = database.collection('articulosTarifaEspecial');
     const resultado = await articulos.findOne({_id: idArticulo});
     
     return resultado;

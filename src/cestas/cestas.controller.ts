@@ -114,7 +114,7 @@ export class CestasController {
 
     @Post('clickTeclaArticulo')
     clickTeclaArticulo(@Body() params) {
-        return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoAPeso, params.idCesta).then((res) => {
+        return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.unidades).then((res) => {
             return {
                 error: false,
                 bloqueado: false,
@@ -158,5 +158,34 @@ export class CestasController {
                 bloqueado: false,
             }
         })
+    }
+
+    @Post('regalarProducto')
+    regalarProducto(@Body() params) {
+        if (params.idCesta != undefined && params.index != undefined) {
+            return cestas.getCesta(params.idCesta).then((cesta) => {
+                if (cesta != null) {
+                    cesta.lista[params.index].subtotal = 0;
+                    cesta['regalo'] = true;
+                    console.log(cesta);
+                    return cestas.setCesta(cesta).then((res) => {
+                        if (res) {
+                            return { error: false, cesta: cesta };
+                        }
+                        return { error: true, mensaje: 'Backend: Error en cestas/regalarProductos > setCesta'};
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en cestas/regalarProductos > setCesta CATCH'};
+                    });
+                } else {
+                    return { error: true, mensaje: 'Backend: Error, cesta vacía'};
+                }
+            }).catch((err) => {
+                console.log(err);
+                return { error: true, mensaje: 'Backend: Error en cestas/regalarProducto > getCesta CATCH' };
+            });
+        } else {
+            return { error: true, mensaje: 'Backend: Error: faltan datos en cestas/regalarProducto' };
+        }
     }
 }

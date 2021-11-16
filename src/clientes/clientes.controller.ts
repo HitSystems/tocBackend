@@ -1,5 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import axios from 'axios';
+import { articulosInstance } from '../articulos/articulos.clase';
 import { parametrosInstance } from '../parametros/parametros.clase';
 import { clienteInstance } from './clientes.clase';
 
@@ -34,8 +35,23 @@ export class ClientesController {
     comprobarVIP(@Body() params) {
         const parametros = parametrosInstance.getParametros();
         return axios.post('clientes/comprobarVIP', { database: parametros.database, idClienteFinal: params.idClienteFinal }).then((res: any) => {
-            if (res.data.error === false) {
-                return { error: false, info: res.data.info };
+            if (res.data.error === false) { // No hay error
+                if (res.data.articulosEspeciales != undefined) { // Tiene tarifa especial
+                    /* Añadir articulosTarifaEspecial a Mongo */
+                    articulosInstance.setEstadoTarifaEspecial(true);
+                    return articulosInstance.insertarArticulos(res.data.articulosEspeciales, true).then((resInsertArtEspecial) => {
+                        if (resInsertArtEspecial) {
+                            return { error: false, info: res.data.info };
+                        }
+                        return { error: true, mensaje: 'Backend: Error en clientes/comprobarVIP > InsertarArticulos especiales' };
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en catch clientes/comprobarVIP > InsertarArticulos (especiales)' };
+                    });
+                } else { // No tiene tarifa especial
+                    // console.log('Puntos: ', res.data.info.puntos);
+                    return { error: false, info: res.data.info };
+                }
             } else {
                 return { error: true, mensaje: res.data.mensaje };
             }
@@ -43,5 +59,27 @@ export class ClientesController {
             console.log(err);
             return { error: true, mensaje: 'Error en backend comprobarVIP'};
         });
-    }    
+    }
+
+    @Post('descargarClientesFinales')
+    descargarClientesFinales() {
+        const parametros = parametrosInstance.getParametros();
+        return axios.post('clientes/getClientesFinales', { database: parametros.database }).then((res: any) => {
+            if (res.data.error == false) {
+                return clienteInstance.insertarClientes(res.data.info).then((operacionResult) => {
+                    if (operacionResult) {
+                        return { error: false };
+                    }
+                    return { error: true, mensaje: 'Backend: Error en insertarClientes de clientes/descargarClientesFinales' };
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: Error en insertarClientes de clientes/descargarClientesFinales CATCH' };
+                });
+            }
+            return { error: true, mensaje: res.data.mensaje };
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en clientes/descargarClientesFinales CATCH' };
+        });
+    }
 }

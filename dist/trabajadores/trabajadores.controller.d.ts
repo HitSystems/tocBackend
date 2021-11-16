@@ -29,7 +29,10 @@ export declare class TrabajadoresController {
     } | {
         error: boolean;
         mensaje: string;
-    }>;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
     desfichar(params: any): Promise<{
         error: boolean;
         mensaje?: undefined;
