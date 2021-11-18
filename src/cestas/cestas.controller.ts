@@ -1,6 +1,5 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { cestas } from './cestas.clase';
-import { articulosInstance } from '../articulos/articulos.clase';
 
 @Controller('cestas')
 export class CestasController {
@@ -69,41 +68,83 @@ export class CestasController {
 
     @Post('borrarArticulosCesta')
     borrarArticulosCesta(@Body() params) {
-        return cestas.borrarArticulosCesta(params.id).then((res) => {
-            return {
-                okey: true,
-                cestaNueva: res,
-            }
-        }).catch((err) => {
-            console.log(err);
-            return {
-                okey: false,
-                error: 'Error en borrarArticulosCesta'
-            }
-        })
+        if (params.idCesta != undefined && params.idCesta != null) {
+            return cestas.borrarArticulosCesta(params.idCesta).then((res) => {
+                if (res) {
+                    return { error: false, info: res };
+                }
+                return { error: true, mensaje: 'Backend: Error en cestas/borrarArticulosCesta >' };
+            });
+        } else {
+            return { error: true, mensaje: 'Backend: Error cestas/borrarArticulosCesta faltan datos' };
+        }
     }
 
     @Post('getCesta')
-    getCesta(@Body() params) {
+    getCesta() {
         // params.id = 1631781881687; // para postman
-        console.log(params.id)
-        if(params.id === -1) {
-            return cestas.getCestaRandom().then((res) => {
-                return res;
-            }).catch((err) => {
-                return {
-                    okey: false,
-                    error: "Error en borrarItemCesta"
-                };
-            });
-        }
-        return cestas.getCesta(params.id).then((res) => {
+        // params.idArticulo = 8571;
+
+        return cestas.getCestaRandom().then((res) => {
             return res;
         }).catch((err) => {
             return {
                 okey: false,
                 error: "Error en borrarItemCesta"
             };
+        });
+    }
+
+    @Post('getCestaByID')
+    getCestaByID(@Body() params) {
+        console.log(params.idCesta);
+        if (params.idCesta != undefined && params.idCesta != null) {
+            if (params.idCesta == -1) {
+                return cestas.getCestaRandom().then((res) => {
+                    return { error: false, info: res };
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
+                });
+            } else {
+                return cestas.getCesta(params.idCesta).then((res) => {
+                    if (res) {
+                        return { error: false, info: res };
+                    }
+                    console.log(res);
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+                });
+            }
+        } else {
+            return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID FALTAN DATOS' };
+        }
+    }
+
+    @Post('crearCesta')
+    crearCesta(@Body() params) {
+        if (params.nombreCesta != undefined && params.nombreCesta != null) {
+            return cestas.crearNuevaCesta(params.nombreCesta).then((res) => {
+                if (res) {
+                    return { error: false, info: res };
+                } else {
+                    return { error: true, mensaje: 'Backend: Error en cestas/crearCesta. No se ha podido crear la nueva cesta' };
+                }
+            })
+        } else {
+            return { error: true, mensaje: 'Backend: Error en cestas/crearCesta FALTAN DATOS' };
+        }
+    }
+
+    @Get('getCestas')
+    getCestas() {
+        return cestas.getTodasCestas().then((res) => {
+            return { error: false, info: res };
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en cestas/getCestas CATCH' };
         });
     }
 
@@ -115,62 +156,18 @@ export class CestasController {
 
     @Post('clickTeclaArticulo')
     clickTeclaArticulo(@Body() params) {
-        return articulosInstance.getSuplementosArticulo(params.idArticulo).then((res) => {
-            if(res === null || params.suplementosOk) {
-                console.log(params.suplemento);
-                return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.suplemento, params.unidades).then((res) => {
-                    return {
-                        error: false,
-                        bloqueado: false,
-                        cesta: res
-                    };
-                }).catch((err) => {
-                    return {
-                        error: true,
-                        bloqueado: false
-                    };
-                });
-            } else {
-                return {
-                    error: false,
-                    bloqueado: false,
-                    modalSuplementos: true,
-                    suplementos: res.suplementos,
-                }
-            }
-        });
-    }
-
-    @Post('crearCesta')
-    crearCesta(@Body() params) {
-        return cestas.crearNuevaCesta(params.nombreCesta).then((res) => {
+        return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoAPeso, params.idCesta, params.unidades).then((res) => {
             return {
                 error: false,
                 bloqueado: false,
-                cesta: res,
-            }
-        }).catch((err) => {
-            return {
-                error: true,
-                bloqueado: false,
-            }
-        })
-    }
-
-    @Get('getCestas')
-    getCestas() {
-        return cestas.getTodasCestas().then((res) => {
-            return {
-                error: false,
-                bloqueado: false,
-                cestas: res,
+                cesta: res
             };
         }).catch((err) => {
             return {
                 error: true,
-                bloqueado: false,
-            }
-        })
+                bloqueado: false
+            };
+        });
     }
 
     @Post('regalarProducto')

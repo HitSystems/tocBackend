@@ -5,6 +5,7 @@ import { construirObjetoIvas, crearCestaVacia } from '../funciones/funciones';
 import { articulosInstance } from '../articulos/articulos.clase';
 import { ofertas } from '../promociones/promociones.clase';
 import { cajaInstance } from '../caja/caja.clase';
+import { clienteInstance } from 'src/clientes/clientes.clase';
 
 /* Siempre cargar la cesta desde MongoDB */
 export class CestaClase {
@@ -35,7 +36,6 @@ export class CestaClase {
         return cesta
       } else {
         // No hay ninguna cesta. Crear una.
-        console.log("Entro aquí");
         const nueva = this.nuevaCestaVacia();
         return this.setCesta(nueva).then((resultado) => {
           if (resultado) {
@@ -73,11 +73,9 @@ export class CestaClase {
 
   }
 
-  nuevaCestaVacia(nombreCesta = 'Principal') {
-    console.log(nombreCesta)
+  nuevaCestaVacia() {
     const nuevaCesta: CestasInterface = {
         _id: Date.now(),
-        nombre: nombreCesta,
         tiposIva: {
             base1: 0,
             base2: 0,
@@ -91,12 +89,6 @@ export class CestaClase {
         },
         lista: []
     };
-    return nuevaCesta;
-  }
-
-  async crearNuevaCesta(nombreCesta) {
-    const nuevaCesta = await this.nuevaCestaVacia(nombreCesta);
-    this.setCesta(nuevaCesta);
     return nuevaCesta;
   }
 
@@ -134,6 +126,21 @@ export class CestaClase {
     });
   }
 
+  async crearNuevaCesta(nombreCesta: string) {
+    const nuevaCesta = this.nuevaCestaVacia();
+    nuevaCesta.nombreCesta = nombreCesta;
+    return this.setCesta(nuevaCesta).then((res) => {
+      if (res) {
+        return nuevaCesta;
+      } else {
+        return false;
+      }
+    }).catch((err) => {
+      console.log(err);
+      return false;
+    });
+  }
+
   /* Obtiene la cesta, borra el  item y devuelve la cesta final */
   borrarItemCesta(idCesta: number, idArticulo: number) {
     return this.getCesta(idCesta).then((cesta) => {
@@ -143,35 +150,27 @@ export class CestaClase {
             break;
           }
         }
-        this.setCesta(cesta).then((result) => {
-          if (result) {
-            return cesta;
-          } else {
+        return this.recalcularIvas(cesta).then((cestaRecalculada) => {
+          return this.setCesta(cestaRecalculada).then((result) => {
+            if (result) {
+              return cestaRecalculada;
+            } else {
+              return false;
+            }
+          }).catch((err) => {
+            console.log(err);
             return false;
-          }
+          });
         }).catch((err) => {
           console.log(err);
           return false;
         });
-        return cesta;
     }).catch((err) => {
         console.log(err);
         return false;
     });
   }
 
-  async borrarArticulosCesta(idCesta: number) {
-    const cestaActual = await this.getCesta(idCesta);
-    cestaActual.lista = [];
-    for(let key in cestaActual.tiposIva) cestaActual.tiposIva[key] = 0;
-    return this.setCesta(cestaActual).then((result) => {
-      if(result) return cestaActual;
-      return false;
-    }).catch((err) => {
-      console.log(err);
-      return false;
-    })
-  }
   // cambiarCurrentCesta(data: CestasInterface) {
   //   for(let i = 0; i < data.lista.length; i++) {
   //       data.lista[i].subtotal = Number(data.lista[i].subtotal.toFixed(2));
@@ -262,31 +261,27 @@ export class CestaClase {
                 miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, miCesta.tiposIva, infoAPeso);
             }            
         }
-        const temporal = await ofertas.buscarOfertas(miCesta, viejoIva);
 
+        const temporal = await ofertas.buscarOfertas(miCesta, viejoIva);
         return temporal; //await ofertas.buscarOfertas(miCesta, viejoIva);
     }
 
-    async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number, idSuplemento: number, unidades: number = 1) {
-      var cestaRetornar: CestasInterface = null;
-      let precioSuplemento = 0;
+    async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number, unidades: number = 1) {
+        var cestaRetornar: CestasInterface = null;
         if(cajaInstance.cajaAbierta()) {
+          
             try {
                 if(!aPeso) { // TIPO NORMAL                  
-                  let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
-                  if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
-                    if(idSuplemento !== undefined) {
-                      const consultaSumplemento = (await articulosInstance.getInfoSuplemento(idArticulo, idSuplemento));
-                      const infoSuplemento = consultaSumplemento.suplementos.filter(x => x.id === idSuplemento);
-                      precioSuplemento = infoSuplemento[0].precio;
-                    }
-                    infoArticulo.precioConIva += precioSuplemento;
-                    cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                  
+                    let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
+                    if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
                       
-                  } else {
-                    
-                    // vueToast.abrir('error', 'Este artículo tiene errores');
-                  }
+                      cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                      
+                    } else {
+                      
+                      // vueToast.abrir('error', 'Este artículo tiene errores');
+                    }
                 }
                 else { //TIPO PESO
                   let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
@@ -333,11 +328,11 @@ export class CestaClase {
             else if(cesta.lista[i].promocion.esPromo === true) {
                     if(cesta.lista[i].nombre == 'Oferta combo') {
                         let infoArticuloPrincipal = await articulosInstance.getInfoArticulo(cesta.lista[i].promocion.infoPromo.idPrincipal);
-                        infoArticuloPrincipal.precioConIva = cesta.lista[i].promocion.infoPromo.precioRealPrincipal/(cesta.lista[i].promocion.infoPromo.unidadesOferta*cesta.lista[i].promocion.infoPromo.cantidadPrincipal);
+                        infoArticuloPrincipal.precioConIva = cesta.lista[i].promocion.infoPromo.precioRealPrincipal; // /(cesta.lista[i].promocion.infoPromo.unidadesOferta*cesta.lista[i].promocion.infoPromo.cantidadPrincipal);
                         cesta.tiposIva = construirObjetoIvas(infoArticuloPrincipal, cesta.lista[i].promocion.infoPromo.unidadesOferta*cesta.lista[i].promocion.infoPromo.cantidadPrincipal, cesta.tiposIva);
 
                         let infoArticuloSecundario = await articulosInstance.getInfoArticulo(cesta.lista[i].promocion.infoPromo.idSecundario);
-                        infoArticuloSecundario.precioConIva = cesta.lista[i].promocion.infoPromo.precioRealSecundario/(cesta.lista[i].promocion.infoPromo.unidadesOferta*cesta.lista[i].promocion.infoPromo.cantidadSecundario);
+                        infoArticuloSecundario.precioConIva = cesta.lista[i].promocion.infoPromo.precioRealSecundario; // /(cesta.lista[i].promocion.infoPromo.unidadesOferta*cesta.lista[i].promocion.infoPromo.cantidadSecundario);
                         cesta.tiposIva = construirObjetoIvas(infoArticuloSecundario, cesta.lista[i].promocion.infoPromo.unidadesOferta*cesta.lista[i].promocion.infoPromo.cantidadSecundario, cesta.tiposIva);
                     }
                     else {
@@ -351,6 +346,23 @@ export class CestaClase {
             
         }
         return cesta;
+    }
+
+    async borrarArticulosCesta(idCesta: number) {
+      const cestaActual = await this.getCesta(idCesta);
+      const vacia = this.nuevaCestaVacia();
+      cestaActual.lista = vacia.lista;
+      cestaActual.regalo = false;
+      cestaActual.tiposIva = vacia.tiposIva;
+      return this.setCesta(cestaActual).then((res) => {
+        if (res) {
+          return cestaActual;
+        }
+        return false;
+      }).catch((err) => {
+        console.log(err);
+        return false;
+      });
     }
 }
 

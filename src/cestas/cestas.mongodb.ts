@@ -32,13 +32,14 @@ export async function borrarCesta(idCesta: number) {
     return resultado;
 }
 
+/* Reemplaza una cesta o la crea nueva si no existe */
 export async function setCesta(cesta: CestasInterface) {
     const database = (await conexion).db('tocgame');
     const unaCesta = database.collection('cestas');
     const resultado = await unaCesta.replaceOne({_id: cesta._id}, {
         tiposIva: cesta.tiposIva,
-        nombre: cesta.nombre,
         lista: cesta.lista,
+        nombreCesta: (cesta.nombreCesta != undefined || cesta.nombreCesta != '') ? (cesta.nombreCesta) : ('PRINCIPAL'),
         regalo: (cesta.regalo != undefined) ? (cesta.regalo): (false)
     }, {upsert: true});
     

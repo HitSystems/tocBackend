@@ -6,6 +6,7 @@ import { parametrosInstance } from "../parametros/parametros.clase";
 import { movimientosInstance } from "../movimientos/movimientos.clase";
 import { articulosInstance } from "../articulos/articulos.clase";
 import axios from "axios";
+import { clienteInstance } from "../clientes/clientes.clase";
 
 export class TicketsClase {
 
@@ -52,6 +53,7 @@ export class TicketsClase {
                     });
                 }
                 articulosInstance.setEstadoTarifaEspecial(false);
+                clienteInstance.setEstadoClienteVIP(false);
                 return true;
             } else {
                 return false;
@@ -91,6 +93,8 @@ export class TicketsClase {
             },
             enviado: false,
             enTransito: false,
+            intentos: 0,
+            comentario: '',
             regalo: (cesta.regalo == true && idCliente != '' && idCliente != null) ? (true): (false)
         }
 
@@ -138,6 +142,8 @@ export class TicketsClase {
             },
             enviado: false,
             enTransito: false,
+            intentos: 0,
+            comentario: '',
             regalo: (cesta.regalo == true && idCliente != '' && idCliente != null) ? (true): (false)
         }
 
@@ -186,7 +192,9 @@ export class TicketsClase {
                 ciudad: infoClienteVip.ciudad
             },
             enTransito: false,
-            enviado: false
+            enviado: false,
+            intentos: 0,
+            comentario: ''
         }
 
         if (await this.insertarTicket(objTicket)) {
@@ -234,7 +242,9 @@ export class TicketsClase {
                 ciudad: ''
             },
             enTransito: false,
-            enviado: false
+            enviado: false,
+            intentos: 0,
+            comentario: ''
         }
 
         if (await this.insertarTicket(objTicket)) {

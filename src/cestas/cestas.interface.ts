@@ -1,6 +1,5 @@
 export interface CestasInterface {
     _id: number,
-    nombre: string,
     tiposIva: {
         base1: number,
         base2: number,
@@ -22,14 +21,16 @@ export interface CestasInterface {
             _id: string,
             esPromo: boolean,
             infoPromo?: {
-                idPrincipal?: number,
-                cantidadPrincipal?: number,
-                idSecundario?: number,
-                cantidadSecundario?: number,
-                precioRealPrincipal?: number,
-                precioRealSecundario?: number,
-                unidadesOferta?: number
+                idPrincipal: number,
+                cantidadPrincipal: number,
+                idSecundario: number,
+                cantidadSecundario: number,
+                precioRealPrincipal: number,
+                precioRealSecundario: number,
+                unidadesOferta: number,
+                tipoPromo: string
             }
         }
-    }[];
+    }[],
+    nombreCesta?: string;
 }

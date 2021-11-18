@@ -78,6 +78,8 @@ export class SocketGateway{
             },
             enviado: false,
             enTransito: false,
+            intentos: 0,
+            comentario: '',
             regalo: (cesta.regalo == true && idClienteFinal != '' && idClienteFinal != null) ? (true): (false)
         }
         

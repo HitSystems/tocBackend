@@ -16,6 +16,21 @@ export async function getTicketsIntervalo(inicioTime: number, finalTime: number)
     return resultado;
 }
 
+export async function getTickets(): Promise<any> {
+    const database = (await conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    // Bloquear sincro
+    var resultado = await (await tickets.find({ enviado: false, enTransito: false }, { limit: 20 })).toArray();
+    if (resultado.length > 0) {
+        for (let i = 0; i < resultado.length; i++) {
+            resultado[i].enTransito = true;
+        }
+        tickets.insertMany(resultado, );
+    } else {
+        return [];
+    }
+}
+
 export async function getDedudaDeliveroo(inicioTime: number, finalTime: number) {
     const database = (await conexion).db('tocgame');
     const tickets = database.collection('tickets');

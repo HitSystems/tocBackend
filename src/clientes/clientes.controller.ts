@@ -39,6 +39,7 @@ export class ClientesController {
                 if (res.data.articulosEspeciales != undefined) { // Tiene tarifa especial
                     /* Añadir articulosTarifaEspecial a Mongo */
                     articulosInstance.setEstadoTarifaEspecial(true);
+                    clienteInstance.setEstadoClienteVIP(true);
                     return articulosInstance.insertarArticulos(res.data.articulosEspeciales, true).then((resInsertArtEspecial) => {
                         if (resInsertArtEspecial) {
                             return { error: false, info: res.data.info };

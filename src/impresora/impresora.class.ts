@@ -26,7 +26,6 @@ function permisosImpresora() {
     } catch(err) {
         console.log(err);
     }
-
 }
 
 /* Función auxiliar */

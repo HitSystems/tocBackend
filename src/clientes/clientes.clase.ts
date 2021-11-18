@@ -4,6 +4,7 @@ import axios from 'axios';
 import { parametrosInstance } from 'src/parametros/parametros.clase';
 
 export class Clientes {
+    private clienteVip: boolean = false;
     /* Busca tanto nombres como tarjeta cliente */
     buscar(cadena: string) {
         return schClientes.buscar(cadena).then((res: ClientesInterface[]) => {
@@ -48,6 +49,14 @@ export class Clientes {
             console.log(err);
             return 0;
         });
+    }
+
+    setEstadoClienteVIP(nuevoEstado: boolean) {
+        this.clienteVip = nuevoEstado;
+    }
+
+    getEstadoClienteVIP() {
+        return this.clienteVip;
     }
 }
 export const clienteInstance = new Clientes();

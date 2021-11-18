@@ -34,14 +34,6 @@ export class Articulos {
             return false;
         });
     }
-
-    async getSuplementosArticulo(idArticulo: number) {
-        return await schArticulos.getSuplementosArticulo(idArticulo);
-    }
-
-    async getInfoSuplemento(idArticulo: number, idSuplemento: number) {
-        return await schArticulos.getInfoSuplemento(idArticulo, idSuplemento);
-    }
 }
 const articulosInstance = new Articulos();
 export { articulosInstance };

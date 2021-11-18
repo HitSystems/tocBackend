@@ -1,5 +1,6 @@
 // 100%
 
+import { clienteInstance } from "../clientes/clientes.clase";
 import { articulosInstance } from "../articulos/articulos.clase";
 import {cestas} from "../cestas/cestas.clase";
 import { CestasInterface } from "../cestas/cestas.interface";
@@ -83,31 +84,33 @@ export class OfertasClase {
     async buscarOfertas(unaCesta: CestasInterface, viejoIva): Promise<CestasInterface> {
         var hayOferta = false;
         unaCesta = this.deshacerOfertas(unaCesta); //ahora no hace nada
-        for(let i = 0; i < this.promociones.length; i++)
-        {
-            for(let j = 0; j < this.promociones[i].principal.length; j++)
+        if (clienteInstance.getEstadoClienteVIP() == false) {
+            for(let i = 0; i < this.promociones.length; i++)
             {
-                let preguntaPrincipal = this.existeArticuloParaOfertaEnCesta(unaCesta, this.promociones[i].principal[j]._id, this.promociones[i].cantidadPrincipal)
-                if(this.promociones[i].principal[j]._id === -1 || preguntaPrincipal >= 0)
+                for(let j = 0; j < this.promociones[i].principal.length; j++)
                 {
-                    for(let z = 0; z < this.promociones[i].secundario.length; z++)
+                    let preguntaPrincipal = this.existeArticuloParaOfertaEnCesta(unaCesta, this.promociones[i].principal[j]._id, this.promociones[i].cantidadPrincipal)
+                    if(this.promociones[i].principal[j]._id === -1 || preguntaPrincipal >= 0)
                     {
-                        let preguntaSecundario = this.existeArticuloParaOfertaEnCesta(unaCesta, this.promociones[i].secundario[z]._id, this.promociones[i].cantidadSecundario);
-                        if(this.promociones[i].secundario[z]._id === -1 || preguntaSecundario >= 0)
+                        for(let z = 0; z < this.promociones[i].secundario.length; z++)
                         {
-                            unaCesta = await this.teLoAplicoTodo(this.promociones[i].cantidadPrincipal, this.promociones[i].cantidadSecundario, unaCesta, preguntaPrincipal, preguntaSecundario, this.promociones[i].principal[j]._id, this.promociones[i].secundario[z]._id, this.promociones[i].precioFinal, this.promociones[i]._id);
-                            hayOferta = true;
-                            break;
+                            let preguntaSecundario = this.existeArticuloParaOfertaEnCesta(unaCesta, this.promociones[i].secundario[z]._id, this.promociones[i].cantidadSecundario);
+                            if(this.promociones[i].secundario[z]._id === -1 || preguntaSecundario >= 0)
+                            {
+                                unaCesta = await this.teLoAplicoTodo(this.promociones[i].cantidadPrincipal, this.promociones[i].cantidadSecundario, unaCesta, preguntaPrincipal, preguntaSecundario, this.promociones[i].principal[j]._id, this.promociones[i].secundario[z]._id, this.promociones[i].precioFinal, this.promociones[i]._id);
+                                hayOferta = true;
+                                break;
+                            }
                         }
                     }
+                   
                 }
-               
             }
-        }
-        if(hayOferta)
-        {
-            unaCesta.tiposIva = viejoIva; //No se suma IVA en la promoción para calcularlo en la siguiente línea.
-            unaCesta = await cestas.recalcularIvas(unaCesta);
+            if(hayOferta)
+            {
+                unaCesta.tiposIva = viejoIva; //No se suma IVA en la promoción para calcularlo en la siguiente línea.
+                unaCesta = await cestas.recalcularIvas(unaCesta);
+            }
         }
 
         cestas.setCesta(unaCesta);
@@ -134,7 +137,8 @@ export class OfertasClase {
                         cantidadSecundario: cantidadSecundario,
                         precioRealPrincipal: dtoAplicado.precioRealPrincipal,
                         precioRealSecundario: dtoAplicado.precioRealSecundario,
-                        unidadesOferta: unidades
+                        unidadesOferta: unidades,
+                        tipoPromo: 'COMBO'
                     }
                 }
             });
@@ -161,7 +165,8 @@ export class OfertasClase {
                         cantidadSecundario: 0, //si es 0 no existe
                         precioRealPrincipal: dtoAplicado.precioRealPrincipal,
                         precioRealSecundario: 0,
-                        unidadesOferta: unidades
+                        unidadesOferta: unidades,
+                        tipoPromo: 'INDIVIDUAL'
                     }
                 }
             });
