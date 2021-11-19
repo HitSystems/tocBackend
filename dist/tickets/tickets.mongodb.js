@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nuevoTicket = exports.getUltimoTicket = exports.getTotalTkrs = exports.getDedudaGlovo = exports.getDedudaDeliveroo = exports.getTicketsIntervalo = exports.getTicketByID = void 0;
+exports.nuevoTicket = exports.getUltimoTicket = exports.getTotalTkrs = exports.getDedudaGlovo = exports.getDedudaDeliveroo = exports.getTickets = exports.getTicketsIntervalo = exports.getTicketByID = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getTicketByID(idTicket) {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -16,6 +16,21 @@ async function getTicketsIntervalo(inicioTime, finalTime) {
     return resultado;
 }
 exports.getTicketsIntervalo = getTicketsIntervalo;
+async function getTickets() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    var resultado = await (await tickets.find({ enviado: false, enTransito: false }, { limit: 20 })).toArray();
+    if (resultado.length > 0) {
+        for (let i = 0; i < resultado.length; i++) {
+            resultado[i].enTransito = true;
+        }
+        tickets.insertMany(resultado);
+    }
+    else {
+        return [];
+    }
+}
+exports.getTickets = getTickets;
 async function getDedudaDeliveroo(inicioTime, finalTime) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const tickets = database.collection('tickets');

@@ -112,6 +112,7 @@ export class CestaClase {
   /* Guarda la cesta en Mongo */
   setCesta(cesta: CestasInterface): Promise<boolean> {
     for(let i = 0; i < cesta.lista.length; i++) {
+      console.log("Observa: ", typeof cesta.lista[i].subtotal);
       cesta.lista[i].subtotal = Number(cesta.lista[i].subtotal.toFixed(2));
     }
     return schCestas.setCesta(cesta).then((res) => {
@@ -226,8 +227,9 @@ export class CestaClase {
                     }
                     else
                     {
-                        miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
-                        miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
+                      console.log("EO: ", infoAPeso);
+                      miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
+                      miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
                     }  
                    
                     encontrado = true;
@@ -268,6 +270,7 @@ export class CestaClase {
 
     async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number, unidades: number = 1) {
         var cestaRetornar: CestasInterface = null;
+        console.log("LAL: ", infoAPeso);
         if(cajaInstance.cajaAbierta()) {
           
             try {

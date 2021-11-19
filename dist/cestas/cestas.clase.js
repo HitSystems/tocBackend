@@ -6,6 +6,7 @@ const funciones_1 = require("../funciones/funciones");
 const articulos_clase_1 = require("../articulos/articulos.clase");
 const promociones_clase_1 = require("../promociones/promociones.clase");
 const caja_clase_1 = require("../caja/caja.clase");
+const clientes_clase_1 = require("../clientes/clientes.clase");
 class CestaClase {
     constructor() {
         schCestas.getUnaCesta().then((respuesta) => {
@@ -30,7 +31,6 @@ class CestaClase {
                 return cesta;
             }
             else {
-                console.log("Entro aquí");
                 const nueva = this.nuevaCestaVacia();
                 return this.setCesta(nueva).then((resultado) => {
                     if (resultado) {
@@ -62,11 +62,9 @@ class CestaClase {
             });
         });
     }
-    nuevaCestaVacia(nombreCesta = 'Principal') {
-        console.log(nombreCesta);
+    nuevaCestaVacia() {
         const nuevaCesta = {
             _id: Date.now(),
-            nombre: nombreCesta,
             tiposIva: {
                 base1: 0,
                 base2: 0,
@@ -80,11 +78,6 @@ class CestaClase {
             },
             lista: []
         };
-        return nuevaCesta;
-    }
-    async crearNuevaCesta(nombreCesta) {
-        const nuevaCesta = await this.nuevaCestaVacia(nombreCesta);
-        this.setCesta(nuevaCesta);
         return nuevaCesta;
     }
     getTodasCestas() {
@@ -105,11 +98,27 @@ class CestaClase {
     }
     setCesta(cesta) {
         for (let i = 0; i < cesta.lista.length; i++) {
+            console.log("Observa: ", typeof cesta.lista[i].subtotal);
             cesta.lista[i].subtotal = Number(cesta.lista[i].subtotal.toFixed(2));
         }
         return schCestas.setCesta(cesta).then((res) => {
             if (res.acknowledged) {
                 return true;
+            }
+            else {
+                return false;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    async crearNuevaCesta(nombreCesta) {
+        const nuevaCesta = this.nuevaCestaVacia();
+        nuevaCesta.nombreCesta = nombreCesta;
+        return this.setCesta(nuevaCesta).then((res) => {
+            if (res) {
+                return nuevaCesta;
             }
             else {
                 return false;
@@ -127,32 +136,22 @@ class CestaClase {
                     break;
                 }
             }
-            this.setCesta(cesta).then((result) => {
-                if (result) {
-                    return cesta;
-                }
-                else {
+            return this.recalcularIvas(cesta).then((cestaRecalculada) => {
+                return this.setCesta(cestaRecalculada).then((result) => {
+                    if (result) {
+                        return cestaRecalculada;
+                    }
+                    else {
+                        return false;
+                    }
+                }).catch((err) => {
+                    console.log(err);
                     return false;
-                }
+                });
             }).catch((err) => {
                 console.log(err);
                 return false;
             });
-            return cesta;
-        }).catch((err) => {
-            console.log(err);
-            return false;
-        });
-    }
-    async borrarArticulosCesta(idCesta) {
-        const cestaActual = await this.getCesta(idCesta);
-        cestaActual.lista = [];
-        for (let key in cestaActual.tiposIva)
-            cestaActual.tiposIva[key] = 0;
-        return this.setCesta(cestaActual).then((result) => {
-            if (result)
-                return cestaActual;
-            return false;
         }).catch((err) => {
             console.log(err);
             return false;
@@ -199,6 +198,7 @@ class CestaClase {
                         miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva);
                     }
                     else {
+                        console.log("EO: ", infoAPeso);
                         miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
                         miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva, infoAPeso);
                     }
@@ -230,20 +230,14 @@ class CestaClase {
         const temporal = await promociones_clase_1.ofertas.buscarOfertas(miCesta, viejoIva);
         return temporal;
     }
-    async addItem(idArticulo, idBoton, aPeso, infoAPeso, idCesta, idSuplemento, unidades = 1) {
+    async addItem(idArticulo, idBoton, aPeso, infoAPeso, idCesta, unidades = 1) {
         var cestaRetornar = null;
-        let precioSuplemento = 0;
+        console.log("LAL: ", infoAPeso);
         if (caja_clase_1.cajaInstance.cajaAbierta()) {
             try {
                 if (!aPeso) {
                     let infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
                     if (infoArticulo) {
-                        if (idSuplemento !== undefined) {
-                            const consultaSumplemento = (await articulos_clase_1.articulosInstance.getInfoSuplemento(idArticulo, idSuplemento));
-                            const infoSuplemento = consultaSumplemento.suplementos.filter(x => x.id === idSuplemento);
-                            precioSuplemento = infoSuplemento[0].precio;
-                        }
-                        infoArticulo.precioConIva += precioSuplemento;
                         cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
                     }
                     else {
@@ -288,10 +282,10 @@ class CestaClase {
             else if (cesta.lista[i].promocion.esPromo === true) {
                 if (cesta.lista[i].nombre == 'Oferta combo') {
                     let infoArticuloPrincipal = await articulos_clase_1.articulosInstance.getInfoArticulo(cesta.lista[i].promocion.infoPromo.idPrincipal);
-                    infoArticuloPrincipal.precioConIva = cesta.lista[i].promocion.infoPromo.precioRealPrincipal / (cesta.lista[i].promocion.infoPromo.unidadesOferta * cesta.lista[i].promocion.infoPromo.cantidadPrincipal);
+                    infoArticuloPrincipal.precioConIva = cesta.lista[i].promocion.infoPromo.precioRealPrincipal;
                     cesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticuloPrincipal, cesta.lista[i].promocion.infoPromo.unidadesOferta * cesta.lista[i].promocion.infoPromo.cantidadPrincipal, cesta.tiposIva);
                     let infoArticuloSecundario = await articulos_clase_1.articulosInstance.getInfoArticulo(cesta.lista[i].promocion.infoPromo.idSecundario);
-                    infoArticuloSecundario.precioConIva = cesta.lista[i].promocion.infoPromo.precioRealSecundario / (cesta.lista[i].promocion.infoPromo.unidadesOferta * cesta.lista[i].promocion.infoPromo.cantidadSecundario);
+                    infoArticuloSecundario.precioConIva = cesta.lista[i].promocion.infoPromo.precioRealSecundario;
                     cesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticuloSecundario, cesta.lista[i].promocion.infoPromo.unidadesOferta * cesta.lista[i].promocion.infoPromo.cantidadSecundario, cesta.tiposIva);
                 }
                 else {
@@ -304,6 +298,22 @@ class CestaClase {
             }
         }
         return cesta;
+    }
+    async borrarArticulosCesta(idCesta) {
+        const cestaActual = await this.getCesta(idCesta);
+        const vacia = this.nuevaCestaVacia();
+        cestaActual.lista = vacia.lista;
+        cestaActual.regalo = false;
+        cestaActual.tiposIva = vacia.tiposIva;
+        return this.setCesta(cestaActual).then((res) => {
+            if (res) {
+                return cestaActual;
+            }
+            return false;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
     }
 }
 exports.CestaClase = CestaClase;

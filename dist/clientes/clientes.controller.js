@@ -48,6 +48,7 @@ let ClientesController = class ClientesController {
             if (res.data.error === false) {
                 if (res.data.articulosEspeciales != undefined) {
                     articulos_clase_1.articulosInstance.setEstadoTarifaEspecial(true);
+                    clientes_clase_1.clienteInstance.setEstadoClienteVIP(true);
                     return articulos_clase_1.articulosInstance.insertarArticulos(res.data.articulosEspeciales, true).then((resInsertArtEspecial) => {
                         if (resInsertArtEspecial) {
                             return { error: false, info: res.data.info };

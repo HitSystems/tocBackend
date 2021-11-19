@@ -1,3 +1,3 @@
 export declare class PruebasController {
-    test(params: any): Promise<import("axios").AxiosResponse<unknown, any>>;
+    test(params: any): void;
 }

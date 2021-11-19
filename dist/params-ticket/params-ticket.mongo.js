@@ -5,7 +5,7 @@ const mongodb_1 = require("../conexion/mongodb");
 async function insertarParametrosTicket(data) {
     if (borrarInfoTicket()) {
         const database = (await mongodb_1.conexion).db('tocgame');
-        const paramTickets = database.collection('parametros-ticket');
+        const paramTickets = database.collection('parametros-tickets');
         const resultado = await paramTickets.insertMany(data);
         return resultado.acknowledged;
     }
@@ -21,7 +21,7 @@ async function insertarParametrosTicket(data) {
 exports.insertarParametrosTicket = insertarParametrosTicket;
 async function getParamsTicket() {
     const database = (await mongodb_1.conexion).db('tocgame');
-    const paramTickets = database.collection('parametros-ticket');
+    const paramTickets = database.collection('parametros-tickets');
     const arrayResult = await (await paramTickets.find({})).toArray();
     return arrayResult;
 }
@@ -29,7 +29,7 @@ exports.getParamsTicket = getParamsTicket;
 async function borrarInfoTicket() {
     try {
         const database = (await mongodb_1.conexion).db('tocgame');
-        const paramTickets = database.collection('parametros-ticket');
+        const paramTickets = database.collection('parametros-tickets');
         const resultado = await paramTickets.drop();
         return resultado;
     }

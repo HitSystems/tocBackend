@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CestasController = void 0;
 const common_1 = require("@nestjs/common");
 const cestas_clase_1 = require("./cestas.clase");
-const articulos_clase_1 = require("../articulos/articulos.clase");
 let CestasController = class CestasController {
     borrarCesta(params) {
         return cestas_clase_1.cestas.borrarCesta(params.id).then((res) => {
@@ -78,32 +77,20 @@ let CestasController = class CestasController {
         });
     }
     borrarArticulosCesta(params) {
-        return cestas_clase_1.cestas.borrarArticulosCesta(params.id).then((res) => {
-            return {
-                okey: true,
-                cestaNueva: res,
-            };
-        }).catch((err) => {
-            console.log(err);
-            return {
-                okey: false,
-                error: 'Error en borrarArticulosCesta'
-            };
-        });
-    }
-    getCesta(params) {
-        console.log(params.id);
-        if (params.id === -1) {
-            return cestas_clase_1.cestas.getCestaRandom().then((res) => {
-                return res;
-            }).catch((err) => {
-                return {
-                    okey: false,
-                    error: "Error en borrarItemCesta"
-                };
+        if (params.idCesta != undefined && params.idCesta != null) {
+            return cestas_clase_1.cestas.borrarArticulosCesta(params.idCesta).then((res) => {
+                if (res) {
+                    return { error: false, info: res };
+                }
+                return { error: true, mensaje: 'Backend: Error en cestas/borrarArticulosCesta >' };
             });
         }
-        return cestas_clase_1.cestas.getCesta(params.id).then((res) => {
+        else {
+            return { error: true, mensaje: 'Backend: Error cestas/borrarArticulosCesta faltan datos' };
+        }
+    }
+    getCesta() {
+        return cestas_clase_1.cestas.getCestaRandom().then((res) => {
             return res;
         }).catch((err) => {
             return {
@@ -112,62 +99,72 @@ let CestasController = class CestasController {
             };
         });
     }
+    getCestaByID(params) {
+        console.log(params.idCesta);
+        if (params.idCesta != undefined && params.idCesta != null) {
+            if (params.idCesta == -1) {
+                return cestas_clase_1.cestas.getCestaRandom().then((res) => {
+                    return { error: false, info: res };
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
+                });
+            }
+            else {
+                return cestas_clase_1.cestas.getCesta(params.idCesta).then((res) => {
+                    if (res) {
+                        return { error: false, info: res };
+                    }
+                    console.log(res);
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+                });
+            }
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID FALTAN DATOS' };
+        }
+    }
+    crearCesta(params) {
+        if (params.nombreCesta != undefined && params.nombreCesta != null) {
+            return cestas_clase_1.cestas.crearNuevaCesta(params.nombreCesta).then((res) => {
+                if (res) {
+                    return { error: false, info: res };
+                }
+                else {
+                    return { error: true, mensaje: 'Backend: Error en cestas/crearCesta. No se ha podido crear la nueva cesta' };
+                }
+            });
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Error en cestas/crearCesta FALTAN DATOS' };
+        }
+    }
+    getCestas() {
+        return cestas_clase_1.cestas.getTodasCestas().then((res) => {
+            return { error: false, info: res };
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en cestas/getCestas CATCH' };
+        });
+    }
     setUnidadesAplicar(params) {
         cestas_clase_1.cestas.setUnidadesAplicar(params.unidades);
         return { okey: true };
     }
     clickTeclaArticulo(params) {
-        return articulos_clase_1.articulosInstance.getSuplementosArticulo(params.idArticulo).then((res) => {
-            if (res === null || params.suplementosOk) {
-                console.log(params.suplemento);
-                return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta, params.suplemento, params.unidades).then((res) => {
-                    return {
-                        error: false,
-                        bloqueado: false,
-                        cesta: res
-                    };
-                }).catch((err) => {
-                    return {
-                        error: true,
-                        bloqueado: false
-                    };
-                });
-            }
-            else {
-                return {
-                    error: false,
-                    bloqueado: false,
-                    modalSuplementos: true,
-                    suplementos: res.suplementos,
-                };
-            }
-        });
-    }
-    crearCesta(params) {
-        return cestas_clase_1.cestas.crearNuevaCesta(params.nombreCesta).then((res) => {
+        return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoAPeso, params.idCesta, params.unidades).then((res) => {
             return {
                 error: false,
                 bloqueado: false,
-                cesta: res,
+                cesta: res
             };
         }).catch((err) => {
             return {
                 error: true,
-                bloqueado: false,
-            };
-        });
-    }
-    getCestas() {
-        return cestas_clase_1.cestas.getTodasCestas().then((res) => {
-            return {
-                error: false,
-                bloqueado: false,
-                cestas: res,
-            };
-        }).catch((err) => {
-            return {
-                error: true,
-                bloqueado: false,
+                bloqueado: false
             };
         });
     }
@@ -224,11 +221,30 @@ __decorate([
 ], CestasController.prototype, "borrarArticulosCesta", null);
 __decorate([
     (0, common_1.Post)('getCesta'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "getCesta", null);
+__decorate([
+    (0, common_1.Post)('getCestaByID'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], CestasController.prototype, "getCesta", null);
+], CestasController.prototype, "getCestaByID", null);
+__decorate([
+    (0, common_1.Post)('crearCesta'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "crearCesta", null);
+__decorate([
+    (0, common_1.Get)('getCestas'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "getCestas", null);
 __decorate([
     (0, common_1.Post)('setUnidadesAplicar'),
     __param(0, (0, common_1.Body)()),
@@ -243,19 +259,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "clickTeclaArticulo", null);
-__decorate([
-    (0, common_1.Post)('crearCesta'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], CestasController.prototype, "crearCesta", null);
-__decorate([
-    (0, common_1.Get)('getCestas'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], CestasController.prototype, "getCestas", null);
 __decorate([
     (0, common_1.Post)('regalarProducto'),
     __param(0, (0, common_1.Body)()),

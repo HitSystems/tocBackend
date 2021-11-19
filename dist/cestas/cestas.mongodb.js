@@ -35,8 +35,8 @@ async function setCesta(cesta) {
     const unaCesta = database.collection('cestas');
     const resultado = await unaCesta.replaceOne({ _id: cesta._id }, {
         tiposIva: cesta.tiposIva,
-        nombre: cesta.nombre,
         lista: cesta.lista,
+        nombreCesta: (cesta.nombreCesta != undefined || cesta.nombreCesta != '') ? (cesta.nombreCesta) : ('PRINCIPAL'),
         regalo: (cesta.regalo != undefined) ? (cesta.regalo) : (false)
     }, { upsert: true });
     return resultado;

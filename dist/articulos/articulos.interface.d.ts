@@ -6,9 +6,4 @@ export interface ArticulosInterface {
     nombre: string;
     familia: string;
     esSumable: boolean;
-    suplementos?: {
-        id: number;
-        nombre: string;
-        precio: number;
-    }[];
 }

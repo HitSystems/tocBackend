@@ -22,15 +22,49 @@ export declare class CestasController {
         error: string;
     }>;
     borrarArticulosCesta(params: any): Promise<{
-        okey: boolean;
-        cestaNueva: boolean | import("./cestas.interface").CestasInterface;
+        error: boolean;
+        info: true | import("./cestas.interface").CestasInterface;
+        mensaje?: undefined;
     } | {
+        error: boolean;
+        mensaje: string;
+        info?: undefined;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
+    getCesta(): Promise<import("./cestas.interface").CestasInterface | {
         okey: boolean;
         error: string;
     }>;
-    getCesta(params: any): Promise<import("./cestas.interface").CestasInterface | {
-        okey: boolean;
-        error: string;
+    getCestaByID(params: any): Promise<{
+        error: boolean;
+        info: import("./cestas.interface").CestasInterface;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
+    crearCesta(params: any): Promise<{
+        error: boolean;
+        info: true | import("./cestas.interface").CestasInterface;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+        info?: undefined;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
+    getCestas(): Promise<{
+        error: boolean;
+        info: import("./cestas.interface").CestasInterface[];
+    } | {
+        error: boolean;
+        mensaje: string;
     }>;
     setUnidadesAplicar(params: any): {
         okey: boolean;
@@ -39,22 +73,6 @@ export declare class CestasController {
         error: boolean;
         bloqueado: boolean;
         cesta: import("./cestas.interface").CestasInterface;
-    } | {
-        error: boolean;
-        bloqueado: boolean;
-    }>;
-    crearCesta(params: any): Promise<{
-        error: boolean;
-        bloqueado: boolean;
-        cesta: import("./cestas.interface").CestasInterface;
-    } | {
-        error: boolean;
-        bloqueado: boolean;
-    }>;
-    getCestas(): Promise<{
-        error: boolean;
-        bloqueado: boolean;
-        cestas: import("./cestas.interface").CestasInterface[];
     } | {
         error: boolean;
         bloqueado: boolean;

@@ -5,6 +5,9 @@ const schClientes = require("./clientes.mongodb");
 const axios_1 = require("axios");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 class Clientes {
+    constructor() {
+        this.clienteVip = false;
+    }
     buscar(cadena) {
         return schClientes.buscar(cadena).then((res) => {
             if (res.length > 0) {
@@ -47,6 +50,12 @@ class Clientes {
             console.log(err);
             return 0;
         });
+    }
+    setEstadoClienteVIP(nuevoEstado) {
+        this.clienteVip = nuevoEstado;
+    }
+    getEstadoClienteVIP() {
+        return this.clienteVip;
     }
 }
 exports.Clientes = Clientes;

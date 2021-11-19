@@ -14,11 +14,31 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArticulosController = void 0;
 const common_1 = require("@nestjs/common");
+const clientes_clase_1 = require("../clientes/clientes.clase");
 const articulos_clase_1 = require("./articulos.clase");
 let ArticulosController = class ArticulosController {
     getArticulo(params) {
-        const lol = articulos_clase_1.articulosInstance.getInfoArticulo(params.idArticulo);
-        return lol;
+        return articulos_clase_1.articulosInstance.getInfoArticulo(params.idArticulo).then((res) => {
+            if (res != null) {
+                return { error: false, info: res };
+            }
+            else {
+                return { error: true, mensaje: 'Backend: Error, el articulo es null' };
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en articulos/getArticulo catch' };
+        });
+    }
+    setEstadoTarifaEspecial(params) {
+        if (params.nuevoEstado != undefined && params.nuevoEstado != null) {
+            articulos_clase_1.articulosInstance.setEstadoTarifaEspecial(params.nuevoEstado);
+            clientes_clase_1.clienteInstance.setEstadoClienteVIP(false);
+            return { error: false };
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Faltan datos en articulos/setEstadoTarifaVIP' };
+        }
     }
 };
 __decorate([
@@ -28,6 +48,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ArticulosController.prototype, "getArticulo", null);
+__decorate([
+    (0, common_1.Post)('setEstadoTarifaVIP'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ArticulosController.prototype, "setEstadoTarifaEspecial", null);
 ArticulosController = __decorate([
     (0, common_1.Controller)('articulos')
 ], ArticulosController);
