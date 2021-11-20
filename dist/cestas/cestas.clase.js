@@ -76,7 +76,8 @@ class CestaClase {
                 importe2: 0,
                 importe3: 0
             },
-            lista: []
+            lista: [],
+            nombreCesta: 'PRINCIPAL'
         };
         return nuevaCesta;
     }
