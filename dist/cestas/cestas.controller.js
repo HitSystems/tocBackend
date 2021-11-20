@@ -100,7 +100,6 @@ let CestasController = class CestasController {
         });
     }
     getCestaByID(params) {
-        console.log("Mirá loco: ", params.idCesta);
         if (params.idCesta != undefined && params.idCesta != null) {
             if (params.idCesta == -1) {
                 return cestas_clase_1.cestas.getCestaRandom().then((res) => {
