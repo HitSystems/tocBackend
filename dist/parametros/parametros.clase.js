@@ -50,6 +50,14 @@ class ParametrosClase {
     getParametros() {
         return this.parametros;
     }
+    getEspecialParametros() {
+        return schParametros.getParametros().then((infoParams) => {
+            return infoParams;
+        }).catch((err) => {
+            console.log(err);
+            return null;
+        });
+    }
     setParametros(params) {
         this.parametros = params;
         return schParametros.setParametros(this.parametros).then((res) => {

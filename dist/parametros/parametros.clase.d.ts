@@ -3,6 +3,7 @@ export declare class ParametrosClase {
     private parametros;
     constructor();
     getParametros(): ParametrosInterface;
+    getEspecialParametros(): Promise<ParametrosInterface | null>;
     setParametros(params: ParametrosInterface): Promise<boolean>;
     todoInstalado(): boolean;
     checkParametrosOK(params: ParametrosInterface): boolean;

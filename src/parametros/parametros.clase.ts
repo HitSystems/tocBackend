@@ -55,6 +55,15 @@ const parametrosVacios: ParametrosInterface = {
         return this.parametros;
     }
 
+    getEspecialParametros(): Promise <ParametrosInterface | null> {
+        return schParametros.getParametros().then((infoParams: ParametrosInterface) => {
+            return infoParams;
+        }).catch((err) => {
+            console.log(err);
+            return null;
+        });
+    }
+
     setParametros(params: ParametrosInterface): Promise<boolean> {
         // this.parametros.licencia = params.licencia;
         // this.parametros.tipoImpresora = params.tipoImpresora;

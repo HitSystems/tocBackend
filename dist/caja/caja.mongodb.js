@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nuevoItemSincroCajas = exports.borrarCaja = exports.setInfoCaja = exports.getMonedas = exports.guardarMonedas = exports.getInfoCaja = void 0;
+exports.getCajaMasAntigua = exports.confirmarCajaHabiaLlegado = exports.confirmarCajaEnviada = exports.nuevoItemSincroCajas = exports.borrarCaja = exports.setInfoCaja = exports.getMonedas = exports.guardarMonedas = exports.getInfoCaja = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getInfoCaja() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -46,4 +46,30 @@ async function nuevoItemSincroCajas(unaCaja) {
     return resultado;
 }
 exports.nuevoItemSincroCajas = nuevoItemSincroCajas;
+async function confirmarCajaEnviada(unaCaja) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const sincroCajas = database.collection('sincro-cajas');
+    const resultado = await sincroCajas.updateOne({ _id: unaCaja._id }, { $set: {
+            "enviado": unaCaja.enviado
+        } });
+    return resultado;
+}
+exports.confirmarCajaEnviada = confirmarCajaEnviada;
+async function confirmarCajaHabiaLlegado(unaCaja) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const sincroCajas = database.collection('sincro-cajas');
+    const resultado = await sincroCajas.updateOne({ _id: unaCaja._id }, { $set: {
+            "enviado": unaCaja.enviado,
+            "comentario": unaCaja.comentario
+        } });
+    return resultado;
+}
+exports.confirmarCajaHabiaLlegado = confirmarCajaHabiaLlegado;
+async function getCajaMasAntigua() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const sincroCajas = database.collection('sincro-cajas');
+    const resultado = await (await sincroCajas.find({ enviado: false }, { sort: { _id: 1 }, limit: 1 })).toArray();
+    return resultado;
+}
+exports.getCajaMasAntigua = getCajaMasAntigua;
 //# sourceMappingURL=caja.mongodb.js.map

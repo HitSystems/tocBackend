@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.nuevoTicket = exports.getUltimoTicket = exports.getTotalTkrs = exports.getDedudaGlovo = exports.getDedudaDeliveroo = exports.getTickets = exports.getTicketsIntervalo = exports.getTicketByID = void 0;
+exports.actualizarComentario = exports.actualizarEstadoTicket = exports.nuevoTicket = exports.getTicketMasAntiguo = exports.getUltimoTicket = exports.getTotalTkrs = exports.getDedudaGlovo = exports.getDedudaDeliveroo = exports.getTickets = exports.getTicketsIntervalo = exports.getTicketByID = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getTicketByID(idTicket) {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -100,6 +100,13 @@ async function getUltimoTicket() {
     return null;
 }
 exports.getUltimoTicket = getUltimoTicket;
+async function getTicketMasAntiguo() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    const resultado = await (await tickets.find({ enviado: false }, { sort: { _id: 1 }, limit: 1 })).toArray();
+    return resultado;
+}
+exports.getTicketMasAntiguo = getTicketMasAntiguo;
 async function nuevoTicket(ticket) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const tickets = database.collection('tickets');
@@ -107,4 +114,25 @@ async function nuevoTicket(ticket) {
     return resultado;
 }
 exports.nuevoTicket = nuevoTicket;
+async function actualizarEstadoTicket(ticket) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    const resultado = tickets.updateOne({ _id: ticket._id }, { $set: {
+            "enviado": ticket.enviado,
+            "intentos": ticket.intentos,
+            "comentario": ticket.comentario
+        } });
+    return resultado;
+}
+exports.actualizarEstadoTicket = actualizarEstadoTicket;
+async function actualizarComentario(ticket) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    const resultado = tickets.updateOne({ _id: ticket._id }, { $set: {
+            "intentos": ticket.intentos,
+            "comentario": ticket.comentario
+        } });
+    return resultado;
+}
+exports.actualizarComentario = actualizarComentario;
 //# sourceMappingURL=tickets.mongodb.js.map

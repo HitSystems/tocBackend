@@ -262,6 +262,28 @@ export class TicketsClase {
         }
         return false;
     }
+
+    getTicketMasAntiguo() {
+        return schTickets.getTicketMasAntiguo();
+    }
+
+    actualizarEstadoTicket(ticket: TicketsInterface) {
+        return schTickets.actualizarEstadoTicket(ticket).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    
+    actualizarComentario(ticket: TicketsInterface) {
+        return schTickets.actualizarComentario(ticket).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 
 export const ticketsInstance = new TicketsClase();

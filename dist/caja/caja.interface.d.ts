@@ -34,6 +34,7 @@ export interface CajaInterface {
     enTransito: boolean;
     totalDatafono3G: number;
     totalClearOne: number;
+    comentario?: string;
 }
 export interface CajaForSincroInterface {
     _id: number;

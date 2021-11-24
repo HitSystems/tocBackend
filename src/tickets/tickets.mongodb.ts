@@ -110,14 +110,43 @@ export async function getUltimoTicket(): Promise<number> {
     return null;
 }
 
+/*  Devuelve el ticket más antiguo con estado enviado = false
+    para enviarlo al servidor
+*/
+export async function getTicketMasAntiguo() {
+    const database = (await conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    const resultado = await (await tickets.find({ enviado: false }, { sort: {_id: 1}, limit: 1 })).toArray();
+    return resultado;
+}
+
 export async function nuevoTicket(ticket: any) {
     const database = (await conexion).db('tocgame');
     const tickets = database.collection('tickets');
     const resultado = tickets.insertOne(ticket);
-
     return resultado;
 }
 
+export async function actualizarEstadoTicket(ticket: TicketsInterface) {
+    const database = (await conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    const resultado = tickets.updateOne({ _id: ticket._id }, { $set: {
+        "enviado": ticket.enviado,
+        "intentos": ticket.intentos,
+        "comentario": ticket.comentario
+    } });
+    return resultado;
+}
+
+export async function actualizarComentario(ticket: TicketsInterface) {
+    const database = (await conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    const resultado = tickets.updateOne({ _id: ticket._id }, { $set: {
+        "intentos": ticket.intentos,
+        "comentario": ticket.comentario
+    } });
+    return resultado;
+}
 
 // export async function getDedudaDeliveroo(inicioTime: number, finalTime: number) {
 //     await 

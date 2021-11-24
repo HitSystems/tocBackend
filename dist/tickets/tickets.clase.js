@@ -259,6 +259,25 @@ class TicketsClase {
         }
         return false;
     }
+    getTicketMasAntiguo() {
+        return schTickets.getTicketMasAntiguo();
+    }
+    actualizarEstadoTicket(ticket) {
+        return schTickets.actualizarEstadoTicket(ticket).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    actualizarComentario(ticket) {
+        return schTickets.actualizarComentario(ticket).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 exports.TicketsClase = TicketsClase;
 exports.ticketsInstance = new TicketsClase();

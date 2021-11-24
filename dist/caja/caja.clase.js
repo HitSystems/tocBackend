@@ -56,6 +56,25 @@ class CajaClase {
             return false;
         });
     }
+    confirmarCajaEnviada(caja) {
+        return schCajas.confirmarCajaEnviada(caja).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    getCajaMasAntigua() {
+        return schCajas.getCajaMasAntigua();
+    }
+    confirmarCajaHabiaLlegado(caja) {
+        return schCajas.confirmarCajaHabiaLlegado(caja).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
     abrirCaja(infoApertura) {
         let cajaNueva = cajaVacia;
         cajaNueva.inicioTime = Date.now();

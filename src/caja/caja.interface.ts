@@ -33,7 +33,8 @@ export interface CajaInterface {
     enviado: boolean,
     enTransito: boolean,
     totalDatafono3G: number,
-    totalClearOne: number
+    totalClearOne: number,
+    comentario?: string
 }
 
 export interface CajaForSincroInterface {

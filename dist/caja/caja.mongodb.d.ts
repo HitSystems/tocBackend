@@ -5,3 +5,6 @@ export declare function getMonedas(tipo: 'APERTURA' | 'CLAUSURA'): Promise<impor
 export declare function setInfoCaja(data: CajaInterface): Promise<import("bson").Document | import("mongodb").UpdateResult>;
 export declare function borrarCaja(): Promise<boolean>;
 export declare function nuevoItemSincroCajas(unaCaja: any): Promise<import("mongodb").InsertOneResult<import("bson").Document>>;
+export declare function confirmarCajaEnviada(unaCaja: CajaInterface): Promise<import("mongodb").UpdateResult>;
+export declare function confirmarCajaHabiaLlegado(unaCaja: CajaInterface): Promise<import("mongodb").UpdateResult>;
+export declare function getCajaMasAntigua(): Promise<import("bson").Document[]>;

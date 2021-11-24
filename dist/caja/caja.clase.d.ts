@@ -2,6 +2,9 @@ import { CajaInterface } from "./caja.interface";
 export declare class CajaClase {
     getInfoCaja(): Promise<CajaInterface>;
     cajaAbierta(): Promise<boolean>;
+    confirmarCajaEnviada(caja: CajaInterface): Promise<boolean>;
+    getCajaMasAntigua(): Promise<import("bson").Document[]>;
+    confirmarCajaHabiaLlegado(caja: CajaInterface): Promise<boolean>;
     abrirCaja(infoApertura: any): Promise<boolean>;
     guardarMonedas(arrayMonedas: any, tipo: 'APERTURA' | 'CLAUSURA'): Promise<boolean>;
     getMonedas(tipo: 'APERTURA' | 'CLAUSURA'): Promise<any>;
