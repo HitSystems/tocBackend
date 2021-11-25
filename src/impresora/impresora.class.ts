@@ -153,7 +153,7 @@ export class Impresora {
                 if(tipoImpresora === 'SERIE')
                 {
                     var device = new escpos.Serial('/dev/usb/lp1', {
-                        baudRate: 115000,
+                        baudRate: 19200,
                         stopBit: 2
                     });
                 }
