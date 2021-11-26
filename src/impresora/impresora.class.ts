@@ -152,7 +152,7 @@ export class Impresora {
             {
                 if(tipoImpresora === 'SERIE')
                 {
-                    var device = new escpos.Serial('/dev/usb/lp1');
+                    var device = new escpos.Serial('/dev/ttyS0');
                 }
             }
     
