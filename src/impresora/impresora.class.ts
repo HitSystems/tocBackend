@@ -152,7 +152,10 @@ export class Impresora {
             {
                 if(tipoImpresora === 'SERIE')
                 {
-                    var device = new escpos.Serial('/dev/ttyS0');
+                    var device = new escpos.Serial('/dev/ttyS0', {
+                        baudRate: 115000,
+                        stopBit: 2
+                    });
                 }
             }
     
