@@ -6,6 +6,7 @@ export declare class TicketsClase {
     insertarTicket(ticket: TicketsInterface): Promise<boolean>;
     crearTicketEfectivo(total: number, idCesta: number, idCliente: string): Promise<boolean>;
     crearTicketDatafono3G(total: number, idCesta: number, idCliente: string): Promise<boolean>;
+    crearTicketTKRS(total: number, totalTkrs: number, idCesta: number, idCliente: string): Promise<boolean>;
     crearTicketDeuda(total: number, idCesta: number, idCliente: string, infoClienteVip: any): Promise<boolean>;
     crearTicketConsumoPersonal(idCesta: number): Promise<boolean>;
     getTicketMasAntiguo(): Promise<import("bson").Document[]>;

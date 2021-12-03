@@ -114,6 +114,22 @@ let TicketsController = class TicketsController {
             return { error: true, mensaje: 'Faltan datos en tickets/crearTicketConsumoPersonal' };
         }
     }
+    crearTicketTKRS(params) {
+        if (params.total != undefined && params.idCesta != undefined && params.idCliente != undefined) {
+            return tickets_clase_1.ticketsInstance.crearTicketTKRS(params.total, params.totalTkrs, params.idCesta, params.idCliente).then((res) => {
+                if (res) {
+                    return { error: false };
+                }
+                return { error: true, mensaje: 'Backend: Error en tickets/crearTicketTKRS' };
+            }).catch((err) => {
+                console.log(err);
+                return { error: true, mensaje: 'Backend: Error en tickets/crearTicketTKRS CATCH' };
+            });
+        }
+        else {
+            return { error: true, mensaje: 'Faltan datos en tickets/crearTicketTKRS' };
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('getTicketsIntervalo'),
@@ -150,6 +166,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TicketsController.prototype, "crearTicketConsumoPersonal", null);
+__decorate([
+    (0, common_1.Post)('crearTicketTKRS'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TicketsController.prototype, "crearTicketTKRS", null);
 TicketsController = __decorate([
     (0, common_1.Controller)('tickets')
 ], TicketsController);

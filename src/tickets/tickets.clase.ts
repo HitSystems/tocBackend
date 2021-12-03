@@ -164,6 +164,63 @@ export class TicketsClase {
         return false;
     }
 
+    async crearTicketTKRS(total: number, totalTkrs: number, idCesta: number, idCliente: string) {
+        const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
+        const nuevoIdTicket = (await this.getUltimoTicket()) + 1;
+        const cesta = await cestas.getCesta(idCesta);
+        if (cesta == null || cesta.lista.length == 0) {
+            console.log("Error, la cesta es null o está vacía");
+            return false;
+        }
+
+        const objTicket: TicketsInterface = {
+            _id: nuevoIdTicket,
+            timestamp: Date.now(),
+            total: total,
+            lista: cesta.lista,
+            tipoPago: "TKRS",
+            idTrabajador: infoTrabajador._id,
+            tiposIva: cesta.tiposIva,
+            cliente: (idCliente != '' && idCliente != null) ? (idCliente) : (null),
+            infoClienteVip: {
+                esVip : false,
+                nif: '',
+                nombre: '',
+                cp: '',
+                direccion: '',
+                ciudad: ''
+            },
+            enviado: false,
+            enTransito: false,
+            intentos: 0,
+            comentario: '',
+            regalo: (cesta.regalo == true && idCliente != '' && idCliente != null) ? (true): (false)
+        }
+
+        if (await this.insertarTicket(objTicket)) {
+            if (await cestas.borrarCesta(idCesta)) {
+                if (await parametrosInstance.setUltimoTicket(objTicket._id)) {
+                    objTicket['cantidadTkrs'] = totalTkrs;
+                    const diferencia = total - totalTkrs;
+                    if(diferencia >= 0) {
+                        movimientosInstance.nuevaSalida(objTicket.total, `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_SIN_EXCESO', true, objTicket._id);
+                    } else {
+                        movimientosInstance.nuevaSalida(Number((diferencia*-1).toFixed(2)), `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_CON_EXCESO', true, objTicket._id);
+                        movimientosInstance.nuevaSalida(objTicket.total, `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_SIN_EXCESO', true, objTicket._id);
+                    }
+                    return true;
+                } else {
+                    console.log("Error no se ha podido cambiar el último id ticket");
+                }
+            } else {
+                console.log("Error, no se ha podido borrar la cesta");
+            }
+        } else {
+            console.log("Error, no se ha podido insertar el ticket");
+        }
+        return false;
+    }
+
     async crearTicketDeuda(total: number, idCesta: number, idCliente: string, infoClienteVip: any) {
         const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
         const nuevoIdTicket = (await this.getUltimoTicket()) + 1;

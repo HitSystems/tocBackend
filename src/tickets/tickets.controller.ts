@@ -124,4 +124,21 @@ export class TicketsController {
     //         }
     //     });
     // }
+
+    @Post('crearTicketTKRS')
+    crearTicketTKRS(@Body() params) {
+        if(params.total != undefined && params.idCesta != undefined && params.idCliente != undefined) {
+            return ticketsInstance.crearTicketTKRS(params.total, params.totalTkrs, params.idCesta, params.idCliente).then((res) => {
+                if (res) {
+                    return { error: false }
+                }
+                return { error: true, mensaje: 'Backend: Error en tickets/crearTicketTKRS' };
+            }).catch((err) => {
+                console.log(err);
+                return { error: true, mensaje: 'Backend: Error en tickets/crearTicketTKRS CATCH' };
+            })
+        } else {
+            return { error: true, mensaje: 'Faltan datos en tickets/crearTicketTKRS' };
+        }
+    }
 }
