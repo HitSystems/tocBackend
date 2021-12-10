@@ -26,5 +26,7 @@ export interface DevolucionesInterface {
         importe3: number
     },
     enviado: boolean,
-    enTransito: boolean
+    enTransito: boolean,
+    intentos: number,
+    comentario: string,
 }

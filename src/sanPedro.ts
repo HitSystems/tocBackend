@@ -1,8 +1,9 @@
 import { ticketsInstance } from "./tickets/tickets.clase";
-import { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes } from "./sincro";
+import { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes, sincronizarDevoluciones } from "./sincro";
 import { cajaInstance } from "./caja/caja.clase";
 import { movimientosInstance } from "./movimientos/movimientos.clase";
 import { trabajadoresInstance } from "./trabajadores/trabajadores.clase";
+import { devolucionesInstance } from "./devoluciones/devoluciones.clase";
 
 const io = require("socket.io-client");
 const socket = io('http://54.74.52.150:3001'); // NORMAL
@@ -92,5 +93,21 @@ socket.on('resFichajes', (data) => {
         console.log(data.mensaje);
     }
 });
+
+socket.on('resSincroDevoluciones', (data) => {
+    if(!data.error) {
+        devolucionesInstance.actualizarEstadoDevolucion(data.devolucion).then((res) => {
+            if(res) {
+                sincronizarDevoluciones();
+            } else {
+                console.log('Error al actualizar el estadio de la devolución.');
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        console.log(data.mensaje);
+    }
+})
 
 export { socket };

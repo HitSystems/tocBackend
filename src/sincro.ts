@@ -4,6 +4,7 @@ import { parametrosInstance } from './parametros/parametros.clase';
 import { cajaInstance } from './caja/caja.clase';
 import { movimientosInstance } from './movimientos/movimientos.clase';
 import { trabajadoresInstance } from './trabajadores/trabajadores.clase';
+import { devolucionesInstance } from './devoluciones/devoluciones.clase';
 
 function sincronizarTickets() {
     parametrosInstance.getEspecialParametros().then((parametros) => {
@@ -91,9 +92,30 @@ function sincronizarFichajes() {
     });
 }
 
+function sincronizarDevoluciones() {
+    parametrosInstance.getEspecialParametros().then((parametros) => {
+        if(parametros !== null) {
+            devolucionesInstance.getDevolucionMasAntigua().then((res) => {
+                if(res !== null) {
+                    socket.emit('sincroDevoluciones', {
+                        parametros,
+                        devolucion: res,
+                    })
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
+        } else {
+            console.log('No hat parámetros definidos en la BBDD');
+        }
+    }).catch((err) => {
+        console.log(err);
+    })
+}
+
 setInterval(sincronizarTickets, 30000);
 setInterval(sincronizarCajas, 40000);
 setInterval(sincronizarMovimientos, 50000);
 setInterval(sincronizarFichajes, 20000);
 
-export { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes };
+export { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes, sincronizarDevoluciones };

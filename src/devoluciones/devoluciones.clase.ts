@@ -22,7 +22,9 @@ export class Devoluciones {
             idTrabajador: infoTrabajador._id,
             tiposIva: cesta.tiposIva,
             enviado: false,
-            enTransito: false
+            enTransito: false,
+            intentos: 0,
+            comentario: '',
         }
         if (this.insertarDevolucion(objDevolucion)) {
             return await cestas.borrarCesta(idCesta);
@@ -30,7 +32,20 @@ export class Devoluciones {
             return false;
         }
     }
+    
+    getDevolucionMasAntigua() {
+        return schDevoluciones.getDevolucionMasAntigua();
+    }
 
+    actualizarEstadoDevolucion(devolucion: DevolucionesInterface) {
+        return schDevoluciones.actualizarEstadoDevolucion(devolucion).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    
     private insertarDevolucion(data: DevolucionesInterface): Promise<boolean> {
         return schDevoluciones.insertarDevolucion(data).then((res) => {
             return res.acknowledged;
