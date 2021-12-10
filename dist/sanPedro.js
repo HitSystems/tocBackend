@@ -6,6 +6,7 @@ const sincro_1 = require("./sincro");
 const caja_clase_1 = require("./caja/caja.clase");
 const movimientos_clase_1 = require("./movimientos/movimientos.clase");
 const trabajadores_clase_1 = require("./trabajadores/trabajadores.clase");
+const devoluciones_clase_1 = require("./devoluciones/devoluciones.clase");
 const io = require("socket.io-client");
 const socket = io('http://54.74.52.150:3001');
 exports.socket = socket;
@@ -90,6 +91,23 @@ socket.on('resFichajes', (data) => {
             }
             else {
                 console.log("Error al actualizar el estado del fichaje");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+    else {
+        console.log(data.mensaje);
+    }
+});
+socket.on('resSincroDevoluciones', (data) => {
+    if (!data.error) {
+        devoluciones_clase_1.devolucionesInstance.actualizarEstadoDevolucion(data.devolucion).then((res) => {
+            if (res) {
+                (0, sincro_1.sincronizarDevoluciones)();
+            }
+            else {
+                console.log('Error al actualizar el estadio de la devolución.');
             }
         }).catch((err) => {
             console.log(err);

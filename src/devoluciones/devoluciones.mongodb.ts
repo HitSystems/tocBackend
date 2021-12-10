@@ -12,6 +12,7 @@ export async function getDevolucionMasAntigua() {
     const database = (await conexion).db('tocgame');
     const devolucion = database.collection('devoluciones');
     const resultado = await devolucion.findOne({ enviado: false }, { sort: {timestamp: 1} } );
+    console.log("hey eze", resultado);
     return resultado;
 }
 

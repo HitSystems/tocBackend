@@ -14,11 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DevolucionesController = void 0;
 const common_1 = require("@nestjs/common");
-const devoluciones_class_1 = require("./devoluciones.class");
+const devoluciones_clase_1 = require("./devoluciones.clase");
 let DevolucionesController = class DevolucionesController {
     nuevaDevolucion(params) {
         if (params.total != undefined && params.idCesta != undefined) {
-            return devoluciones_class_1.devolucionesInstance.nuevaDevolucion(params.total, params.idCesta).then((res) => {
+            return devoluciones_clase_1.devolucionesInstance.nuevaDevolucion(params.total, params.idCesta).then((res) => {
                 if (res) {
                     return { error: false };
                 }

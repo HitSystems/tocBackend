@@ -97,6 +97,7 @@ function sincronizarDevoluciones() {
         if(parametros !== null) {
             devolucionesInstance.getDevolucionMasAntigua().then((res) => {
                 if(res !== null) {
+                    console.log(res);
                     socket.emit('sincroDevoluciones', {
                         parametros,
                         devolucion: res,
@@ -106,7 +107,7 @@ function sincronizarDevoluciones() {
                 console.log(err);
             });
         } else {
-            console.log('No hat parámetros definidos en la BBDD');
+            console.log('No hay parámetros definidos en la BBDD');
         }
     }).catch((err) => {
         console.log(err);
@@ -117,5 +118,6 @@ setInterval(sincronizarTickets, 30000);
 setInterval(sincronizarCajas, 40000);
 setInterval(sincronizarMovimientos, 50000);
 setInterval(sincronizarFichajes, 20000);
+// setInterval(sincronizarDevoluciones, 5000);
 
 export { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes, sincronizarDevoluciones };

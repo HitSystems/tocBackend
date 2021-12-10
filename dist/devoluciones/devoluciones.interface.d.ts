@@ -27,4 +27,6 @@ export interface DevolucionesInterface {
     };
     enviado: boolean;
     enTransito: boolean;
+    intentos: number;
+    comentario: string;
 }
