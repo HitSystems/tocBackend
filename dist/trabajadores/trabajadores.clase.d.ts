@@ -1,4 +1,4 @@
-import { TrabajadoresInterface } from "./trabajadores.interface";
+import { SincroFichajesInterface, TrabajadoresInterface } from "./trabajadores.interface";
 export declare class TrabajadoresClase {
     buscar(busqueda: string): Promise<any[] | TrabajadoresInterface[]>;
     actualizarTrabajadores(): void;
@@ -13,5 +13,7 @@ export declare class TrabajadoresClase {
     nuevoFichajesSincro(tipo: "ENTRADA" | "SALIDA", idTrabajador: number): Promise<import("mongodb").InsertOneResult<import("bson").Document>>;
     getFichados(): Promise<TrabajadoresInterface[]>;
     insertarTrabajadores(arrayTrabajadores: any): Promise<boolean>;
+    getFichajeMasAntiguo(): Promise<import("bson").Document>;
+    actualizarEstadoFichaje(fichaje: SincroFichajesInterface): Promise<boolean>;
 }
 export declare const trabajadoresInstance: TrabajadoresClase;

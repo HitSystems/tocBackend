@@ -1,4 +1,5 @@
 import { InsertManyResult } from "mongodb";
+import { SincroFichajesInterface } from "./trabajadores.interface";
 export declare function getCurrentIdTrabajador(): Promise<import("bson").Document>;
 export declare function buscar(busqueda: string): Promise<import("bson").Document[]>;
 export declare function getTrabajador(idTrabajador: number): Promise<any>;
@@ -11,3 +12,5 @@ export declare function insertNuevoFichaje(data: any): Promise<import("mongodb")
 export declare function buscarTrabajadoresFichados(): Promise<any>;
 export declare function borrarTrabajadores(): Promise<boolean>;
 export declare function insertarTrabajadores(arrayTrabajadores: any): Promise<InsertManyResult<import("bson").Document>>;
+export declare function getFichajeMasAntiguo(): Promise<import("bson").Document>;
+export declare function actualizarEstadoFichaje(fichaje: SincroFichajesInterface): Promise<import("mongodb").UpdateResult>;

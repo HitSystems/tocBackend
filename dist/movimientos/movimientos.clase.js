@@ -50,7 +50,9 @@ class MovimientosClase {
             tipoExtra: tipoExtra,
             idTicket: idTicket,
             enviado: false,
-            enTransito: false
+            enTransito: false,
+            intentos: 0,
+            comentario: ''
         };
         const resNuevaSalida = await schMovimientos.nuevaSalida(objSalida);
         if (resNuevaSalida.acknowledged) {
@@ -75,7 +77,9 @@ class MovimientosClase {
             tipoExtra: TIPO_ENTRADA,
             idTicket: -100,
             enviado: false,
-            enTransito: false
+            enTransito: false,
+            intentos: 0,
+            comentario: ''
         };
         const resNuevaSalida = await schMovimientos.nuevaSalida(objSalida);
         if (resNuevaSalida.acknowledged) {
@@ -115,6 +119,17 @@ class MovimientosClase {
         let digitYear = new Date().getFullYear().toString()[3];
         codigoFinal = `98${codigoLicenciaStr}${digitYear}${getNumeroTresDigitos(moment().dayOfYear())}${strNumeroCodigosDeBarras}`;
         return codigoFinal;
+    }
+    getMovimientoMasAntiguo() {
+        return schMovimientos.getMovimientoMasAntiguo();
+    }
+    actualizarEstadoMovimiento(movimiento) {
+        return schMovimientos.actualizarEstadoMovimiento(movimiento).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
     }
 }
 exports.MovimientosClase = MovimientosClase;

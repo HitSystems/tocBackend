@@ -8,5 +8,7 @@ export interface MovimientosInterface {
     codigoBarras: string,
     idTicket: number,
     enviado: boolean,
-    enTransito: boolean
+    enTransito: boolean,
+    comentario: string,
+    intentos: number
 }

@@ -1,5 +1,6 @@
 import { InsertManyResult } from "mongodb";
 import { conexion } from "../conexion/mongodb";
+import { SincroFichajesInterface } from "./trabajadores.interface";
 
 export async function getCurrentIdTrabajador() {
     const database = (await conexion).db('tocgame');
@@ -116,4 +117,22 @@ export async function insertarTrabajadores(arrayTrabajadores) {
         return res;
     }
 
+}
+
+export async function getFichajeMasAntiguo() {
+    const database = (await conexion).db('tocgame');
+    const sincroFichajes = database.collection('sincro-fichajes');
+    const resultado = await sincroFichajes.findOne({ enviado: false }, { sort: {_id: 1} } );
+    return resultado;
+}
+
+export async function actualizarEstadoFichaje(fichaje: SincroFichajesInterface) {
+    const database = (await conexion).db('tocgame');
+    const sincroFichajes = database.collection('sincro-fichajes');
+    const resultado = sincroFichajes.updateOne({ _id: fichaje._id }, { $set: {
+        "enviado": fichaje.enviado,
+        "intentos": fichaje.intentos,
+        "comentario": fichaje.comentario
+    } });
+    return resultado;
 }

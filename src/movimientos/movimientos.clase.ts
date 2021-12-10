@@ -54,7 +54,9 @@ export class MovimientosClase {
             tipoExtra: tipoExtra,
             idTicket: idTicket,
             enviado: false,
-            enTransito: false
+            enTransito: false,
+            intentos: 0,
+            comentario: ''
         }
         const resNuevaSalida = await schMovimientos.nuevaSalida(objSalida);
 
@@ -92,7 +94,9 @@ export class MovimientosClase {
             tipoExtra: TIPO_ENTRADA,
             idTicket: -100,
             enviado: false,
-            enTransito: false
+            enTransito: false,
+            intentos: 0,
+            comentario: ''
         }
         const resNuevaSalida = await schMovimientos.nuevaSalida(objSalida);
 
@@ -138,6 +142,20 @@ export class MovimientosClase {
         codigoFinal = `98${codigoLicenciaStr}${digitYear}${getNumeroTresDigitos(moment().dayOfYear())}${strNumeroCodigosDeBarras}`;
         return codigoFinal;
     }
+
+    getMovimientoMasAntiguo() {
+        return schMovimientos.getMovimientoMasAntiguo();
+    }
+
+    actualizarEstadoMovimiento(movimiento: MovimientosInterface) {
+        return schMovimientos.actualizarEstadoMovimiento(movimiento).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    
 }
 
 export const movimientosInstance = new MovimientosClase();

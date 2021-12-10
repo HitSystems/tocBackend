@@ -172,7 +172,9 @@ class TrabajadoresClase {
             },
             tipo: tipo,
             enviado: false,
-            enTransito: false
+            enTransito: false,
+            intentos: 0,
+            comentario: ''
         };
         return schTrabajadores.insertNuevoFichaje(objGuardar);
     }
@@ -186,6 +188,17 @@ class TrabajadoresClase {
     }
     insertarTrabajadores(arrayTrabajadores) {
         return schTrabajadores.insertarTrabajadores(arrayTrabajadores).then((res) => {
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    getFichajeMasAntiguo() {
+        return schTrabajadores.getFichajeMasAntiguo();
+    }
+    actualizarEstadoFichaje(fichaje) {
+        return schTrabajadores.actualizarEstadoFichaje(fichaje).then((res) => {
             return res.acknowledged;
         }).catch((err) => {
             console.log(err);

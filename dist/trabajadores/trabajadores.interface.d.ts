@@ -21,6 +21,8 @@ export interface SincroFichajesInterface {
     tipo: "ENTRADA" | "SALIDA";
     enviado: boolean;
     enTransito: boolean;
+    intentos: number;
+    comentario: string;
 }
 export declare const trabajadorVacio: {
     _id: number;

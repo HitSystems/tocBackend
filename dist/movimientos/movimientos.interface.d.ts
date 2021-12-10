@@ -9,4 +9,6 @@ export interface MovimientosInterface {
     idTicket: number;
     enviado: boolean;
     enTransito: boolean;
+    comentario: string;
+    intentos: number;
 }

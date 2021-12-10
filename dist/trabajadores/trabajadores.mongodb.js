@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.insertarTrabajadores = exports.borrarTrabajadores = exports.buscarTrabajadoresFichados = exports.insertNuevoFichaje = exports.desficharTrabajador = exports.ficharTrabajador = exports.getTrabajadoresFichados = exports.setCurrentIdTrabajador = exports.getTrabajadorPorNombre = exports.getTrabajador = exports.buscar = exports.getCurrentIdTrabajador = void 0;
+exports.actualizarEstadoFichaje = exports.getFichajeMasAntiguo = exports.insertarTrabajadores = exports.borrarTrabajadores = exports.buscarTrabajadoresFichados = exports.insertNuevoFichaje = exports.desficharTrabajador = exports.ficharTrabajador = exports.getTrabajadoresFichados = exports.setCurrentIdTrabajador = exports.getTrabajadorPorNombre = exports.getTrabajador = exports.buscar = exports.getCurrentIdTrabajador = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getCurrentIdTrabajador() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -107,4 +107,22 @@ async function insertarTrabajadores(arrayTrabajadores) {
     }
 }
 exports.insertarTrabajadores = insertarTrabajadores;
+async function getFichajeMasAntiguo() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const sincroFichajes = database.collection('sincro-fichajes');
+    const resultado = await sincroFichajes.findOne({ enviado: false }, { sort: { _id: 1 } });
+    return resultado;
+}
+exports.getFichajeMasAntiguo = getFichajeMasAntiguo;
+async function actualizarEstadoFichaje(fichaje) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const sincroFichajes = database.collection('sincro-fichajes');
+    const resultado = sincroFichajes.updateOne({ _id: fichaje._id }, { $set: {
+            "enviado": fichaje.enviado,
+            "intentos": fichaje.intentos,
+            "comentario": fichaje.comentario
+        } });
+    return resultado;
+}
+exports.actualizarEstadoFichaje = actualizarEstadoFichaje;
 //# sourceMappingURL=trabajadores.mongodb.js.map

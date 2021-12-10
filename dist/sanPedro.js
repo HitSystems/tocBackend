@@ -4,6 +4,8 @@ exports.socket = void 0;
 const tickets_clase_1 = require("./tickets/tickets.clase");
 const sincro_1 = require("./sincro");
 const caja_clase_1 = require("./caja/caja.clase");
+const movimientos_clase_1 = require("./movimientos/movimientos.clase");
+const trabajadores_clase_1 = require("./trabajadores/trabajadores.clase");
 const io = require("socket.io-client");
 const socket = io('http://54.74.52.150:3001');
 exports.socket = socket;
@@ -58,6 +60,40 @@ socket.on('resCajas', (data) => {
                 console.log(err);
             });
         }
+    }
+    else {
+        console.log(data.mensaje);
+    }
+});
+socket.on('resMovimientos', (data) => {
+    if (data.error == false) {
+        movimientos_clase_1.movimientosInstance.actualizarEstadoMovimiento(data.movimiento).then((res) => {
+            if (res) {
+                (0, sincro_1.sincronizarMovimientos)();
+            }
+            else {
+                console.log("Error al actualizar el estado del movimiento");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+    else {
+        console.log(data.mensaje);
+    }
+});
+socket.on('resFichajes', (data) => {
+    if (data.error == false) {
+        trabajadores_clase_1.trabajadoresInstance.actualizarEstadoFichaje(data.fichaje).then((res) => {
+            if (res) {
+                (0, sincro_1.sincronizarFichajes)();
+            }
+            else {
+                console.log("Error al actualizar el estado del fichaje");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
     }
     else {
         console.log(data.mensaje);

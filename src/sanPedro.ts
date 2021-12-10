@@ -1,6 +1,8 @@
 import { ticketsInstance } from "./tickets/tickets.clase";
-import { sincronizarTickets, sincronizarCajas } from "./sincro";
+import { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes } from "./sincro";
 import { cajaInstance } from "./caja/caja.clase";
+import { movimientosInstance } from "./movimientos/movimientos.clase";
+import { trabajadoresInstance } from "./trabajadores/trabajadores.clase";
 
 const io = require("socket.io-client");
 const socket = io('http://54.74.52.150:3001'); // NORMAL
@@ -54,6 +56,38 @@ socket.on('resCajas', (data) => {
             });
             // cambiar estado infoCaja en mongo (enviado + comentario)
         }
+    } else {
+        console.log(data.mensaje);
+    }
+});
+
+socket.on('resMovimientos', (data) => {
+    if (data.error == false) {
+        movimientosInstance.actualizarEstadoMovimiento(data.movimiento).then((res) => {
+            if (res) {
+                sincronizarMovimientos();
+            } else {
+                console.log("Error al actualizar el estado del movimiento");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        console.log(data.mensaje);
+    }
+});
+
+socket.on('resFichajes', (data) => {
+    if (data.error == false) {
+        trabajadoresInstance.actualizarEstadoFichaje(data.fichaje).then((res) => {
+            if (res) {
+                sincronizarFichajes();
+            } else {
+                console.log("Error al actualizar el estado del fichaje");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
     } else {
         console.log(data.mensaje);
     }

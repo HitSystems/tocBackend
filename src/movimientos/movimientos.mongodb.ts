@@ -1,4 +1,5 @@
 import { conexion } from "../conexion/mongodb";
+import { MovimientosInterface } from "./movimientos.interface";
 
 export async function getMovimientosIntervalo(inicioTime: number, finalTime: number): Promise<any> {
     const database = (await conexion).db('tocgame');
@@ -38,6 +39,23 @@ export async function actualizarCodigoBarras() {
     return resultado;
 }
 
+export async function getMovimientoMasAntiguo() {
+    const database = (await conexion).db('tocgame');
+    const movimientos = database.collection('movimientos');
+    const resultado = await movimientos.findOne({ enviado: false }, { sort: {_id: 1} });
+    return resultado;
+}
+
+export async function actualizarEstadoMovimiento(movimiento: MovimientosInterface) {
+    const database = (await conexion).db('tocgame');
+    const movimientos = database.collection('movimientos');
+    const resultado = movimientos.updateOne({ _id: movimiento._id }, { $set: {
+        "enviado": movimiento.enviado,
+        "intentos": movimiento.intentos,
+        "comentario": movimiento.comentario
+    } });
+    return resultado;
+}
 // export async function getMovimiento(tipo: string): Promise<any> {
 //     const database = (await conexion).db('tocgame');
 //     const movimientos = database.collection('movimientos');

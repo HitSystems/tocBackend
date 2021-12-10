@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actualizarCodigoBarras = exports.resetContadorCodigoBarras = exports.getUltimoCodigoBarras = exports.nuevaSalida = exports.getMovimientosIntervalo = void 0;
+exports.actualizarEstadoMovimiento = exports.getMovimientoMasAntiguo = exports.actualizarCodigoBarras = exports.resetContadorCodigoBarras = exports.getUltimoCodigoBarras = exports.nuevaSalida = exports.getMovimientosIntervalo = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getMovimientosIntervalo(inicioTime, finalTime) {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -37,4 +37,22 @@ async function actualizarCodigoBarras() {
     return resultado;
 }
 exports.actualizarCodigoBarras = actualizarCodigoBarras;
+async function getMovimientoMasAntiguo() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const movimientos = database.collection('movimientos');
+    const resultado = await movimientos.findOne({ enviado: false }, { sort: { _id: 1 } });
+    return resultado;
+}
+exports.getMovimientoMasAntiguo = getMovimientoMasAntiguo;
+async function actualizarEstadoMovimiento(movimiento) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const movimientos = database.collection('movimientos');
+    const resultado = movimientos.updateOne({ _id: movimiento._id }, { $set: {
+            "enviado": movimiento.enviado,
+            "intentos": movimiento.intentos,
+            "comentario": movimiento.comentario
+        } });
+    return resultado;
+}
+exports.actualizarEstadoMovimiento = actualizarEstadoMovimiento;
 //# sourceMappingURL=movimientos.mongodb.js.map
