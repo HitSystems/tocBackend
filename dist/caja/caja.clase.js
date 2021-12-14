@@ -261,6 +261,7 @@ class CajaClase {
         currentCaja.infoExtra['totalEnEfectivo'] = totalEnEfectivo;
         currentCaja.infoExtra['totalTarjeta'] = totalTarjeta;
         currentCaja.infoExtra['totalDeuda'] = totalDeuda;
+        console.log("Mira Eze: ", currentCaja.infoExtra['cambioFinal']);
         descuadre = cambioFinal - cambioInicial + totalSalidas - totalEntradas - totalTickets;
         recaudado = totalTickets + descuadre - totalTarjeta - totalDeuda;
         const objImpresion = {
