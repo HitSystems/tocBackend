@@ -97,7 +97,6 @@ function sincronizarDevoluciones() {
         if(parametros !== null) {
             devolucionesInstance.getDevolucionMasAntigua().then((res) => {
                 if(res !== null) {
-                    console.log(res);
                     socket.emit('sincroDevoluciones', {
                         parametros,
                         devolucion: res,
@@ -118,6 +117,6 @@ setInterval(sincronizarTickets, 30000);
 setInterval(sincronizarCajas, 40000);
 setInterval(sincronizarMovimientos, 50000);
 setInterval(sincronizarFichajes, 20000);
-// setInterval(sincronizarDevoluciones, 5000);
+setInterval(sincronizarDevoluciones, 60000);
 
 export { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes, sincronizarDevoluciones };

@@ -97,14 +97,10 @@ function sincronizarFichajes() {
 }
 exports.sincronizarFichajes = sincronizarFichajes;
 function sincronizarDevoluciones() {
-    console.log('lol 1');
     parametros_clase_1.parametrosInstance.getEspecialParametros().then((parametros) => {
         if (parametros !== null) {
-            console.log('lol 2');
             devoluciones_clase_1.devolucionesInstance.getDevolucionMasAntigua().then((res) => {
-                console.log('lol 3');
                 if (res !== null) {
-                    console.log(res);
                     sanPedro_1.socket.emit('sincroDevoluciones', {
                         parametros,
                         devolucion: res,
@@ -126,5 +122,5 @@ setInterval(sincronizarTickets, 30000);
 setInterval(sincronizarCajas, 40000);
 setInterval(sincronizarMovimientos, 50000);
 setInterval(sincronizarFichajes, 20000);
-setInterval(sincronizarDevoluciones, 5000);
+setInterval(sincronizarDevoluciones, 60000);
 //# sourceMappingURL=sincro.js.map

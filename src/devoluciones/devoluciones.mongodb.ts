@@ -12,14 +12,13 @@ export async function getDevolucionMasAntigua() {
     const database = (await conexion).db('tocgame');
     const devolucion = database.collection('devoluciones');
     const resultado = await devolucion.findOne({ enviado: false }, { sort: {timestamp: 1} } );
-    console.log("hey eze", resultado);
     return resultado;
 }
 
 export async function actualizarEstadoDevolucion(devolucion: DevolucionesInterface) {
     const database = (await conexion).db('tocgame');
-    const sincroFichajes = database.collection('sincro-fichajes');
-    const resultado = sincroFichajes.updateOne({ _id: devolucion._id }, { $set: {
+    const sincroFichajes = database.collection('devoluciones');
+    const resultado = await sincroFichajes.updateOne({ _id: devolucion._id }, { $set: {
         "enviado": devolucion.enviado,
         "intentos": devolucion.intentos,
         "comentario": devolucion.comentario
