@@ -18,4 +18,5 @@ export declare class ArticulosController {
         error: boolean;
         mensaje: string;
     };
+    actualizarArticulos(): void;
 }
