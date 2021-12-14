@@ -14,7 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TecladoController = void 0;
 const common_1 = require("@nestjs/common");
+const axios_1 = require("axios");
+const parametros_clase_1 = require("../parametros/parametros.clase");
+const articulos_clase_1 = require("../articulos/articulos.clase");
 const cestas_clase_1 = require("../cestas/cestas.clase");
+const teclado_clase_1 = require("./teclado.clase");
 let TecladoController = class TecladoController {
     clickTecla(params) {
         return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta).then((res) => {
@@ -31,6 +35,52 @@ let TecladoController = class TecladoController {
             };
         });
     }
+    actualizarArticulos() {
+        return axios_1.default.post('articulos/descargarArticulosEspeciales', { database: parametros_clase_1.parametrosInstance.getParametros().database, codigoCliente: parametros_clase_1.parametrosInstance.getParametros().codigoTienda }).then((res) => {
+            if (res.data.error == false) {
+                return articulos_clase_1.articulosInstance.insertarArticulos(res.data.info).then((res2) => {
+                    if (res2) {
+                        return axios_1.default.post('/teclas/descargarTeclados', { database: parametros_clase_1.parametrosInstance.getParametros().database, licencia: parametros_clase_1.parametrosInstance.getParametros().licencia }).then((infoTeclados) => {
+                            if (infoTeclados.data.error == false) {
+                                return teclado_clase_1.tecladoInstance.insertarTeclas(infoTeclados.data.info).then((resultado) => {
+                                    if (resultado) {
+                                        return { error: false, mensaje: '' };
+                                    }
+                                    else {
+                                        return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 2' };
+                                    }
+                                }).catch((err) => {
+                                    console.log(err);
+                                    return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado try catch' };
+                                });
+                            }
+                            else {
+                                return { error: true, mensaje: infoTeclados.data.mensaje };
+                            }
+                        }).catch((err) => {
+                            console.log(err);
+                            return { error: true, mensaje: 'Backend: teclado/actualizarTeclado error en segundo post catch' };
+                        });
+                    }
+                    else {
+                        return { error: true, mensaje: 'Error backend en actualizarTeclado/insertarArticulos' };
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Error backend en actualizarTeclado/insertarArticulos CATCH' };
+                });
+            }
+            else {
+                return { error: true, mensaje: res.data.mensaje };
+            }
+        }).catch((err) => {
+            console.log(err);
+            return {
+                error: true,
+                mensaje: 'Backend: Error en catch actualizarArticulos'
+            };
+        });
+    }
 };
 __decorate([
     (0, common_1.Post)('clickTeclaArticulo'),
@@ -39,6 +89,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TecladoController.prototype, "clickTecla", null);
+__decorate([
+    (0, common_1.Post)('actualizarTeclado'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TecladoController.prototype, "actualizarArticulos", null);
 TecladoController = __decorate([
     (0, common_1.Controller)('teclado')
 ], TecladoController);

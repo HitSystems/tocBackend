@@ -99,7 +99,6 @@ class CestaClase {
     }
     setCesta(cesta) {
         for (let i = 0; i < cesta.lista.length; i++) {
-            console.log("Observa: ", typeof cesta.lista[i].subtotal);
             cesta.lista[i].subtotal = Number(cesta.lista[i].subtotal.toFixed(2));
         }
         return schCestas.setCesta(cesta).then((res) => {
@@ -233,7 +232,6 @@ class CestaClase {
     }
     async addItem(idArticulo, idBoton, aPeso, infoAPeso, idCesta, unidades = 1) {
         var cestaRetornar = null;
-        console.log("LAL: ", infoAPeso);
         if (caja_clase_1.cajaInstance.cajaAbierta()) {
             try {
                 if (!aPeso) {

@@ -7,4 +7,11 @@ export declare class TecladoController {
         error: boolean;
         mensaje: string;
     }>;
+    actualizarArticulos(): Promise<{
+        error: boolean;
+        mensaje: any;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }>;
 }

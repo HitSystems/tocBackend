@@ -14,7 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArticulosController = void 0;
 const common_1 = require("@nestjs/common");
-const axios_1 = require("axios");
 const clientes_clase_1 = require("../clientes/clientes.clase");
 const articulos_clase_1 = require("./articulos.clase");
 let ArticulosController = class ArticulosController {
@@ -41,22 +40,6 @@ let ArticulosController = class ArticulosController {
             return { error: true, mensaje: 'Backend: Faltan datos en articulos/setEstadoTarifaVIP' };
         }
     }
-    actualizarArticulos() {
-        axios_1.default.post('/descargarArticulosEspeciales').then((res) => {
-            if (res.data.error == false) {
-                return { error: false, info: res.data.info };
-            }
-            else {
-                return { error: true, mensaje: res.data.mensaje };
-            }
-        }).catch((err) => {
-            console.log(err);
-            return {
-                error: true,
-                mensaje: 'Backend: Error en catch actualizarArticulos'
-            };
-        });
-    }
 };
 __decorate([
     (0, common_1.Post)('getArticulo'),
@@ -72,12 +55,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ArticulosController.prototype, "setEstadoTarifaEspecial", null);
-__decorate([
-    (0, common_1.Post)('actualizarArticulos'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], ArticulosController.prototype, "actualizarArticulos", null);
 ArticulosController = __decorate([
     (0, common_1.Controller)('articulos')
 ], ArticulosController);
