@@ -166,6 +166,7 @@ class TicketsClase {
         const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador();
         const nuevoIdTicket = (await this.getUltimoTicket()) + 1;
         const cesta = await cestas_clase_1.cestas.getCesta(idCesta);
+        ;
         if (cesta == null || cesta.lista.length == 0) {
             console.log("Error, la cesta es null o está vacía");
             return false;
@@ -199,13 +200,31 @@ class TicketsClase {
                     objTicket['cantidadTkrs'] = totalTkrs;
                     const diferencia = total - totalTkrs;
                     if (diferencia >= 0) {
-                        movimientos_clase_1.movimientosInstance.nuevaSalida(objTicket.total, `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_SIN_EXCESO', true, objTicket._id);
+                        return movimientos_clase_1.movimientosInstance.nuevaSalida(objTicket.total, `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_SIN_EXCESO', false, objTicket._id).then((salida0) => {
+                            return salida0;
+                        }).catch((err) => {
+                            console.log(err);
+                            return false;
+                        });
                     }
                     else {
-                        movimientos_clase_1.movimientosInstance.nuevaSalida(Number((diferencia * -1).toFixed(2)), `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_CON_EXCESO', true, objTicket._id);
-                        movimientos_clase_1.movimientosInstance.nuevaSalida(objTicket.total, `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_SIN_EXCESO', true, objTicket._id);
+                        return movimientos_clase_1.movimientosInstance.nuevaSalida(Number((diferencia * -1).toFixed(2)), `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_CON_EXCESO', false, objTicket._id).then((salida1) => {
+                            if (salida1) {
+                                return movimientos_clase_1.movimientosInstance.nuevaSalida(objTicket.total, `Pagat TkRs (TkRs): ${objTicket._id}`, 'TKRS_SIN_EXCESO', false, objTicket._id).then((salida2) => {
+                                    return salida2;
+                                }).catch((err) => {
+                                    console.log(err);
+                                    return false;
+                                });
+                            }
+                            else {
+                                return false;
+                            }
+                        }).catch((err) => {
+                            console.log(err);
+                            return false;
+                        });
                     }
-                    return true;
                 }
                 else {
                     console.log("Error no se ha podido cambiar el último id ticket");
