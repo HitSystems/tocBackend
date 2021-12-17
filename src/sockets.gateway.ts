@@ -6,6 +6,7 @@ import { ticketsInstance } from "./tickets/tickets.clase";
 import { movimientosInstance } from "./movimientos/movimientos.clase";
 import { parametrosInstance } from "./parametros/parametros.clase";
 import { Body } from "@nestjs/common";
+import axios from "axios";
 const net = require('net');
 const fs = require("fs");
 @WebSocketGateway({
@@ -198,6 +199,105 @@ export class SocketGateway{
         error: true,
         mensaje: 'Faltan TODOS los datos en gateway enviarAlDatafono'
       });
+    }
+  }
+  @SubscribeMessage('polling')
+  async polling(@MessageBody() params) {
+    if (params != null || params != undefined) {
+      if (params.idClienteFinal != null || params.idClienteFinal != undefined) {
+        return axios.post('http://10.129.118.29:8887/transaction/poll', {
+          pinpad: "*"
+        }).then(async (res: any) => {
+          if (res.data.result == undefined || res.data.result == null) {
+            this.polling({ idClienteFinal: params.idClienteFinal });
+          } else {
+            // console.log("Aprobado: ", res.data.result.approved);
+            // console.log("Fallido: ", res.data.result.failed);
+    
+            if (res.data.result.approved && !res.data.result.failed) {
+              const infoTransaccion = res.data.result.transactionReference.split('@');
+              let total: number = Number(res.data.result.amountWithSign.replace(",", "."));
+              console.log("amountWithSign: ", Number(res.data.result.amountWithSign));
+              let idCesta: number = Number(infoTransaccion[1]);
+              const idClienteFinal: string = (params.idClienteFinal != undefined) ? (params.idClienteFinal) : ('');
+              const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
+              const nuevoIdTicket = (await ticketsInstance.getUltimoTicket()) + 1;
+              const cesta = await cestas.getCesta(idCesta);
+              console.log("infoTransaccion: ", infoTransaccion);
+              console.log("idCesta: ", idCesta);
+              /* Comprobación cesta correcta */
+              if (cesta == null || cesta.lista.length == 0) {
+                console.log("Error, la cesta es null o está vacía");
+                this.server.emit('resDatafono', {
+                  error: true,
+                  mensaje: 'Error, la cesta es null o está vacía',
+                });
+              }
+        
+              /* Creo datos del ticket */
+              const info: TicketsInterface = {
+                  _id: nuevoIdTicket,
+                  timestamp: Date.now(),
+                  total: total,
+                  lista: cesta.lista,
+                  tipoPago: "TARJETA",
+                  idTrabajador: infoTrabajador._id,
+                  tiposIva: cesta.tiposIva,
+                  cliente: idClienteFinal,
+                  infoClienteVip: {
+                      esVip : false,
+                      nif: '',
+                      nombre: '',
+                      cp: '',
+                      direccion: '',
+                      ciudad: ''
+                  },
+                  enviado: false,
+                  enTransito: false,
+                  intentos: 0,
+                  comentario: '',
+                  regalo: (cesta.regalo == true && idClienteFinal != '' && idClienteFinal != null) ? (true): (false)
+              }
+
+              movimientosInstance.nuevaSalida(total, 'Targeta', 'TARJETA', false, nuevoIdTicket);
+              if (await ticketsInstance.insertarTicket(info)) {
+                  if (await cestas.borrarCesta(idCesta)) {
+                      if (await parametrosInstance.setUltimoTicket(info._id)) {
+                          this.server.emit('resDatafono', {
+                            error: false,
+                          });
+                      } else {
+                        this.server.emit('resDatafono', {
+                          error: true,
+                          mensaje: 'Error no se ha podido cambiar el último id ticket'
+                        });
+                      }
+                  } else {
+                    this.server.emit('resDatafono', {
+                      error: true,
+                      mensaje: 'Error, no se ha podido borrar la cesta'
+                    });
+                  }
+              }
+              this.server.emit('resPaytef', {
+                error: false
+              });
+            } else {
+              this.server.emit('resPaytef', {
+                error: true,
+                mensaje: "Operación denegada o cancelada"
+              });
+            }
+          }
+        }).catch((err) => {
+          console.log(err);
+          return false;
+        });
+      } else {
+        this.server.emit('resPaytef', { error: true, mensaje: 'Backend socket: Faltan datos' });
+      }
+    } else {
+      this.server.emit('resPaytef', { error: true, mensaje: 'Backend socket: Faltan todos los datos' });
     }
   }
 }

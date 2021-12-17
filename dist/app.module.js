@@ -27,6 +27,7 @@ const pruebas_controller_1 = require("./pruebas/pruebas.controller");
 const instalador_controller_1 = require("./instalador/instalador.controller");
 const familias_controller_1 = require("./familias/familias.controller");
 const params_ticket_controller_1 = require("./params-ticket/params-ticket.controller");
+const paytef_controller_1 = require("./paytef/paytef.controller");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -43,7 +44,7 @@ AppModule = __decorate([
             cestas_controller_1.CestasController,
             parametros_controller_1.ParametrosController,
             tickets_controller_1.TicketsController,
-            trabajadores_controller_1.TrabajadoresController, caja_controller_1.CajaController, clientes_controller_1.ClientesController, impresora_controller_1.ImpresoraController, devoluciones_controller_1.DevolucionesController, movimientos_controller_1.MovimientosController, pruebas_controller_1.PruebasController, instalador_controller_1.InstaladorController, familias_controller_1.FamiliasController, params_ticket_controller_1.ParamsTicketController
+            trabajadores_controller_1.TrabajadoresController, caja_controller_1.CajaController, clientes_controller_1.ClientesController, impresora_controller_1.ImpresoraController, devoluciones_controller_1.DevolucionesController, movimientos_controller_1.MovimientosController, pruebas_controller_1.PruebasController, instalador_controller_1.InstaladorController, familias_controller_1.FamiliasController, params_ticket_controller_1.ParamsTicketController, paytef_controller_1.PaytefController
         ],
         providers: [sockets_gateway_1.SocketGateway]
     })

@@ -19,6 +19,7 @@ const cestas_clase_1 = require("./cestas/cestas.clase");
 const tickets_clase_1 = require("./tickets/tickets.clase");
 const movimientos_clase_1 = require("./movimientos/movimientos.clase");
 const parametros_clase_1 = require("./parametros/parametros.clase");
+const axios_1 = require("axios");
 const net = require('net');
 const fs = require("fs");
 let SocketGateway = class SocketGateway {
@@ -186,6 +187,103 @@ let SocketGateway = class SocketGateway {
             });
         }
     }
+    async polling(params) {
+        if (params != null || params != undefined) {
+            if (params.idClienteFinal != null || params.idClienteFinal != undefined) {
+                return axios_1.default.post('http://10.129.118.29:8887/transaction/poll', {
+                    pinpad: "*"
+                }).then(async (res) => {
+                    if (res.data.result == undefined || res.data.result == null) {
+                        this.polling({ idClienteFinal: params.idClienteFinal });
+                    }
+                    else {
+                        if (res.data.result.approved && !res.data.result.failed) {
+                            const infoTransaccion = res.data.result.transactionReference.split('@');
+                            let total = Number(res.data.result.amountWithSign.replace(",", "."));
+                            console.log("amountWithSign: ", Number(res.data.result.amountWithSign));
+                            let idCesta = Number(infoTransaccion[1]);
+                            const idClienteFinal = (params.idClienteFinal != undefined) ? (params.idClienteFinal) : ('');
+                            const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador();
+                            const nuevoIdTicket = (await tickets_clase_1.ticketsInstance.getUltimoTicket()) + 1;
+                            const cesta = await cestas_clase_1.cestas.getCesta(idCesta);
+                            console.log("infoTransaccion: ", infoTransaccion);
+                            console.log("idCesta: ", idCesta);
+                            if (cesta == null || cesta.lista.length == 0) {
+                                console.log("Error, la cesta es null o está vacía");
+                                this.server.emit('resDatafono', {
+                                    error: true,
+                                    mensaje: 'Error, la cesta es null o está vacía',
+                                });
+                            }
+                            const info = {
+                                _id: nuevoIdTicket,
+                                timestamp: Date.now(),
+                                total: total,
+                                lista: cesta.lista,
+                                tipoPago: "TARJETA",
+                                idTrabajador: infoTrabajador._id,
+                                tiposIva: cesta.tiposIva,
+                                cliente: idClienteFinal,
+                                infoClienteVip: {
+                                    esVip: false,
+                                    nif: '',
+                                    nombre: '',
+                                    cp: '',
+                                    direccion: '',
+                                    ciudad: ''
+                                },
+                                enviado: false,
+                                enTransito: false,
+                                intentos: 0,
+                                comentario: '',
+                                regalo: (cesta.regalo == true && idClienteFinal != '' && idClienteFinal != null) ? (true) : (false)
+                            };
+                            movimientos_clase_1.movimientosInstance.nuevaSalida(total, 'Targeta', 'TARJETA', false, nuevoIdTicket);
+                            if (await tickets_clase_1.ticketsInstance.insertarTicket(info)) {
+                                if (await cestas_clase_1.cestas.borrarCesta(idCesta)) {
+                                    if (await parametros_clase_1.parametrosInstance.setUltimoTicket(info._id)) {
+                                        this.server.emit('resDatafono', {
+                                            error: false,
+                                        });
+                                    }
+                                    else {
+                                        this.server.emit('resDatafono', {
+                                            error: true,
+                                            mensaje: 'Error no se ha podido cambiar el último id ticket'
+                                        });
+                                    }
+                                }
+                                else {
+                                    this.server.emit('resDatafono', {
+                                        error: true,
+                                        mensaje: 'Error, no se ha podido borrar la cesta'
+                                    });
+                                }
+                            }
+                            this.server.emit('resPaytef', {
+                                error: false
+                            });
+                        }
+                        else {
+                            this.server.emit('resPaytef', {
+                                error: true,
+                                mensaje: "Operación denegada o cancelada"
+                            });
+                        }
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    return false;
+                });
+            }
+            else {
+                this.server.emit('resPaytef', { error: true, mensaje: 'Backend socket: Faltan datos' });
+            }
+        }
+        else {
+            this.server.emit('resPaytef', { error: true, mensaje: 'Backend socket: Faltan todos los datos' });
+        }
+    }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
@@ -211,6 +309,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "cobrarConClearone", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('polling'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SocketGateway.prototype, "polling", null);
 SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {
