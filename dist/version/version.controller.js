@@ -11,10 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VersionController = void 0;
 const common_1 = require("@nestjs/common");
-const package_json_1 = require("../../package.json");
 let VersionController = class VersionController {
     getVersion() {
-        return package_json_1.version;
+        return process.env.npm_package_version;
     }
 };
 __decorate([
