@@ -20,6 +20,7 @@ import { InstaladorController } from './instalador/instalador.controller';
 import { FamiliasController } from './familias/familias.controller';
 import { ParamsTicketController } from './params-ticket/params-ticket.controller';
 import { PaytefController } from './paytef/paytef.controller';
+import { VersionController } from './version/version.controller';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { PaytefController } from './paytef/paytef.controller';
     CestasController, 
     ParametrosController, 
     TicketsController, 
-    TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController, FamiliasController, ParamsTicketController, PaytefController],
+    TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController, FamiliasController, ParamsTicketController, PaytefController, VersionController],
   providers: [SocketGateway]  
 })
 export class AppModule {}
