@@ -15,5 +15,9 @@ export interface ParametrosInterface {
     prohibirBuscarArticulos: string,
     ultimoTicket: number,
     idCurrentTrabajador: number,
-    token: string
+    token: string,
+    impresoraUsbInfo: {
+        vid: string,
+        pid: string
+    }
 }

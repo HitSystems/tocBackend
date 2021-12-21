@@ -16,4 +16,8 @@ export interface ParametrosInterface {
     ultimoTicket: number;
     idCurrentTrabajador: number;
     token: string;
+    impresoraUsbInfo: {
+        vid: string;
+        pid: string;
+    };
 }

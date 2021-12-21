@@ -45,6 +45,7 @@ let InstaladorController = class InstaladorController {
                     token: res.data.info.token,
                     database: res.data.info.database,
                     botonesConPrecios: res.data.info.botonesConPrecios,
+                    impresoraUsbInfo: { pid: '', vid: '' },
                     idCurrentTrabajador: null
                 };
                 return parametros_clase_1.parametrosInstance.setParametros(objParams).then((res2) => {

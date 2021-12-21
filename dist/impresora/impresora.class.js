@@ -7,6 +7,8 @@ const tickets_clase_1 = require("../tickets/tickets.clase");
 const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
 const clientes_clase_1 = require("../clientes/clientes.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");
+const dispositivos_1 = require("../dispositivos");
+const dispositivos = new dispositivos_1.Dispositivos();
 const escpos = require('escpos');
 const exec = require('child_process').exec;
 const os = require('os');
@@ -124,27 +126,7 @@ class Impresora {
         console.log("Se imprime: ", info);
         try {
             permisosImpresora();
-            if (tipoImpresora === 'USB') {
-                const arrayDevices = escpos.USB.findPrinter();
-                if (arrayDevices.length > 0) {
-                    const dispositivoUnico = arrayDevices[0];
-                    var device = new escpos.USB(dispositivoUnico);
-                }
-                else if (arrayDevices.length == 0) {
-                    throw 'Error, no hay ningún dispositivo USB conectado';
-                }
-                else {
-                    throw 'Error, hay más de un dispositivo USB conectado';
-                }
-            }
-            else {
-                if (tipoImpresora === 'SERIE') {
-                    var device = new escpos.Serial('/dev/ttyS0', {
-                        baudRate: 115200,
-                        stopBit: 2
-                    });
-                }
-            }
+            const device = await dispositivos.getDevice();
             var printer = new escpos.Printer(device);
             var detalles = '';
             var pagoTarjeta = '';

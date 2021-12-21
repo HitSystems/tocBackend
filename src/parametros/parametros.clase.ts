@@ -26,6 +26,7 @@ const parametrosVacios: ParametrosInterface = {
     prohibirBuscarArticulos: 'No',
     ultimoTicket: -1,
     idCurrentTrabajador: -1,
+    impresoraUsbInfo: { vid: '', pid: '' },
     token: undefined
 
 };
@@ -119,6 +120,20 @@ const parametrosVacios: ParametrosInterface = {
             return false;
         });
     }
+
+    setVidAndPid(vid: string, pid: string) {
+        return schParametros.setVidAndPid(vid, pid).then((res) => {
+            if (res.acknowledged) {
+                return true;
+            } else {
+                return false;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+
 }
 
 const parametrosInstance = new ParametrosClase();

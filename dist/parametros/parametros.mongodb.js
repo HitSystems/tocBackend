@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setUltimoTicket = exports.setParametros = exports.getParametros = void 0;
+exports.setVidAndPid = exports.setUltimoTicket = exports.setParametros = exports.getParametros = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getParametros() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -25,6 +25,7 @@ async function setParametros(params) {
             "prohibirBuscarArticulos": params.prohibirBuscarArticulos,
             "ultimoTicket": params.ultimoTicket,
             "idCurrentTrabajador": params.idCurrentTrabajador,
+            "impresoraUsbInfo": params.impresoraUsbInfo,
             "token": params.token
         } }, { upsert: true });
     return resultado;
@@ -37,4 +38,11 @@ async function setUltimoTicket(idTicket) {
     return resultado;
 }
 exports.setUltimoTicket = setUltimoTicket;
+async function setVidAndPid(vid, pid) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const parametros = database.collection('parametros');
+    const resultado = await parametros.updateOne({ _id: "PARAMETROS" }, { $set: { "impresoraUsbInfo": { vid: vid, pid: pid } } }, { upsert: true });
+    return resultado;
+}
+exports.setVidAndPid = setVidAndPid;
 //# sourceMappingURL=parametros.mongodb.js.map

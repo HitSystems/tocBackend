@@ -40,6 +40,7 @@ export async function setParametros(params: ParametrosInterface) {
         "prohibirBuscarArticulos": params.prohibirBuscarArticulos,
         "ultimoTicket": params.ultimoTicket,
         "idCurrentTrabajador": params.idCurrentTrabajador,
+        "impresoraUsbInfo": params.impresoraUsbInfo,
         "token": params.token
     }}, {upsert: true});
     
@@ -50,6 +51,14 @@ export async function setUltimoTicket(idTicket: number) {
     const database = (await conexion).db('tocgame');
     const parametros = database.collection('parametros');
     const resultado = await parametros.updateOne({_id: "PARAMETROS"}, {$set: {"ultimoTicket": idTicket}}, {upsert: true});
+    
+    return resultado;
+}
+
+export async function setVidAndPid(vid: string, pid: string) {
+    const database = (await conexion).db('tocgame');
+    const parametros = database.collection('parametros');
+    const resultado = await parametros.updateOne({_id: "PARAMETROS"}, {$set: {"impresoraUsbInfo": { vid: vid, pid: pid }}}, {upsert: true});
     
     return resultado;
 }

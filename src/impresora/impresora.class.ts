@@ -6,7 +6,10 @@ import { trabajadoresInstance } from "../trabajadores/trabajadores.clase";
 import { TrabajadoresInterface } from "../trabajadores/trabajadores.interface";
 import { clienteInstance } from "../clientes/clientes.clase";
 import { parametrosInstance } from "../parametros/parametros.clase";
+import { Dispositivos } from "../dispositivos";
 
+
+const dispositivos = new Dispositivos();
 const escpos = require('escpos');
 const exec = require('child_process').exec;
 const os = require('os');
@@ -135,30 +138,30 @@ export class Impresora {
         try {
             permisosImpresora();
 
-            if(tipoImpresora === 'USB')
-            {
-                const arrayDevices = escpos.USB.findPrinter();
-                if (arrayDevices.length > 0) {
-                    /* Solo puede haber un dispositivo USB */
-                    const dispositivoUnico = arrayDevices[0];
-                    var device = new escpos.USB(dispositivoUnico); //USB
-                } else if (arrayDevices.length == 0) {
-                    throw 'Error, no hay ningún dispositivo USB conectado';
-                } else {
-                    throw 'Error, hay más de un dispositivo USB conectado';
-                }
-            }
-            else
-            {
-                if(tipoImpresora === 'SERIE')
-                {
-                    var device = new escpos.Serial('/dev/ttyS0', {
-                        baudRate: 115200,
-                        stopBit: 2
-                    });
-                }
-            }
-    
+            // if(tipoImpresora === 'USB')
+            // {
+            //     const arrayDevices = escpos.USB.findPrinter();
+            //     if (arrayDevices.length > 0) {
+            //         /* Solo puede haber un dispositivo USB */
+            //         const dispositivoUnico = arrayDevices[0];
+            //         var device = new escpos.USB(dispositivoUnico); //USB
+            //     } else if (arrayDevices.length == 0) {
+            //         throw 'Error, no hay ningún dispositivo USB conectado';
+            //     } else {
+            //         throw 'Error, hay más de un dispositivo USB conectado';
+            //     }
+            // }
+            // else
+            // {
+            //     if(tipoImpresora === 'SERIE')
+            //     {
+            //         var device = new escpos.Serial('/dev/ttyS0', {
+            //             baudRate: 115200,
+            //             stopBit: 2
+            //         });
+            //     }
+            // }
+            const device = await dispositivos.getDevice();
             var printer = new escpos.Printer(device);
     
             var detalles = '';

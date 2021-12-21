@@ -26,6 +26,7 @@ const parametrosVacios = {
     prohibirBuscarArticulos: 'No',
     ultimoTicket: -1,
     idCurrentTrabajador: -1,
+    impresoraUsbInfo: { vid: '', pid: '' },
     token: undefined
 };
 class ParametrosClase {
@@ -96,6 +97,19 @@ class ParametrosClase {
     }
     setUltimoTicket(idTicket) {
         return schParametros.setUltimoTicket(idTicket).then((res) => {
+            if (res.acknowledged) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    setVidAndPid(vid, pid) {
+        return schParametros.setVidAndPid(vid, pid).then((res) => {
             if (res.acknowledged) {
                 return true;
             }

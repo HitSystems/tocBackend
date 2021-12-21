@@ -10,4 +10,29 @@ export declare class ParametrosController {
         error: boolean;
         parametros: import("./parametros.interface").ParametrosInterface;
     };
+    vidAndPid(params: any): Promise<{
+        error: boolean;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
+    getVidAndPid(): Promise<{
+        error: boolean;
+        info: import("./parametros.interface").ParametrosInterface;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+        info?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }>;
 }
