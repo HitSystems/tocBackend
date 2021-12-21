@@ -13,6 +13,7 @@ exports.VersionController = void 0;
 const common_1 = require("@nestjs/common");
 let VersionController = class VersionController {
     getVersion() {
+        console.log("Eooo: ", process.env.npm_package_version);
         return process.env.npm_package_version;
     }
 };

@@ -3,6 +3,7 @@ import { Controller, Get } from '@nestjs/common';
 export class VersionController {
     @Get('tocGame')
     getVersion() {
+        console.log("Eooo: ", process.env.npm_package_version);
         return process.env.npm_package_version;
     }
 }
