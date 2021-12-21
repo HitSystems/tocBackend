@@ -1,9 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
-@Controller('version')
+import { parametrosInstance } from 'src/parametros/parametros.clase';
+@Controller('getInfo')
 export class VersionController {
     @Get('tocGame')
-    getVersion() {
-        console.log("Eooo: ", process.env.npm_package_version);
-        return process.env.npm_package_version;
+    getInfo() {
+        const parametros = parametrosInstance.getParametros();
+        return { 
+            version: process.env.npm_package_version,
+            nombreTienda: parametros.nombreTienda
+         };
     }
 }

@@ -1,3 +1,6 @@
 export declare class VersionController {
-    getVersion(): string;
+    getInfo(): {
+        version: string;
+        nombreTienda: string;
+    };
 }

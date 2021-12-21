@@ -11,10 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VersionController = void 0;
 const common_1 = require("@nestjs/common");
+const parametros_clase_1 = require("../parametros/parametros.clase");
 let VersionController = class VersionController {
-    getVersion() {
-        console.log("Eooo: ", process.env.npm_package_version);
-        return process.env.npm_package_version;
+    getInfo() {
+        const parametros = parametros_clase_1.parametrosInstance.getParametros();
+        return {
+            version: process.env.npm_package_version,
+            nombreTienda: parametros.nombreTienda
+        };
     }
 };
 __decorate([
@@ -22,9 +26,9 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], VersionController.prototype, "getVersion", null);
+], VersionController.prototype, "getInfo", null);
 VersionController = __decorate([
-    (0, common_1.Controller)('version')
+    (0, common_1.Controller)('getInfo')
 ], VersionController);
 exports.VersionController = VersionController;
 //# sourceMappingURL=version.controller.js.map
