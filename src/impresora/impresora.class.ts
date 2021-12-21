@@ -305,30 +305,31 @@ export class Impresora {
         }
     }
 
-    imprimirSalida(cantidad: number, fecha: number, nombreTrabajador: string, nombreTienda: string, concepto: string, tipoImpresora: string, codigoBarras: string) {
+    async imprimirSalida(cantidad: number, fecha: number, nombreTrabajador: string, nombreTienda: string, concepto: string, tipoImpresora: string, codigoBarras: string) {
         try {
             const fechaStr = dateToString2(fecha);
             permisosImpresora();
 
-            if(tipoImpresora === 'USB')
-            {
-                const arrayDevices = escpos.USB.findPrinter();
-                if (arrayDevices.length > 0) {
-                    /* Solo puede haber un dispositivo USB */
-                    const dispositivoUnico = arrayDevices[0];
-                    var device = new escpos.USB(dispositivoUnico); //USB
-                } else if (arrayDevices.length == 0) {
-                    throw 'Error, no hay ningún dispositivo USB conectado';
-                } else {
-                    throw 'Error, hay más de un dispositivo USB conectado';
-                }
-            }
-            else if(tipoImpresora === 'SERIE') {
-                var device = new escpos.Serial('/dev/ttyS0', {
-                    baudRate: 115000,
-                    stopBit: 2
-                });
-            }
+            // if(tipoImpresora === 'USB')
+            // {
+            //     const arrayDevices = escpos.USB.findPrinter();
+            //     if (arrayDevices.length > 0) {
+            //         /* Solo puede haber un dispositivo USB */
+            //         const dispositivoUnico = arrayDevices[0];
+            //         var device = new escpos.USB(dispositivoUnico); //USB
+            //     } else if (arrayDevices.length == 0) {
+            //         throw 'Error, no hay ningún dispositivo USB conectado';
+            //     } else {
+            //         throw 'Error, hay más de un dispositivo USB conectado';
+            //     }
+            // }
+            // else if(tipoImpresora === 'SERIE') {
+            //     var device = new escpos.Serial('/dev/ttyS0', {
+            //         baudRate: 115000,
+            //         stopBit: 2
+            //     });
+            // }
+            const device = await dispositivos.getDevice();
             
             const options = { encoding: "GB18030" };
             const printer = new escpos.Printer(device, options);
@@ -362,30 +363,31 @@ export class Impresora {
         }
     }
 
-    imprimirEntrada(totalIngresado: number, fecha: number, nombreDependienta: string) {
+    async imprimirEntrada(totalIngresado: number, fecha: number, nombreDependienta: string) {
         const parametros = parametrosInstance.getParametros();
         try  {
             const fechaStr = dateToString2(fecha);
             permisosImpresora();
-            if(parametros.tipoImpresora === 'USB')
-            {
-                const arrayDevices = escpos.USB.findPrinter();
-                if (arrayDevices.length > 0) {
-                    /* Solo puede haber un dispositivo USB */
-                    const dispositivoUnico = arrayDevices[0];
-                    var device = new escpos.USB(dispositivoUnico); //USB
-                } else if (arrayDevices.length == 0) {
-                    throw 'Error, no hay ningún dispositivo USB conectado';
-                } else {
-                    throw 'Error, hay más de un dispositivo USB conectado';
-                }
-            }
-            else if(parametros.tipoImpresora === 'SERIE') {
-                var device = new escpos.Serial('/dev/ttyS0', {
-                    baudRate: 115000,
-                    stopBit: 2
-                });
-            }
+            // if(parametros.tipoImpresora === 'USB')
+            // {
+            //     const arrayDevices = escpos.USB.findPrinter();
+            //     if (arrayDevices.length > 0) {
+            //         /* Solo puede haber un dispositivo USB */
+            //         const dispositivoUnico = arrayDevices[0];
+            //         var device = new escpos.USB(dispositivoUnico); //USB
+            //     } else if (arrayDevices.length == 0) {
+            //         throw 'Error, no hay ningún dispositivo USB conectado';
+            //     } else {
+            //         throw 'Error, hay más de un dispositivo USB conectado';
+            //     }
+            // }
+            // else if(parametros.tipoImpresora === 'SERIE') {
+            //     var device = new escpos.Serial('/dev/ttyS0', {
+            //         baudRate: 115000,
+            //         stopBit: 2
+            //     });
+            // }
+            const device = await dispositivos.getDevice();
 
             var options = { encoding: "GB18030" };
             var printer = new escpos.Printer(device, options);
@@ -416,7 +418,7 @@ export class Impresora {
         }
     }
 
-    imprimirCaja(calaixFet, nombreTrabajador, descuadre, nClientes, recaudado, arrayMovimientos: any[], nombreTienda, fI, fF, cInicioCaja, cFinalCaja, tipoImpresora) {
+    async imprimirCaja(calaixFet, nombreTrabajador, descuadre, nClientes, recaudado, arrayMovimientos: any[], nombreTienda, fI, fF, cInicioCaja, cFinalCaja, tipoImpresora) {
         try {
             var fechaInicio = new Date(fI);
             var fechaFinal = new Date(fF);
@@ -438,29 +440,29 @@ export class Impresora {
             textoMovimientos = `\nTotal targeta:      ${sumaTarjetas.toFixed(2)}\n` + textoMovimientos;
     
             permisosImpresora();
-            if(tipoImpresora === 'USB')
-            {
-                const arrayDevices = escpos.USB.findPrinter();
-                if (arrayDevices.length > 0) {
-                    /* Solo puede haber un dispositivo USB */
-                    const dispositivoUnico = arrayDevices[0];
-                    var device = new escpos.USB(dispositivoUnico); //USB
-                } else if (arrayDevices.length == 0) {
-                    throw 'Error, no hay ningún dispositivo USB conectado';
-                } else {
-                    throw 'Error, hay más de un dispositivo USB conectado';
-                }
-            }
-            else {
-                if(tipoImpresora === 'SERIE')
-                {
-                    var device = new escpos.Serial('/dev/ttyS0', {
-                        baudRate: 115000,
-                        stopBit: 2
-                      })
-                }
-            }
-            
+            // if(tipoImpresora === 'USB')
+            // {
+            //     const arrayDevices = escpos.USB.findPrinter();
+            //     if (arrayDevices.length > 0) {
+            //         /* Solo puede haber un dispositivo USB */
+            //         const dispositivoUnico = arrayDevices[0];
+            //         var device = new escpos.USB(dispositivoUnico); //USB
+            //     } else if (arrayDevices.length == 0) {
+            //         throw 'Error, no hay ningún dispositivo USB conectado';
+            //     } else {
+            //         throw 'Error, hay más de un dispositivo USB conectado';
+            //     }
+            // }
+            // else {
+            //     if(tipoImpresora === 'SERIE')
+            //     {
+            //         var device = new escpos.Serial('/dev/ttyS0', {
+            //             baudRate: 115000,
+            //             stopBit: 2
+            //           })
+            //     }
+            // }
+            const device = await dispositivos.getDevice();
             var options = { encoding: "ISO-8859-15" }; //"GB18030" };
             var printer = new escpos.Printer(device, options);
             let mesInicial = fechaInicio.getMonth()+1;
@@ -504,32 +506,32 @@ export class Impresora {
         } 
     }
 
-    abrirCajon() {
+    async abrirCajon() {
         const parametros = parametrosInstance.getParametros();
         try {
             if(os.platform() === 'linux') {
                 permisosImpresora();
-                if(parametros.tipoImpresora === 'USB')
-                {
-                    const arrayDevices = escpos.USB.findPrinter();
-                    if (arrayDevices.length > 0) {
-                        /* Solo puede haber un dispositivo USB */
-                        const dispositivoUnico = arrayDevices[0];
-                        var device = new escpos.USB(dispositivoUnico); //USB
-                    } else if (arrayDevices.length == 0) {
-                        throw 'Error, no hay ningún dispositivo USB conectado';
-                    } else {
-                        throw 'Error, hay más de un dispositivo USB conectado';
-                    }
-                } else {
-                    if(parametros.tipoImpresora === 'SERIE') {
-                        var device = new escpos.Serial('/dev/ttyS0', {
-                            baudRate: 115000,
-                            stopBit: 2
-                          });
-                    }
-                }
-        
+                // if(parametros.tipoImpresora === 'USB')
+                // {
+                //     const arrayDevices = escpos.USB.findPrinter();
+                //     if (arrayDevices.length > 0) {
+                //         /* Solo puede haber un dispositivo USB */
+                //         const dispositivoUnico = arrayDevices[0];
+                //         var device = new escpos.USB(dispositivoUnico); //USB
+                //     } else if (arrayDevices.length == 0) {
+                //         throw 'Error, no hay ningún dispositivo USB conectado';
+                //     } else {
+                //         throw 'Error, hay más de un dispositivo USB conectado';
+                //     }
+                // } else {
+                //     if(parametros.tipoImpresora === 'SERIE') {
+                //         var device = new escpos.Serial('/dev/ttyS0', {
+                //             baudRate: 115000,
+                //             stopBit: 2
+                //           });
+                //     }
+                // }
+                const device = await dispositivos.getDevice();
                 var printer = new escpos.Printer(device);
         
                 device.open(function () {
