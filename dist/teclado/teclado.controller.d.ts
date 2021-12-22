@@ -9,7 +9,25 @@ export declare class TecladoController {
     }>;
     actualizarArticulos(): Promise<{
         error: boolean;
-        mensaje: any;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
     } | {
         error: boolean;
         mensaje: string;

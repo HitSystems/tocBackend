@@ -19,6 +19,7 @@ const parametros_clase_1 = require("../parametros/parametros.clase");
 const articulos_clase_1 = require("../articulos/articulos.clase");
 const cestas_clase_1 = require("../cestas/cestas.clase");
 const teclado_clase_1 = require("./teclado.clase");
+const promociones_clase_1 = require("../promociones/promociones.clase");
 let TecladoController = class TecladoController {
     clickTecla(params) {
         return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta).then((res) => {
@@ -44,7 +45,27 @@ let TecladoController = class TecladoController {
                             if (infoTeclados.data.error == false) {
                                 return teclado_clase_1.tecladoInstance.insertarTeclas(infoTeclados.data.info).then((resultado) => {
                                     if (resultado) {
-                                        return { error: false, mensaje: '' };
+                                        return axios_1.default.post('promociones/getPromociones', { database: parametros_clase_1.parametrosInstance.getParametros().database, codigoTienda: parametros_clase_1.parametrosInstance.getParametros().codigoTienda }).then((resPromociones) => {
+                                            if (resPromociones.data.error == false) {
+                                                return promociones_clase_1.ofertas.insertarPromociones(resPromociones.data.info).then((resInsertPromos) => {
+                                                    if (resInsertPromos) {
+                                                        return { error: false };
+                                                    }
+                                                    else {
+                                                        return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 5' };
+                                                    }
+                                                }).catch((err) => {
+                                                    console.log(err);
+                                                    return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 4 CATCH' };
+                                                });
+                                            }
+                                            else {
+                                                return { error: true, mensaje: resPromociones.data.mensaje };
+                                            }
+                                        }).catch((err) => {
+                                            console.log(err);
+                                            return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 3' };
+                                        });
                                     }
                                     else {
                                         return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 2' };
