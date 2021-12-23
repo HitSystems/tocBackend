@@ -221,7 +221,11 @@ export class CajaClase {
         var descuadre = 0;
         var nClientes = 0;
         const params = parametrosInstance.getParametros();
-        let currentCaja = await this.getInfoCaja();
+        let currentCaja = cajaVacia;
+        let cajaDirectaBBDD = await this.getInfoCaja();
+        currentCaja["detalleApertura"] = cajaDirectaBBDD.detalleApertura;
+        currentCaja["inicioTime"] = cajaDirectaBBDD.inicioTime;
+        currentCaja["totalApertura"] = cajaDirectaBBDD.totalApertura;
         
         if(arrayTicketsCaja.length > 0) {
             currentCaja.primerTicket = arrayTicketsCaja[0]._id;
