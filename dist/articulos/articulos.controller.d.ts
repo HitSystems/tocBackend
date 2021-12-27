@@ -18,4 +18,11 @@ export declare class ArticulosController {
         error: boolean;
         mensaje: string;
     };
+    setSuplemento(params: any): {
+        error: boolean;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+    };
 }

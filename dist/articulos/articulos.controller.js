@@ -40,6 +40,15 @@ let ArticulosController = class ArticulosController {
             return { error: true, mensaje: 'Backend: Faltan datos en articulos/setEstadoTarifaVIP' };
         }
     }
+    setSuplemento(params) {
+        if (params.suplemento !== undefined && params.suplemento !== null) {
+            articulos_clase_1.articulosInstance.setSuplemento(params.suplemento);
+            return { error: false };
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Faltan datos en articulos/clickSuplemento' };
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('getArticulo'),
@@ -55,6 +64,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ArticulosController.prototype, "setEstadoTarifaEspecial", null);
+__decorate([
+    (0, common_1.Post)('clickSuplemento'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ArticulosController.prototype, "setSuplemento", null);
 ArticulosController = __decorate([
     (0, common_1.Controller)('articulos')
 ], ArticulosController);

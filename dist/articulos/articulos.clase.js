@@ -28,6 +28,9 @@ class Articulos {
             return false;
         });
     }
+    setSuplemento(suplemento) {
+        console.log(suplemento);
+    }
 }
 exports.Articulos = Articulos;
 const articulosInstance = new Articulos();

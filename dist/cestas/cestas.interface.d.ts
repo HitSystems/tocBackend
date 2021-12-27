@@ -33,4 +33,5 @@ export interface CestasInterface {
         };
     }[];
     nombreCesta?: string;
+    idCestaSincro?: string;
 }

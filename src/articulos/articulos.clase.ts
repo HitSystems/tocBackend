@@ -34,6 +34,10 @@ export class Articulos {
             return false;
         });
     }
+
+    setSuplemento(suplemento) {
+        console.log(suplemento);
+    }
 }
 const articulosInstance = new Articulos();
 export { articulosInstance };

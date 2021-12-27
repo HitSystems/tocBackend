@@ -128,9 +128,11 @@ export class CestaClase {
     });
   }
 
-  async crearNuevaCesta(nombreCesta: string) {
+  async crearNuevaCesta(nombreCesta: string, idCestaSincro = null) {
     const nuevaCesta = this.nuevaCestaVacia();
     nuevaCesta.nombreCesta = nombreCesta;
+    if(idCestaSincro !== null) nuevaCesta.idCestaSincro = idCestaSincro;
+    console.log(nuevaCesta);
     return this.setCesta(nuevaCesta).then((res) => {
       if (res) {
         return nuevaCesta;
@@ -367,6 +369,10 @@ export class CestaClase {
         console.log(err);
         return false;
       });
+    }
+
+    async insertarCestas(cestas) {
+      return cestas.info.map(async item => await this.crearNuevaCesta(item.valor, item.variable));
     }
 }
 

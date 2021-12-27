@@ -10,6 +10,8 @@ import { ofertas } from 'src/promociones/promociones.clase';
 import { paramsTicketInstance } from 'src/params-ticket/params-ticket.class';
 import { menusInstance } from 'src/menus/menus.clase';
 import { tecladoInstance } from 'src/teclado/teclado.clase';
+import { cestas } from 'src/cestas/cestas.clase';
+import { dobleMenusInstance } from 'src/doble-menus/doble-menus.clase';
 
 @Controller('instalador')
 export class InstaladorController {
@@ -73,8 +75,11 @@ export class InstaladorController {
                 const info6 = await paramsTicketInstance.insertarParametrosTicket(res.data.info.parametrosTicket);
                 const info7 = await menusInstance.insertarMenus(res.data.info.menus);
                 const info8 = await tecladoInstance.insertarTeclas(res.data.info.teclas);
+                //const info9 = await cestas.insertarCestas(res.data.info.cestas);
+                console.log(res.data.info.dobleMenus)
+                const info10 = await dobleMenusInstance.insertarMenus(res.data.info.dobleMenus);
 
-                if (info1 && info2 && info3 && info4 && info5 && info6 && info7 && info8) {
+                if (info1 && info2 && info3 && info4 && info5 && info6 && info7 && info8 && info10) {
                     return { error: false };
                 } else {
                     return { error: true, mensaje: `Backend: res1: ${info1}, res2: ${info2}, res3: ${info3}, res4: ${info4}, res5: ${info5}, res6: ${info6}, res7: ${info7}, res8: ${info8}`};

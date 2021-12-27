@@ -28,4 +28,14 @@ export class ArticulosController {
             return { error: true, mensaje: 'Backend: Faltan datos en articulos/setEstadoTarifaVIP' };
         }
     }
+
+    @Post('clickSuplemento')
+    setSuplemento(@Body() params) {
+        if(params.suplemento !== undefined && params.suplemento !== null) {
+            articulosInstance.setSuplemento(params.suplemento);
+            return  { error: false };
+        } else {
+            return { error: true, mensaje: 'Backend: Faltan datos en articulos/clickSuplemento' };
+        }
+    }
 }
