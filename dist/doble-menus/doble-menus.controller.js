@@ -12,11 +12,33 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MenusController = void 0;
+exports.DobleMenusController = void 0;
 const common_1 = require("@nestjs/common");
+const menus_clase_1 = require("../menus/menus.clase");
 const doble_menus_clase_1 = require("./doble-menus.clase");
-let MenusController = class MenusController {
+let DobleMenusController = class DobleMenusController {
     clickMenu(params) {
+        if (!doble_menus_clase_1.dobleMenusInstance.getBloqueado()) {
+            doble_menus_clase_1.dobleMenusInstance.setBloqueado(true);
+            return menus_clase_1.menusInstance.getSubmenus(params.tag).then((res) => {
+                doble_menus_clase_1.dobleMenusInstance.setBloqueado(false);
+                return {
+                    bloqueado: false,
+                    resultado: res,
+                };
+            }).catch((err) => {
+                menus_clase_1.menusInstance.setBloqueado(false);
+                return {
+                    bloqueado: false,
+                    error: err,
+                };
+            });
+        }
+        else {
+            return {
+                bloqueado: true,
+            };
+        }
     }
     getMenus() {
         return doble_menus_clase_1.dobleMenusInstance.getMenus().then((resultado) => {
@@ -35,15 +57,15 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], MenusController.prototype, "clickMenu", null);
+], DobleMenusController.prototype, "clickMenu", null);
 __decorate([
     (0, common_1.Post)('getMenus'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], MenusController.prototype, "getMenus", null);
-MenusController = __decorate([
+], DobleMenusController.prototype, "getMenus", null);
+DobleMenusController = __decorate([
     (0, common_1.Controller)('doble-menus')
-], MenusController);
-exports.MenusController = MenusController;
+], DobleMenusController);
+exports.DobleMenusController = DobleMenusController;
 //# sourceMappingURL=doble-menus.controller.js.map

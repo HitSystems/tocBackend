@@ -15,7 +15,7 @@ export declare class OfertasClase {
     calcularPrecioRealIndividual(tipoPromo: number, idPrincipal: number, cantidadPrincipal: number, unidadesOferta: number, precioTotalOferta: number): Promise<{
         precioRealPrincipal: number;
     }>;
-    insertarPromociones(arrayPromociones: any): Promise<boolean>;
+    insertarPromociones(arrayPromociones: any): true | Promise<boolean>;
 }
 declare const ofertas: OfertasClase;
 export { ofertas };

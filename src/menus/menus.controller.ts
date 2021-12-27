@@ -26,16 +26,22 @@ export class MenusController {
             }
         }
     }
-
     @Post('getMenus')
     getMenus() {
-        return menusInstance.getMenus().then((resultado) => {
+        return menusInstance.getMenus().then((res) => {
             if(menusInstance.getBloqueado() == false) {
-                return {bloqueado: false, resultado: resultado};
+                return {bloqueado: false, resultado: res};
             }
             else {
                 return {bloqueado: true};
             }        
         });
+    }
+    @Post('getSubmenus')
+    getSubmenus(@Body() params) {
+        return menusInstance.getSubmenus(params.tag).then((res) => {
+            if(!menusInstance.getBloqueado()) return { bloqueado: false, resultado: res };
+            return { bloqueado: true };
+        })
     }
 }

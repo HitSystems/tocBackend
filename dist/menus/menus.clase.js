@@ -26,6 +26,9 @@ class MenusClase {
             return false;
         });
     }
+    getSubmenus(tag) {
+        return schMenus.getSubmenus(tag);
+    }
 }
 exports.MenusClase = MenusClase;
 exports.menusInstance = new MenusClase();

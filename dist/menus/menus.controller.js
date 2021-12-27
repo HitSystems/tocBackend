@@ -40,13 +40,20 @@ let MenusController = class MenusController {
         }
     }
     getMenus() {
-        return menus_clase_1.menusInstance.getMenus().then((resultado) => {
+        return menus_clase_1.menusInstance.getMenus().then((res) => {
             if (menus_clase_1.menusInstance.getBloqueado() == false) {
-                return { bloqueado: false, resultado: resultado };
+                return { bloqueado: false, resultado: res };
             }
             else {
                 return { bloqueado: true };
             }
+        });
+    }
+    getSubmenus(params) {
+        return menus_clase_1.menusInstance.getSubmenus(params.tag).then((res) => {
+            if (!menus_clase_1.menusInstance.getBloqueado())
+                return { bloqueado: false, resultado: res };
+            return { bloqueado: true };
         });
     }
 };
@@ -63,6 +70,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], MenusController.prototype, "getMenus", null);
+__decorate([
+    (0, common_1.Post)('getSubmenus'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], MenusController.prototype, "getSubmenus", null);
 MenusController = __decorate([
     (0, common_1.Controller)('menus')
 ], MenusController);

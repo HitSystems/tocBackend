@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.insertarMenus = exports.borrarMenus = exports.getTecladoMain = exports.getMenus = void 0;
+exports.getSubmenus = exports.insertarMenus = exports.borrarMenus = exports.getTecladoMain = exports.getMenus = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getMenus() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -50,4 +50,11 @@ async function insertarMenus(arrayMenus) {
     }
 }
 exports.insertarMenus = insertarMenus;
+async function getSubmenus(tag) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const menus = database.collection('menus');
+    const resultado = await (await menus.find({ tag: tag })).toArray();
+    return resultado;
+}
+exports.getSubmenus = getSubmenus;
 //# sourceMappingURL=menus.mongodb.js.map

@@ -179,6 +179,8 @@ class OfertasClase {
         };
     }
     insertarPromociones(arrayPromociones) {
+        if (arrayPromociones.length === 0)
+            return true;
         return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
             return res.acknowledged;
         }).catch((err) => {

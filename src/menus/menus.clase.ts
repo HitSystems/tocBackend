@@ -31,6 +31,10 @@ export class MenusClase {
             return false;
         });
     }
+
+    getSubmenus(tag) {
+        return schMenus.getSubmenus(tag);
+    }
 }
 
 export const menusInstance = new MenusClase();

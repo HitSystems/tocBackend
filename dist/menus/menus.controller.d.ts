@@ -15,4 +15,11 @@ export declare class MenusController {
         bloqueado: boolean;
         resultado?: undefined;
     }>;
+    getSubmenus(params: any): Promise<{
+        bloqueado: boolean;
+        resultado: import("bson").Document[];
+    } | {
+        bloqueado: boolean;
+        resultado?: undefined;
+    }>;
 }

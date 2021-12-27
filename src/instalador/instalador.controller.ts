@@ -66,7 +66,6 @@ export class InstaladorController {
             licencia: parametros.licencia
         }).then(async (res: any) => {
             if (res.data.error === false) {
-                
                 const info1 = await trabajadoresInstance.insertarTrabajadores(res.data.info.dependientas);
                 const info2 = await articulosInstance.insertarArticulos(res.data.info.articulos); // FALLA
                 const info3 = await clienteInstance.insertarClientes(res.data.info.clientes);
@@ -76,9 +75,7 @@ export class InstaladorController {
                 const info7 = await menusInstance.insertarMenus(res.data.info.menus);
                 const info8 = await tecladoInstance.insertarTeclas(res.data.info.teclas);
                 //const info9 = await cestas.insertarCestas(res.data.info.cestas);
-                console.log(res.data.info.dobleMenus)
                 const info10 = await dobleMenusInstance.insertarMenus(res.data.info.dobleMenus);
-
                 if (info1 && info2 && info3 && info4 && info5 && info6 && info7 && info8 && info10) {
                     return { error: false };
                 } else {

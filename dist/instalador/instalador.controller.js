@@ -85,7 +85,6 @@ let InstaladorController = class InstaladorController {
                 const info6 = await params_ticket_class_1.paramsTicketInstance.insertarParametrosTicket(res.data.info.parametrosTicket);
                 const info7 = await menus_clase_1.menusInstance.insertarMenus(res.data.info.menus);
                 const info8 = await teclado_clase_1.tecladoInstance.insertarTeclas(res.data.info.teclas);
-                console.log(res.data.info.dobleMenus);
                 const info10 = await doble_menus_clase_1.dobleMenusInstance.insertarMenus(res.data.info.dobleMenus);
                 if (info1 && info2 && info3 && info4 && info5 && info6 && info7 && info8 && info10) {
                     return { error: false };
