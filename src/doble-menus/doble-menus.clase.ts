@@ -23,6 +23,7 @@ export class DobleMenusClase {
     }
 
     insertarMenus(arrayMenus) {
+        if(arrayMenus.length <= 0) return [];
         return schDobleMenus.insertarMenus(arrayMenus).then((res) => {
             return res.acknowledged;
         }).catch((err) => {

@@ -6,8 +6,8 @@ import { trabajadoresInstance } from "./trabajadores/trabajadores.clase";
 import { devolucionesInstance } from "./devoluciones/devoluciones.clase";
 
 const io = require("socket.io-client");
-//const socket = io('http://54.74.52.150:3001'); // NORMAL
-const socket = io('http://localhost:3001'); // DEV SANPEDRO EN LOCAL
+const socket = io('http://54.74.52.150:3001'); // NORMAL
+//const socket = io('http://localhost:3001'); // DEV SANPEDRO EN LOCAL
 
 socket.on('resSincroTickets', async (data) => {
     if (data.error == false) {

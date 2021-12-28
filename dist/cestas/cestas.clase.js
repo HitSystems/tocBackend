@@ -320,6 +320,8 @@ class CestaClase {
         });
     }
     async insertarCestas(cestas) {
+        if (cestas.info.length <= 0)
+            return [];
         return cestas.info.map(async (item) => await this.crearNuevaCesta(item.valor, item.variable));
     }
 }
