@@ -313,6 +313,28 @@ class Impresora {
             console.log(err);
         }
     }
+    async imprimirTest() {
+        const parametros = parametros_clase_1.parametrosInstance.getParametros();
+        try {
+            permisosImpresora();
+            const device = await dispositivos.getDevice();
+            var options = { encoding: "GB18030" };
+            var printer = new escpos.Printer(device, options);
+            device.open(function () {
+                printer
+                    .font('a')
+                    .style('b')
+                    .align('CT')
+                    .size(1, 1)
+                    .text("HOLA HOLA")
+                    .cut()
+                    .close();
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
     async imprimirCaja(calaixFet, nombreTrabajador, descuadre, nClientes, recaudado, arrayMovimientos, nombreTienda, fI, fF, cInicioCaja, cFinalCaja, tipoImpresora) {
         try {
             var fechaInicio = new Date(fI);
