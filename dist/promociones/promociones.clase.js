@@ -180,7 +180,30 @@ class OfertasClase {
     }
     insertarPromociones(arrayPromociones) {
         return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
+            if (res) {
+                this.promociones = arrayPromociones;
+            }
             return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    descargarPromociones() {
+        return schPromociones.getPromociones().then((arrayPromos) => {
+            if (arrayPromos.length > 0) {
+                this.promociones = arrayPromos;
+                return this.insertarPromociones(arrayPromos).then((res) => {
+                    return res;
+                }).catch((err) => {
+                    console.log(err);
+                    return false;
+                });
+            }
+            else {
+                this.promociones = [];
+                return true;
+            }
         }).catch((err) => {
             console.log(err);
             return false;

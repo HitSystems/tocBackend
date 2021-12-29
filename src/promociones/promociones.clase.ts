@@ -10,21 +10,23 @@ import * as schPromociones from "./promociones.mongodb";
 export class OfertasClase {
     private promociones: PromocionesInterface[];
 
+    /* Inicializa las promociones en su variable privada */
     constructor() {
         schPromociones.getPromociones().then((arrayPromos: PromocionesInterface[]) => {
             if(arrayPromos.length > 0) {
                 this.promociones = arrayPromos;
-            }
-            else {
+            } else {
                 this.promociones = [];
             }
         });        
     }
 
+    /* Deshacer ofertas de la cesta. Actualmente no hace nada */
     deshacerOfertas(cesta: CestasInterface) {
         return cesta;
     }
 
+    /* Comprueba si el artículo necesario para la promoción existe en la cesta */
     existeArticuloParaOfertaEnCesta(cesta: CestasInterface, idArticulo: number, unidadesNecesarias: number) {
         for(let i = 0; i < cesta.lista.length; i++) {
             if(cesta.lista[i]._id === idArticulo && cesta.lista[i].unidades >= unidadesNecesarias) {
@@ -34,6 +36,7 @@ export class OfertasClase {
         return -1; //IMPORTANTE QUE SEA ESTE VALOR SINO HAY SECUNDARIO
     }
 
+    /* Aplica las promociones en la cesta de todo tipo, tanto individuales como combos */
     async teLoAplicoTodo(necesariasPrincipal: number, necesariasSecundario: number, cesta: CestasInterface, posicionPrincipal: number, posicionSecundario: number, pideDelA: number, pideDelB: number, precioPromo: number, idPromo: string) {
         let numeroPrincipal     = 0;
         let numeroSecundario    = 0;
@@ -81,6 +84,8 @@ export class OfertasClase {
         }
         return cesta;
     }
+
+    /* Busca ofertas que se pueden aplicar en la cesta */
     async buscarOfertas(unaCesta: CestasInterface, viejoIva): Promise<CestasInterface> {
         var hayOferta = false;
         unaCesta = this.deshacerOfertas(unaCesta); //ahora no hace nada
@@ -117,6 +122,7 @@ export class OfertasClase {
         return unaCesta;
     }
 
+    /* Inserta la línea de la oferta combinada en la cesta */
     async insertarLineaPromoCestaCombo(cesta: CestasInterface, tipoPromo: number, unidades: number, total: number, idPromo: string, idPrincipal: number, idSecundario: number, cantidadPrincipal: number, cantidadSecundario: number) {
         var dtoAplicado = await this.calcularPrecioRealCombo(tipoPromo, idPrincipal, idSecundario, cantidadPrincipal, cantidadSecundario, unidades, total);
 
@@ -145,6 +151,8 @@ export class OfertasClase {
         }
         return cesta
     }
+
+    /* Inserta la línea de la oferta individual en la cesta */
     async insertarLineaPromoCestaIndividual(cesta: CestasInterface, tipoPromo: number, unidades: number, total: number, idPromo: string, idPrincipal: number, cantidadPrincipal: number) {
         var dtoAplicado = await this.calcularPrecioRealIndividual(tipoPromo, idPrincipal, cantidadPrincipal, unidades, total);
 
@@ -175,6 +183,7 @@ export class OfertasClase {
         return cesta
     }
 
+    /* Calcula el precio real que tienen los artículos de una promoción tipo combo. Se reparten en porcentaje */
     async calcularPrecioRealCombo(tipoPromo: number, idPrincipal: number, idSecundario: number, cantidadPrincipal: number, cantidadSecundario: number, unidadesOferta: number, precioTotalOferta: number) {
         let precioSinOfertaPrincipal    = 0;
         let precioSinOfertaSecundario   = 0;
@@ -202,6 +211,7 @@ export class OfertasClase {
         };
     }
 
+    /* Calcula el precio real que tienen los artículos de una promoción tipo individual. Se reparten dividido sus unidades */
     async calcularPrecioRealIndividual(tipoPromo: number, idPrincipal: number, cantidadPrincipal: number, unidadesOferta: number, precioTotalOferta: number) {
         let precioSinOfertaPrincipal    = 0;
         let precioTotalSinOferta        = 0;
@@ -225,13 +235,39 @@ export class OfertasClase {
         };
     }
 
+    /* Inserta un array de promociones en la base de datos. Se utiliza al instalar una licencia o para actualizar teclado */
+    /* También renueva la variable privada de promociones */
     insertarPromociones(arrayPromociones) {
         return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
+            if (res) {
+                this.promociones = arrayPromociones;
+            }
             return res.acknowledged;
         }).catch((err) => {
             console.log(err);
             return false;
         });
+    }
+
+    /* Petición de descarga de promociones. También renueva la variable privada de promociones (siempre se utiliza esta) */
+    descargarPromociones() {
+        return schPromociones.getPromociones().then((arrayPromos: PromocionesInterface[]) => {
+            if(arrayPromos.length > 0) {
+                this.promociones = arrayPromos;
+                return this.insertarPromociones(arrayPromos).then((res) => {
+                    return res;
+                }).catch((err) => {
+                    console.log(err);
+                    return false;
+                });
+            } else {
+                this.promociones = [];
+                return true;
+            }            
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });    
     }
 }
 

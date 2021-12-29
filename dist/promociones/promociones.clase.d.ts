@@ -16,6 +16,7 @@ export declare class OfertasClase {
         precioRealPrincipal: number;
     }>;
     insertarPromociones(arrayPromociones: any): Promise<boolean>;
+    descargarPromociones(): Promise<boolean>;
 }
 declare const ofertas: OfertasClase;
 export { ofertas };

@@ -14,9 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TecladoController = void 0;
 const common_1 = require("@nestjs/common");
-const axios_1 = require("axios");
-const parametros_clase_1 = require("../parametros/parametros.clase");
-const articulos_clase_1 = require("../articulos/articulos.clase");
 const cestas_clase_1 = require("../cestas/cestas.clase");
 const teclado_clase_1 = require("./teclado.clase");
 const promociones_clase_1 = require("../promociones/promociones.clase");
@@ -37,70 +34,7 @@ let TecladoController = class TecladoController {
         });
     }
     actualizarArticulos() {
-        return axios_1.default.post('articulos/descargarArticulosEspeciales', { database: parametros_clase_1.parametrosInstance.getParametros().database, codigoCliente: parametros_clase_1.parametrosInstance.getParametros().codigoTienda }).then((res) => {
-            if (res.data.error == false) {
-                return articulos_clase_1.articulosInstance.insertarArticulos(res.data.info).then((res2) => {
-                    if (res2) {
-                        return axios_1.default.post('/teclas/descargarTeclados', { database: parametros_clase_1.parametrosInstance.getParametros().database, licencia: parametros_clase_1.parametrosInstance.getParametros().licencia }).then((infoTeclados) => {
-                            if (infoTeclados.data.error == false) {
-                                return teclado_clase_1.tecladoInstance.insertarTeclas(infoTeclados.data.info).then((resultado) => {
-                                    if (resultado) {
-                                        return axios_1.default.post('promociones/getPromociones', { database: parametros_clase_1.parametrosInstance.getParametros().database, codigoTienda: parametros_clase_1.parametrosInstance.getParametros().codigoTienda }).then((resPromociones) => {
-                                            if (resPromociones.data.error == false) {
-                                                return promociones_clase_1.ofertas.insertarPromociones(resPromociones.data.info).then((resInsertPromos) => {
-                                                    if (resInsertPromos) {
-                                                        return { error: false };
-                                                    }
-                                                    else {
-                                                        return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 5' };
-                                                    }
-                                                }).catch((err) => {
-                                                    console.log(err);
-                                                    return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 4 CATCH' };
-                                                });
-                                            }
-                                            else {
-                                                return { error: true, mensaje: resPromociones.data.mensaje };
-                                            }
-                                        }).catch((err) => {
-                                            console.log(err);
-                                            return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 3' };
-                                        });
-                                    }
-                                    else {
-                                        return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado 2' };
-                                    }
-                                }).catch((err) => {
-                                    console.log(err);
-                                    return { error: true, mensaje: 'Backend: Error teclado/actualizarTeclado try catch' };
-                                });
-                            }
-                            else {
-                                return { error: true, mensaje: infoTeclados.data.mensaje };
-                            }
-                        }).catch((err) => {
-                            console.log(err);
-                            return { error: true, mensaje: 'Backend: teclado/actualizarTeclado error en segundo post catch' };
-                        });
-                    }
-                    else {
-                        return { error: true, mensaje: 'Error backend en actualizarTeclado/insertarArticulos' };
-                    }
-                }).catch((err) => {
-                    console.log(err);
-                    return { error: true, mensaje: 'Error backend en actualizarTeclado/insertarArticulos CATCH' };
-                });
-            }
-            else {
-                return { error: true, mensaje: res.data.mensaje };
-            }
-        }).catch((err) => {
-            console.log(err);
-            return {
-                error: true,
-                mensaje: 'Backend: Error en catch actualizarArticulos'
-            };
-        });
+        return teclado_clase_1.tecladoInstance.actualizarTeclado();
     }
 };
 __decorate([

@@ -14,7 +14,6 @@ socket.on('resSincroTickets', async (data) => {
     if (data.error == false) {
         if (data.arrayTickets.length > 0) {
             if (await tickets_clase_1.ticketsInstance.actualizarEstadoTicket(data.arrayTickets[0])) {
-                console.log("Ticket enviado y guardado OK");
                 (0, sincro_1.sincronizarTickets)();
             }
             else {
@@ -32,7 +31,6 @@ socket.on('resSincroTickets', async (data) => {
             }
             tickets_clase_1.ticketsInstance.actualizarComentario(data.arrayTickets[0]);
         }
-        console.log(data.mensaje);
     }
 });
 socket.on('resCajas', (data) => {

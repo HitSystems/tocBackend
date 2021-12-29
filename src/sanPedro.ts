@@ -13,7 +13,6 @@ socket.on('resSincroTickets', async (data) => {
     if (data.error == false) {
         if (data.arrayTickets.length > 0) {
             if (await ticketsInstance.actualizarEstadoTicket(data.arrayTickets[0])) {
-                console.log("Ticket enviado y guardado OK");
                 sincronizarTickets();
             } else {
                 console.log("Error al actualizar el ticket");
@@ -28,8 +27,7 @@ socket.on('resSincroTickets', async (data) => {
             }
 
             ticketsInstance.actualizarComentario(data.arrayTickets[0]);
-        } 
-        console.log(data.mensaje);
+        }
     }
 });
 

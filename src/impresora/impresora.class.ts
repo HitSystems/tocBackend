@@ -134,7 +134,7 @@ export class Impresora {
         const tipoImpresora = info.impresora;
         const infoClienteVip = info.infoClienteVip;
         const infoCliente = info.infoCliente;
-        console.log("Se imprime: ", info);
+
         try {
             permisosImpresora();
 

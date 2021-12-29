@@ -5,6 +5,7 @@ import { cajaInstance } from './caja/caja.clase';
 import { movimientosInstance } from './movimientos/movimientos.clase';
 import { trabajadoresInstance } from './trabajadores/trabajadores.clase';
 import { devolucionesInstance } from './devoluciones/devoluciones.clase';
+import { tecladoInstance } from './teclado/teclado.clase';
 
 function sincronizarTickets() {
     parametrosInstance.getEspecialParametros().then((parametros) => {
@@ -113,10 +114,17 @@ function sincronizarDevoluciones() {
     })
 }
 
+function actualizarTeclados() {
+    tecladoInstance.actualizarTeclado().catch((err) => {
+        console.log(err);
+    });
+}
+
 setInterval(sincronizarTickets, 30000);
 setInterval(sincronizarCajas, 40000);
 setInterval(sincronizarMovimientos, 50000);
 setInterval(sincronizarFichajes, 20000);
 setInterval(sincronizarDevoluciones, 60000);
+setInterval(actualizarTeclados, 3600000);
 
 export { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes, sincronizarDevoluciones };
