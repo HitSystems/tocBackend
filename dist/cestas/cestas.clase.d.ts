@@ -9,8 +9,10 @@ export declare class CestaClase {
     nuevaCestaVacia(): CestasInterface;
     getTodasCestas(): Promise<CestasInterface[]>;
     borrarCesta(idCestaBorrar: any): Promise<boolean>;
+    eliminarCesta(nombreCesta: any): Promise<boolean>;
     setCesta(cesta: CestasInterface): Promise<boolean>;
     crearNuevaCesta(nombreCesta: string, idCestaSincro?: any): Promise<boolean | CestasInterface>;
+    updateIdCestaTrabajador(id: string): Promise<boolean>;
     borrarItemCesta(idCesta: number, idArticulo: number): Promise<boolean | CestasInterface>;
     limpiarCesta(unaCesta: CestasInterface, posicionPrincipal: number, posicionSecundario: number, sobraCantidadPrincipal: number, sobraCantidadSecundario: number, pideDelA: number, pideDelB: number): Promise<CestasInterface>;
     insertarArticuloCesta(infoArticulo: any, unidades: number, idCesta: number, infoAPeso?: any): Promise<CestasInterface>;

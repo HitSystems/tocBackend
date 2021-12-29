@@ -86,12 +86,15 @@ class CestaClase {
     }
     borrarCesta(idCestaBorrar) {
         return schCestas.borrarCesta(idCestaBorrar).then((res) => {
-            if (res.acknowledged) {
-                return true;
-            }
-            else {
-                return false;
-            }
+            return res.acknowledged;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    eliminarCesta(nombreCesta) {
+        return schCestas.eliminarCesta(nombreCesta).then((res) => {
+            return res.acknowledged;
         }).catch((err) => {
             console.log(err);
             return false;
@@ -119,7 +122,6 @@ class CestaClase {
         nuevaCesta.nombreCesta = nombreCesta;
         if (idCestaSincro !== null)
             nuevaCesta.idCestaSincro = idCestaSincro;
-        console.log(nuevaCesta);
         return this.setCesta(nuevaCesta).then((res) => {
             if (res) {
                 return nuevaCesta;
@@ -127,6 +129,14 @@ class CestaClase {
             else {
                 return false;
             }
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+    async updateIdCestaTrabajador(id) {
+        return schCestas.updateIdCestaTrabajador(id).then((res) => {
+            return res.acknowledged;
         }).catch((err) => {
             console.log(err);
             return false;

@@ -99,15 +99,20 @@ export class CestaClase {
 
   borrarCesta(idCestaBorrar): Promise<boolean> {
     return schCestas.borrarCesta(idCestaBorrar).then((res) => {
-      if (res.acknowledged) {
-        return true;
-      } else {
-        return false;
-      }
+      return res.acknowledged;
     }).catch((err) => {
       console.log(err);
       return false;
     });
+  }
+
+  eliminarCesta(nombreCesta): Promise<boolean> {
+    return schCestas.eliminarCesta(nombreCesta).then((res) => {
+      return res.acknowledged;
+    }).catch((err) => {
+      console.log(err);
+      return false;
+    })
   }
 
   /* Guarda la cesta en Mongo */
@@ -132,7 +137,6 @@ export class CestaClase {
     const nuevaCesta = this.nuevaCestaVacia();
     nuevaCesta.nombreCesta = nombreCesta;
     if(idCestaSincro !== null) nuevaCesta.idCestaSincro = idCestaSincro;
-    console.log(nuevaCesta);
     return this.setCesta(nuevaCesta).then((res) => {
       if (res) {
         return nuevaCesta;
@@ -143,6 +147,15 @@ export class CestaClase {
       console.log(err);
       return false;
     });
+  }
+
+  async updateIdCestaTrabajador(id: string) {
+    return schCestas.updateIdCestaTrabajador(id).then((res) => {
+      return res.acknowledged;
+    }).catch((err) => {
+      console.log(err);
+      return false;
+    })
   }
 
   /* Obtiene la cesta, borra el  item y devuelve la cesta final */

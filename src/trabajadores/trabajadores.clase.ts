@@ -4,6 +4,7 @@ import { socket } from "../conexion/socket";
 import { SincroFichajesInterface, TrabajadoresInterface } from "./trabajadores.interface";
 import * as schTrabajadores from "./trabajadores.mongodb";
 import { parametrosInstance } from "../parametros/parametros.clase";
+import { cestas } from "src/cestas/cestas.clase";
 
 export class TrabajadoresClase {
 
@@ -66,8 +67,8 @@ export class TrabajadoresClase {
         });
     }
 
-    setCurrentTrabajadorPorNombre(nombre: string): Promise<boolean> {
-        return schTrabajadores.getTrabajadorPorNombre(nombre).then((infoTrabajador: TrabajadoresInterface) => {
+    setCurrentTrabajadorPorNombre(id: number): Promise<boolean> {
+        return schTrabajadores.getTrabajadorPorNombre(id).then((infoTrabajador: TrabajadoresInterface) => {
             if (infoTrabajador != null) {
                 return schTrabajadores.setCurrentIdTrabajador(infoTrabajador._id).then((res) => {
                     if (res.acknowledged) {
@@ -108,6 +109,9 @@ export class TrabajadoresClase {
                     if (resSetCurrent) {
                         return this.nuevoFichajesSincro("ENTRADA", idTrabajador).then((res2) => {
                             if (res2.acknowledged) {
+                                cestas.crearNuevaCesta(idTrabajador.toString()).then((data) => {
+                                    cestas.updateIdCestaTrabajador(idTrabajador.toString());
+                                });
                                 return true;
                             } else {
                                 return false;
@@ -137,6 +141,9 @@ export class TrabajadoresClase {
             if (res.acknowledged) {
                 return this.nuevoFichajesSincro("SALIDA", idTrabajador).then((res2) => {
                     if (res2.acknowledged) {
+                        cestas.eliminarCesta(idTrabajador).then((res) => {
+                            console.log(res)
+                        });
                         return true;
                     } else {
                         console.log(123);

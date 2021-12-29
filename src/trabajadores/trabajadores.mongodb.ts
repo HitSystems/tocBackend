@@ -28,10 +28,10 @@ export async function getTrabajador(idTrabajador: number): Promise<any> {
     return resultado;
 }
 
-export async function getTrabajadorPorNombre(nombre: string) {
+export async function getTrabajadorPorNombre(id: number) {
     const database = (await conexion).db('tocgame');
     const trabajadores = database.collection('trabajadores');
-    const resultado = await trabajadores.findOne({nombre: nombre}); //_id y idTrabajador siempre son iguales (duplicados)
+    const resultado = await trabajadores.findOne({idTrabajador: id}); //_id y idTrabajador siempre son iguales (duplicados)
     
     return resultado;
 }

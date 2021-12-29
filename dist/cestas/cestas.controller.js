@@ -101,6 +101,7 @@ let CestasController = class CestasController {
     }
     getCestaByID(params) {
         if (params.idCesta != undefined && params.idCesta != null) {
+            console.log(params);
             if (params.idCesta == -1) {
                 return cestas_clase_1.cestas.getCestaRandom().then((res) => {
                     return { error: false, info: res };

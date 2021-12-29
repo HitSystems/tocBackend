@@ -5,6 +5,7 @@ const global_clase_1 = require("../global/global.clase");
 const socket_1 = require("../conexion/socket");
 const schTrabajadores = require("./trabajadores.mongodb");
 const parametros_clase_1 = require("../parametros/parametros.clase");
+const cestas_clase_1 = require("../cestas/cestas.clase");
 class TrabajadoresClase {
     buscar(busqueda) {
         return schTrabajadores.buscar(busqueda).then((res) => {
@@ -66,8 +67,8 @@ class TrabajadoresClase {
             return false;
         });
     }
-    setCurrentTrabajadorPorNombre(nombre) {
-        return schTrabajadores.getTrabajadorPorNombre(nombre).then((infoTrabajador) => {
+    setCurrentTrabajadorPorNombre(id) {
+        return schTrabajadores.getTrabajadorPorNombre(id).then((infoTrabajador) => {
             if (infoTrabajador != null) {
                 return schTrabajadores.setCurrentIdTrabajador(infoTrabajador._id).then((res) => {
                     if (res.acknowledged) {
@@ -106,6 +107,9 @@ class TrabajadoresClase {
                     if (resSetCurrent) {
                         return this.nuevoFichajesSincro("ENTRADA", idTrabajador).then((res2) => {
                             if (res2.acknowledged) {
+                                cestas_clase_1.cestas.crearNuevaCesta(idTrabajador.toString()).then((data) => {
+                                    cestas_clase_1.cestas.updateIdCestaTrabajador(idTrabajador.toString());
+                                });
                                 return true;
                             }
                             else {
@@ -135,6 +139,9 @@ class TrabajadoresClase {
             if (res.acknowledged) {
                 return this.nuevoFichajesSincro("SALIDA", idTrabajador).then((res2) => {
                     if (res2.acknowledged) {
+                        cestas_clase_1.cestas.eliminarCesta(idTrabajador).then((res) => {
+                            console.log(res);
+                        });
                         return true;
                     }
                     else {

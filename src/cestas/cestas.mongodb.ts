@@ -27,8 +27,36 @@ export async function getAllCestas(): Promise<any> {
 export async function borrarCesta(idCesta: number) {
     const database = (await conexion).db('tocgame');
     const cesta = database.collection('cestas');
-    const resultado = await cesta.deleteOne({_id: idCesta});
-    
+    const tiposIva = {
+        base1: 0,
+        base2: 0,
+        base3: 0,
+        valorIva1: 0,
+        valorIva2: 0,
+        valorIva3: 0,
+        importe1: 0,
+        importe2: 0,
+        importe3: 0,
+    }
+    const resultado = await cesta.updateOne({ _id: idCesta }, { $set: { 'lista': [], 'tiposIva': tiposIva } }, { upsert: true });
+    return resultado;
+}
+
+export async function eliminarCesta(nombre: string) {
+    const database = (await conexion).db('tocgame');
+    const cesta = database.collection('cestas');
+    const resultado = await cesta.deleteMany({ _id: nombre.toString() });
+    return resultado;
+}
+
+export async function updateIdCestaTrabajador(id: string) {
+    const database = (await conexion).db('tocgame');
+    const cesta = database.collection('cestas');
+    const resTemp = await cesta.findOne({ nombreCesta: id });
+    resTemp._id = id;
+    resTemp.nombreCesta = `Trabajador ${id}`
+    const resultado = await cesta.insertOne(resTemp);
+    await cesta.deleteMany({ nombreCesta: id });
     return resultado;
 }
 

@@ -98,6 +98,7 @@ export class CestasController {
     @Post('getCestaByID')
     getCestaByID(@Body() params) {
         if (params.idCesta != undefined && params.idCesta != null) {
+            console.log(params)
             if (params.idCesta == -1) {
                 return cestas.getCestaRandom().then((res) => {
                     return { error: false, info: res };

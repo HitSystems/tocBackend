@@ -38,7 +38,7 @@ let TrabajadoresController = class TrabajadoresController {
         });
     }
     setTrabajadorActivo(params) {
-        return trabajadores_clase_1.trabajadoresInstance.setCurrentTrabajadorPorNombre(params.nombre).then((res) => {
+        return trabajadores_clase_1.trabajadoresInstance.setCurrentTrabajadorPorNombre(params.id).then((res) => {
             if (res) {
                 return {
                     error: false,

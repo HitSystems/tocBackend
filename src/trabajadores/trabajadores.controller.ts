@@ -27,7 +27,7 @@ export class TrabajadoresController {
 
     @Post('setActivo')
     setTrabajadorActivo(@Body() params) {
-        return trabajadoresInstance.setCurrentTrabajadorPorNombre(params.nombre).then((res) => {
+        return trabajadoresInstance.setCurrentTrabajadorPorNombre(params.id).then((res) => {
             if (res) {
                 return {
                     error: false,
