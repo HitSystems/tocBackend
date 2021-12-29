@@ -114,6 +114,7 @@ function sincronizarDevoluciones() {
     })
 }
 
+/* Actualiza precios, teclado y promociones (es decir, todo) */
 function actualizarTeclados() {
     tecladoInstance.actualizarTeclado().catch((err) => {
         console.log(err);
