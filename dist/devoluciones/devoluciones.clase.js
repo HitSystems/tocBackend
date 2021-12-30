@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.devolucionesInstance = exports.Devoluciones = void 0;
+const impresora_class_1 = require("../impresora/impresora.class");
 const cestas_clase_1 = require("../cestas/cestas.clase");
 const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
 const schDevoluciones = require("./devoluciones.mongodb");
@@ -27,6 +28,7 @@ class Devoluciones {
             comentario: '',
         };
         if (this.insertarDevolucion(objDevolucion)) {
+            await impresora_class_1.impresoraInstance.imprimirTicket(nuevoIdTicket);
             return await cestas_clase_1.cestas.borrarCesta(idCesta);
         }
         else {

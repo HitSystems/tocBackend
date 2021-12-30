@@ -1,3 +1,4 @@
+import { impresoraInstance } from "src/impresora/impresora.class";
 import { cestas } from "../cestas/cestas.clase";
 import { trabajadoresInstance } from "../trabajadores/trabajadores.clase";
 import { DevolucionesInterface } from "./devoluciones.interface";
@@ -27,6 +28,7 @@ export class Devoluciones {
             comentario: '',
         }
         if (this.insertarDevolucion(objDevolucion)) {
+            await impresoraInstance.imprimirTicket(nuevoIdTicket);
             return await cestas.borrarCesta(idCesta);
         } else {
             return false;
