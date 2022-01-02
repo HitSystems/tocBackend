@@ -64,51 +64,53 @@ class Impresora {
         const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getTrabajador((infoTicket != null) ? (infoTicket.idTrabajador) : (3018));
         const parametros = parametros_clase_1.parametrosInstance.getParametros();
         var sendObject;
-        if (infoTicket.cliente != null && infoTicket.tipoPago != 'DEUDA' && infoTicket.cliente != undefined) {
-            const infoClienteAux = await clientes_clase_1.clienteInstance.getClienteByID(infoTicket.cliente);
-            const infoCliente = infoClienteAux;
-            var auxNombre = '';
-            var puntosCliente = 0;
-            if (infoCliente != null) {
-                auxNombre = infoCliente.nombre;
-                puntosCliente = await clientes_clase_1.clienteInstance.getPuntosCliente(infoTicket.cliente);
+        if (infoTicket != null) {
+            if (infoTicket.cliente != null && infoTicket.tipoPago != 'DEUDA' && infoTicket.cliente != undefined) {
+                const infoClienteAux = await clientes_clase_1.clienteInstance.getClienteByID(infoTicket.cliente);
+                const infoCliente = infoClienteAux;
+                var auxNombre = '';
+                var puntosCliente = 0;
+                if (infoCliente != null) {
+                    auxNombre = infoCliente.nombre;
+                    puntosCliente = await clientes_clase_1.clienteInstance.getPuntosCliente(infoTicket.cliente);
+                }
+                else {
+                    auxNombre = '';
+                }
+                sendObject = {
+                    numFactura: infoTicket._id,
+                    arrayCompra: infoTicket.lista,
+                    total: infoTicket.total,
+                    visa: infoTicket.tipoPago,
+                    tiposIva: infoTicket.tiposIva,
+                    cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato : '',
+                    pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato : '',
+                    nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto) : (''),
+                    impresora: parametros.tipoImpresora,
+                    infoClienteVip: infoTicket.infoClienteVip,
+                    infoCliente: {
+                        nombre: auxNombre,
+                        puntos: puntosCliente
+                    }
+                };
+                this._venta(sendObject);
             }
             else {
-                auxNombre = '';
+                sendObject = {
+                    numFactura: infoTicket._id,
+                    arrayCompra: infoTicket.lista,
+                    total: infoTicket.total,
+                    visa: infoTicket.tipoPago,
+                    tiposIva: infoTicket.tiposIva,
+                    cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato : '',
+                    pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato : '',
+                    nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto) : (''),
+                    impresora: parametros.tipoImpresora,
+                    infoClienteVip: infoTicket.infoClienteVip,
+                    infoCliente: null
+                };
+                this._venta(sendObject);
             }
-            sendObject = {
-                numFactura: infoTicket._id,
-                arrayCompra: infoTicket.lista,
-                total: infoTicket.total,
-                visa: infoTicket.tipoPago,
-                tiposIva: infoTicket.tiposIva,
-                cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato : '',
-                pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato : '',
-                nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto) : (''),
-                impresora: parametros.tipoImpresora,
-                infoClienteVip: infoTicket.infoClienteVip,
-                infoCliente: {
-                    nombre: auxNombre,
-                    puntos: puntosCliente
-                }
-            };
-            this._venta(sendObject);
-        }
-        else {
-            sendObject = {
-                numFactura: infoTicket._id,
-                arrayCompra: infoTicket.lista,
-                total: infoTicket.total,
-                visa: infoTicket.tipoPago,
-                tiposIva: infoTicket.tiposIva,
-                cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato : '',
-                pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato : '',
-                nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto) : (''),
-                impresora: parametros.tipoImpresora,
-                infoClienteVip: infoTicket.infoClienteVip,
-                infoCliente: null
-            };
-            this._venta(sendObject);
         }
     }
     async _venta(info) {
