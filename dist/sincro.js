@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sincronizarDevoluciones = exports.sincronizarFichajes = exports.sincronizarMovimientos = exports.sincronizarCajas = exports.sincronizarTickets = void 0;
 const tickets_clase_1 = require("./tickets/tickets.clase");
+const sanPedro_1 = require("./sanPedro");
 const parametros_clase_1 = require("./parametros/parametros.clase");
 const caja_clase_1 = require("./caja/caja.clase");
 const movimientos_clase_1 = require("./movimientos/movimientos.clase");
@@ -13,6 +14,7 @@ function sincronizarTickets() {
         if (parametros != null) {
             tickets_clase_1.ticketsInstance.getTicketMasAntiguo().then((res) => {
                 if (res.length > 0) {
+                    console.log(sanPedro_1.socket.sendBuffer);
                 }
             }).catch((err) => {
                 console.log(err);

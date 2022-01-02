@@ -22,7 +22,8 @@ export class SocketGateway{
   server;
 
   @SubscribeMessage('test')
-  test() {
+  test(@MessageBody() params) {
+    console.log(params);
     this.server.emit('test', 'O Rei Eze');
   }
 

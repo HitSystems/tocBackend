@@ -23,7 +23,8 @@ const axios_1 = require("axios");
 const net = require('net');
 const fs = require("fs");
 let SocketGateway = class SocketGateway {
-    test() {
+    test(params) {
+        console.log(params);
         this.server.emit('test', 'O Rei Eze');
     }
     consultarPuntos(params) {
@@ -291,8 +292,9 @@ __decorate([
 ], SocketGateway.prototype, "server", void 0);
 __decorate([
     (0, websockets_1.SubscribeMessage)('test'),
+    __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], SocketGateway.prototype, "test", null);
 __decorate([

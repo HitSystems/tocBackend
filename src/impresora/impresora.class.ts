@@ -93,7 +93,7 @@ export class Impresora {
                 tiposIva: infoTicket.tiposIva,
                 cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato: '',
                 pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato: '',
-                nombreTrabajador: infoTrabajador.nombreCorto,
+                nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto): (''),
                 impresora: parametros.tipoImpresora,
                 infoClienteVip: infoTicket.infoClienteVip,
                 infoCliente: {
@@ -112,7 +112,7 @@ export class Impresora {
                 tiposIva: infoTicket.tiposIva,
                 cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato: '',
                 pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato: '',
-                nombreTrabajador: infoTrabajador.nombreCorto,
+                nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto): (''),
                 impresora: parametros.tipoImpresora,
                 infoClienteVip: infoTicket.infoClienteVip,
                 infoCliente: null
