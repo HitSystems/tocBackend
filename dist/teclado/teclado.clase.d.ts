@@ -24,6 +24,12 @@ export declare class TecladoClase {
     } | {
         error: boolean;
         mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
     }>;
 }
 export declare const tecladoInstance: TecladoClase;

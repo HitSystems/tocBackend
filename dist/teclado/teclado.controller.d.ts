@@ -31,5 +31,11 @@ export declare class TecladoController {
     } | {
         error: boolean;
         mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
     }>;
 }
