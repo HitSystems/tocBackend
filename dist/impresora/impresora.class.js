@@ -61,7 +61,7 @@ class Impresora {
     async imprimirTicket(idTicket) {
         const paramsTicket = await params_ticket_class_1.paramsTicketInstance.getParamsTicket();
         const infoTicket = await tickets_clase_1.ticketsInstance.getTicketByID(idTicket);
-        const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getTrabajador(infoTicket.idTrabajador);
+        const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getTrabajador((infoTicket.idTrabajador != null) ? (infoTicket.idTrabajador) : (3018));
         const parametros = parametros_clase_1.parametrosInstance.getParametros();
         var sendObject;
         if (infoTicket.cliente != null && infoTicket.tipoPago != 'DEUDA' && infoTicket.cliente != undefined) {
