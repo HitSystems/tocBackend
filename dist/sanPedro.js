@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.socket = void 0;
+exports.emitSocket = exports.socket = void 0;
 const tickets_clase_1 = require("./tickets/tickets.clase");
 const sincro_1 = require("./sincro");
 const caja_clase_1 = require("./caja/caja.clase");
@@ -10,6 +10,12 @@ const devoluciones_clase_1 = require("./devoluciones/devoluciones.clase");
 const io = require("socket.io-client");
 const socket = io('http://54.74.52.150:3001');
 exports.socket = socket;
+function emitSocket(canal, datos = null) {
+    if (socket.connected) {
+        socket.emit(canal, datos);
+    }
+}
+exports.emitSocket = emitSocket;
 socket.on('resSincroTickets', async (data) => {
     if (data.error == false) {
         if (data.arrayTickets.length > 0) {

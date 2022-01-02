@@ -1,5 +1,5 @@
 import { ticketsInstance } from './tickets/tickets.clase';
-import { socket } from './sanPedro';
+import { socket, emitSocket } from './sanPedro';
 import { parametrosInstance } from './parametros/parametros.clase';
 import { cajaInstance } from './caja/caja.clase';
 import { movimientosInstance } from './movimientos/movimientos.clase';
@@ -12,6 +12,11 @@ function sincronizarTickets() {
         if (parametros != null) {
             ticketsInstance.getTicketMasAntiguo().then((res) => {
                 if (res.length > 0) {
+                    emitSocket('sincroTickets', {
+                        parametros,
+                        arrayTickets: res
+                    });
+
                     // socket.emit('sincroTickets', {
                     //     parametros,
                     //     arrayTickets: res
@@ -35,6 +40,11 @@ function sincronizarCajas() {
         if (parametros != null) {
             cajaInstance.getCajaMasAntigua().then((res) => {
                 if (res.length > 0) {
+                    emitSocket('sincroCajas', {
+                        parametros,
+                        infoCaja: res[0]
+                    });
+
                     // socket.emit('sincroCajas', {
                     //     parametros,
                     //     infoCaja: res[0]
@@ -57,6 +67,11 @@ function sincronizarMovimientos() {
         if (parametros != null) {
             movimientosInstance.getMovimientoMasAntiguo().then((res) => {
                 if (res != null) {
+                    emitSocket('sincroMovimientos', {
+                        parametros,
+                        movimiento: res
+                    });
+
                     // socket.emit('sincroMovimientos', {
                     //     parametros,
                     //     movimiento: res
@@ -78,6 +93,11 @@ function sincronizarFichajes() {
         if (parametros != null) {
             trabajadoresInstance.getFichajeMasAntiguo().then((res) => {
                 if (res != null) {
+                    emitSocket('sincroFichajes', {
+                        parametros,
+                        fichaje: res
+                    });
+
                     // socket.emit('sincroFichajes', {
                     //     parametros,
                     //     fichaje: res
@@ -99,6 +119,11 @@ function sincronizarDevoluciones() {
         if(parametros !== null) {
             devolucionesInstance.getDevolucionMasAntigua().then((res) => {
                 if(res !== null) {
+                    emitSocket('sincroDevoluciones', {
+                        parametros,
+                        devolucion: res,
+                    });
+
                     // socket.emit('sincroDevoluciones', {
                     //     parametros,
                     //     devolucion: res,

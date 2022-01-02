@@ -9,6 +9,13 @@ const io = require("socket.io-client");
 const socket = io('http://54.74.52.150:3001'); // NORMAL
 //const socket = io('http://localhost:3001'); // DEV SANPEDRO EN LOCAL
 
+
+function emitSocket(canal: string, datos: any = null) {
+    if (socket.connected) {
+      socket.emit(canal, datos);
+    }
+}
+
 socket.on('resSincroTickets', async (data) => {
     if (data.error == false) {
         if (data.arrayTickets.length > 0) {
@@ -108,4 +115,4 @@ socket.on('resSincroDevoluciones', (data) => {
     }
 })
 
-export { socket };
+export { socket, emitSocket };

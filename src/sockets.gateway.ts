@@ -24,7 +24,7 @@ export class SocketGateway{
   @SubscribeMessage('test')
   test(@MessageBody() params) {
     console.log(params);
-    this.server.emit('test', 'O Rei Eze');
+    this.server.emit('test', 'O Rei Ezeee');
   }
 
   @SubscribeMessage('consultarPuntos')

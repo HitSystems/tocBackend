@@ -1,2 +1,3 @@
 declare const socket: any;
-export { socket };
+declare function emitSocket(canal: string, datos?: any): void;
+export { socket, emitSocket };

@@ -25,7 +25,7 @@ const fs = require("fs");
 let SocketGateway = class SocketGateway {
     test(params) {
         console.log(params);
-        this.server.emit('test', 'O Rei Eze');
+        this.server.emit('test', 'O Rei Ezeee');
     }
     consultarPuntos(params) {
         if (params != undefined) {
