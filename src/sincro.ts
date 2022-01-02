@@ -16,7 +16,7 @@ function sincronizarTickets() {
                     //     parametros,
                     //     arrayTickets: res
                     // });
-                    console.log(socket.sendBuffer);
+                    // console.log(socket.sendBuffer);
                 }
             }).catch((err) => {
                 console.log(err);
