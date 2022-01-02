@@ -3,8 +3,8 @@ import { impresoraInstance } from 'src/impresora/impresora.class';
 
 @Controller('test')
 export class TestController {
-    @Post('imprimirAlgo')
+    @Post('test')
     imprimirAlgo(@Body() parms) {
-        impresoraInstance.imprimirTest();
+        return 69;
     }
 }

@@ -17,11 +17,11 @@ const common_1 = require("@nestjs/common");
 const impresora_class_1 = require("../impresora/impresora.class");
 let TestController = class TestController {
     imprimirAlgo(parms) {
-        impresora_class_1.impresoraInstance.imprimirTest();
+        return 69;
     }
 };
 __decorate([
-    (0, common_1.Post)('imprimirAlgo'),
+    (0, common_1.Post)('test'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

@@ -1,3 +1,3 @@
 export declare class TestController {
-    imprimirAlgo(parms: any): void;
+    imprimirAlgo(parms: any): number;
 }
