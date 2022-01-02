@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sincronizarDevoluciones = exports.sincronizarFichajes = exports.sincronizarMovimientos = exports.sincronizarCajas = exports.sincronizarTickets = void 0;
 const tickets_clase_1 = require("./tickets/tickets.clase");
-const sanPedro_1 = require("./sanPedro");
 const parametros_clase_1 = require("./parametros/parametros.clase");
 const caja_clase_1 = require("./caja/caja.clase");
 const movimientos_clase_1 = require("./movimientos/movimientos.clase");
@@ -14,10 +13,6 @@ function sincronizarTickets() {
         if (parametros != null) {
             tickets_clase_1.ticketsInstance.getTicketMasAntiguo().then((res) => {
                 if (res.length > 0) {
-                    sanPedro_1.socket.emit('sincroTickets', {
-                        parametros,
-                        arrayTickets: res
-                    });
                 }
             }).catch((err) => {
                 console.log(err);
@@ -36,10 +31,6 @@ function sincronizarCajas() {
         if (parametros != null) {
             caja_clase_1.cajaInstance.getCajaMasAntigua().then((res) => {
                 if (res.length > 0) {
-                    sanPedro_1.socket.emit('sincroCajas', {
-                        parametros,
-                        infoCaja: res[0]
-                    });
                 }
             }).catch((err) => {
                 console.log(err);
@@ -58,10 +49,6 @@ function sincronizarMovimientos() {
         if (parametros != null) {
             movimientos_clase_1.movimientosInstance.getMovimientoMasAntiguo().then((res) => {
                 if (res != null) {
-                    sanPedro_1.socket.emit('sincroMovimientos', {
-                        parametros,
-                        movimiento: res
-                    });
                 }
             }).catch((err) => {
                 console.log(err);
@@ -80,10 +67,6 @@ function sincronizarFichajes() {
         if (parametros != null) {
             trabajadores_clase_1.trabajadoresInstance.getFichajeMasAntiguo().then((res) => {
                 if (res != null) {
-                    sanPedro_1.socket.emit('sincroFichajes', {
-                        parametros,
-                        fichaje: res
-                    });
                 }
             }).catch((err) => {
                 console.log(err);
@@ -102,10 +85,6 @@ function sincronizarDevoluciones() {
         if (parametros !== null) {
             devoluciones_clase_1.devolucionesInstance.getDevolucionMasAntigua().then((res) => {
                 if (res !== null) {
-                    sanPedro_1.socket.emit('sincroDevoluciones', {
-                        parametros,
-                        devolucion: res,
-                    });
                 }
             }).catch((err) => {
                 console.log(err);
