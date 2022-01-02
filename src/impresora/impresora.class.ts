@@ -69,7 +69,7 @@ export class Impresora {
     async imprimirTicket(idTicket: number) {
         const paramsTicket = await paramsTicketInstance.getParamsTicket();
         const infoTicket: TicketsInterface = await ticketsInstance.getTicketByID(idTicket);
-        const infoTrabajador: TrabajadoresInterface = await trabajadoresInstance.getTrabajador((infoTicket.idTrabajador != null) ? (infoTicket.idTrabajador) : (3018));
+        const infoTrabajador: TrabajadoresInterface = await trabajadoresInstance.getTrabajador((infoTicket != null) ? (infoTicket.idTrabajador) : (3018));
         const parametros = parametrosInstance.getParametros();
         var sendObject;
 
