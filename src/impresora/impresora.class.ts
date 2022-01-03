@@ -7,6 +7,7 @@ import { TrabajadoresInterface } from "../trabajadores/trabajadores.interface";
 import { clienteInstance } from "../clientes/clientes.clase";
 import { parametrosInstance } from "../parametros/parametros.clase";
 import { Dispositivos } from "../dispositivos";
+import { devolucionesInstance } from "src/devoluciones/devoluciones.clase";
 
 
 const dispositivos = new Dispositivos();
@@ -66,9 +67,15 @@ function dateToString2(fecha) {
 }
 
 export class Impresora {
-    async imprimirTicket(idTicket: number) {
+    async imprimirTicket(idTicket: number, esDevolucion = false) {
         const paramsTicket = await paramsTicketInstance.getParamsTicket();
-        const infoTicket: TicketsInterface = await ticketsInstance.getTicketByID(idTicket);
+        //const infoTicket: TicketsInterface = await ticketsInstance.getTicketByID(idTicket);
+        let infoTicket;
+        if(!esDevolucion) {
+            infoTicket = await ticketsInstance.getTicketByID(idTicket);
+        } else {
+            infoTicket = await devolucionesInstance.getDevolucionByID(idTicket);
+        }
         const infoTrabajador: TrabajadoresInterface = await trabajadoresInstance.getTrabajador(infoTicket.idTrabajador);
         const parametros = parametrosInstance.getParametros();
         var sendObject;
