@@ -43,4 +43,20 @@ export declare class TrabajadoresController {
         error: boolean;
         mensaje: string;
     }>;
+    actualizarTrabajadores(): Promise<{
+        error: boolean;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }>;
 }

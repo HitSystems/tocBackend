@@ -4,6 +4,7 @@ import { socket } from "../conexion/socket";
 import { SincroFichajesInterface, TrabajadoresInterface } from "./trabajadores.interface";
 import * as schTrabajadores from "./trabajadores.mongodb";
 import { parametrosInstance } from "../parametros/parametros.clase";
+import axios from "axios";
 
 export class TrabajadoresClase {
 
@@ -20,10 +21,56 @@ export class TrabajadoresClase {
         });
     }
 
+    mantenerTrabajadoresFichados(nuevoArray: TrabajadoresInterface[]) {
+        return this.getFichados().then((arrayFichados) => {
+            for (let i = 0; i < arrayFichados.length; i++) {
+                for (let j = 0; j < nuevoArray.length; j++) {
+                    if (arrayFichados[i]._id == nuevoArray[j]._id) {
+                        nuevoArray[j]["fichado"] = true;
+                        break;
+                    }
+                }
+            }
+            return { error: false, info: nuevoArray }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, info: [] };
+        });
+    }
+
     actualizarTrabajadores() {
-        globalInstance.setStopNecesario(true);
+        // globalInstance.setStopNecesario(true);
         const params = parametrosInstance.getParametros();
-        socket.emit('descargar-trabajadores', { licencia: params.licencia, database: params.database, codigoTienda: params.codigoTienda});
+        // socket.emit('descargar-trabajadores', { licencia: params.licencia, database: params.database, codigoTienda: params.codigoTienda});
+        return axios.post("dependientas/descargar", { database: params.database }).then((res: any) => {
+            if (res.data.error == false) {
+                if (res.data.info.length > 0) {
+                    return this.mantenerTrabajadoresFichados(res.data.info).then((resKeep) => {
+                        if (resKeep.error == false) {
+                            return this.insertarTrabajadores(resKeep.info).then((resInsert) => {
+                                if (resInsert) {
+                                    return { error: false };
+                                } else {
+                                    return { error: true, mensaje: 'Backend: Error actualizarTrabajadores ultimo momento' }
+                                }
+                            }).catch((err) => {
+                                console.log(err);
+                                return { error: true, mensaje: 'Backend: Error actualizarTrabajadores CATCH' };
+                            });
+                        } else {
+                            return { error: true, mensaje: 'Backend: Error en actualizarTrabajadores/mantenerTrabajadoresFichados normal' };
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en actualizarTrabajadores/mantenerTrabajadoresFichados CATCH' };
+                    });
+                } else {
+                    return { error: true, mensaje: 'No hay ningún trabajador en la base de datos para añadir' };
+                }
+            } else {
+                return { error: true, mensaje: res.data.error };
+            }
+        });
     }
 
     getCurrentIdTrabajador() {

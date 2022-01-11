@@ -94,4 +94,15 @@ export class TrabajadoresController {
             return { error: true, mensaje: 'Error, mirar consola nest' };
         });
     }
+    @Post('actualizarTrabajadores')
+    actualizarTrabajadores() {
+        console.log("Petición POST 1 llega");
+        return trabajadoresInstance.actualizarTrabajadores().then((res) => {
+            console.log(res);
+            return res;
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en trabajadores/actualizarTrabajadores CATCH' }
+        });
+    }
 }

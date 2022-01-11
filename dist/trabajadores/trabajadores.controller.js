@@ -102,6 +102,16 @@ let TrabajadoresController = class TrabajadoresController {
             return { error: true, mensaje: 'Error, mirar consola nest' };
         });
     }
+    actualizarTrabajadores() {
+        console.log("Petición POST 1 llega");
+        return trabajadores_clase_1.trabajadoresInstance.actualizarTrabajadores().then((res) => {
+            console.log(res);
+            return res;
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en trabajadores/actualizarTrabajadores CATCH' };
+        });
+    }
 };
 __decorate([
     (0, common_1.Post)('getTrabajadoresFichados'),
@@ -143,6 +153,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TrabajadoresController.prototype, "desfichar", null);
+__decorate([
+    (0, common_1.Post)('actualizarTrabajadores'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TrabajadoresController.prototype, "actualizarTrabajadores", null);
 TrabajadoresController = __decorate([
     (0, common_1.Controller)('trabajadores')
 ], TrabajadoresController);

@@ -1,7 +1,26 @@
 import { SincroFichajesInterface, TrabajadoresInterface } from "./trabajadores.interface";
 export declare class TrabajadoresClase {
     buscar(busqueda: string): Promise<any[] | TrabajadoresInterface[]>;
-    actualizarTrabajadores(): void;
+    mantenerTrabajadoresFichados(nuevoArray: TrabajadoresInterface[]): Promise<{
+        error: boolean;
+        info: TrabajadoresInterface[];
+    } | {
+        error: boolean;
+        info: any[];
+    }>;
+    actualizarTrabajadores(): Promise<{
+        error: boolean;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }>;
     getCurrentIdTrabajador(): Promise<any>;
     getCurrentTrabajador(): Promise<TrabajadoresInterface>;
     setCurrentTrabajador(idTrabajador: number): Promise<boolean>;
