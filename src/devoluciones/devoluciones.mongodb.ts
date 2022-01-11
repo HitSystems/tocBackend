@@ -25,3 +25,10 @@ export async function actualizarEstadoDevolucion(devolucion: DevolucionesInterfa
     }});
     return resultado;
 }
+
+export async function getDevolucionByID(id: number) {
+    const database = (await conexion).db('tocgame');
+    const devoluciones = database.collection('devoluciones');
+    const resultado = devoluciones.findOne({ _id: id });
+    return resultado;
+}
