@@ -28,7 +28,7 @@ export class Devoluciones {
             comentario: '',
         }
         if (this.insertarDevolucion(objDevolucion)) {
-            await impresoraInstance.imprimirTicket(nuevoIdTicket);
+            await impresoraInstance.imprimirTicket(nuevoIdTicket, true);
             return await cestas.borrarCesta(idCesta);
         } else {
             return false;
@@ -55,6 +55,10 @@ export class Devoluciones {
             console.log(err);
             return false;
         });
+    }
+
+    getDevolucionByID(id: number) {
+        return schDevoluciones.getDevolucionByID(id);
     }
 }
 export const devolucionesInstance = new Devoluciones();
