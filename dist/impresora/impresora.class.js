@@ -8,6 +8,7 @@ const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
 const clientes_clase_1 = require("../clientes/clientes.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const dispositivos_1 = require("../dispositivos");
+const devoluciones_clase_1 = require("../devoluciones/devoluciones.clase");
 const dispositivos = new dispositivos_1.Dispositivos();
 const escpos = require('escpos');
 const exec = require('child_process').exec;
@@ -58,10 +59,16 @@ function dateToString2(fecha) {
     return `${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}`;
 }
 class Impresora {
-    async imprimirTicket(idTicket) {
+    async imprimirTicket(idTicket, esDevolucion = false) {
         const paramsTicket = await params_ticket_class_1.paramsTicketInstance.getParamsTicket();
-        const infoTicket = await tickets_clase_1.ticketsInstance.getTicketByID(idTicket);
-        const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getTrabajador((infoTicket != null) ? (infoTicket.idTrabajador) : (3018));
+        let infoTicket;
+        if (!esDevolucion) {
+            infoTicket = await tickets_clase_1.ticketsInstance.getTicketByID(idTicket);
+        }
+        else {
+            infoTicket = await devoluciones_clase_1.devolucionesInstance.getDevolucionByID(idTicket);
+        }
+        const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getTrabajador(infoTicket.idTrabajador);
         const parametros = parametros_clase_1.parametrosInstance.getParametros();
         var sendObject;
         if (infoTicket != null) {

@@ -4,5 +4,6 @@ export declare class Devoluciones {
     getDevolucionMasAntigua(): Promise<import("bson").Document>;
     actualizarEstadoDevolucion(devolucion: DevolucionesInterface): Promise<boolean>;
     private insertarDevolucion;
+    getDevolucionByID(id: number): Promise<import("bson").Document>;
 }
 export declare const devolucionesInstance: Devoluciones;
