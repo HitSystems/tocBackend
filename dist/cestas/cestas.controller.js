@@ -197,6 +197,23 @@ let CestasController = class CestasController {
             return { error: true, mensaje: 'Backend: Error: faltan datos en cestas/regalarProducto' };
         }
     }
+    addSuplemento(params) {
+        if (params.idCesta && params.idSuplemento && params.idArticulo) {
+            return cestas_clase_1.cestas.addSuplemento(params.idCesta, params.idSuplemento, params.idArticulo).then((res) => {
+                return {
+                    error: false,
+                    bloqueado: false,
+                    cesta: res
+                };
+            }).catch((err) => {
+                console.log(err);
+                return {
+                    error: true,
+                    bloqueado: false
+                };
+            });
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('borrarCesta'),
@@ -266,6 +283,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "regalarProducto", null);
+__decorate([
+    (0, common_1.Post)('addSuplemento'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "addSuplemento", null);
 CestasController = __decorate([
     (0, common_1.Controller)('cestas')
 ], CestasController);

@@ -50,3 +50,14 @@ export async function getInfoArticuloTarifaEspecial(idArticulo: number): Promise
     
     return resultado;
 }
+
+export async function getSuplementos(suplementos) {
+    const database = (await conexion).db('tocgame');
+    const articulos = database.collection('articulos');
+    const suplementosData = []
+    for(let i in suplementos) {
+        const resultado = await (await articulos.find({ _id: suplementos[i] })).toArray();
+        suplementosData.push(resultado[0]);
+    }
+    return suplementosData;
+}

@@ -7,6 +7,7 @@ export declare class Articulos {
     getInfoArticulo(idArticulo: number): Promise<ArticulosInterface>;
     insertarArticulos(arrayArticulos: any, esTarifaEspecial?: boolean): Promise<boolean>;
     setSuplemento(suplemento: any): void;
+    getSuplementos(suplementos: any): Promise<any[]>;
 }
 declare const articulosInstance: Articulos;
 export { articulosInstance };

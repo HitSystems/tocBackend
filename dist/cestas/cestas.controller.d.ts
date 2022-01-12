@@ -72,7 +72,10 @@ export declare class CestasController {
     clickTeclaArticulo(params: any): Promise<{
         error: boolean;
         bloqueado: boolean;
-        cesta: import("./cestas.interface").CestasInterface;
+        cesta: import("./cestas.interface").CestasInterface | {
+            suplementos: boolean;
+            data: any[];
+        };
     } | {
         error: boolean;
         bloqueado: boolean;
@@ -95,4 +98,12 @@ export declare class CestasController {
         error: boolean;
         mensaje: string;
     };
+    addSuplemento(params: any): Promise<{
+        error: boolean;
+        bloqueado: boolean;
+        cesta: boolean | import("./cestas.interface").CestasInterface;
+    } | {
+        error: boolean;
+        bloqueado: boolean;
+    }>;
 }

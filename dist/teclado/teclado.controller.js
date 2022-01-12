@@ -18,6 +18,13 @@ const cestas_clase_1 = require("../cestas/cestas.clase");
 let TecladoController = class TecladoController {
     clickTecla(params) {
         return cestas_clase_1.cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta).then((res) => {
+            if (res['suplementos']) {
+                return {
+                    error: false,
+                    bloqueado: false,
+                    suplementos: res['data']
+                };
+            }
             return {
                 error: false,
                 bloqueado: false,

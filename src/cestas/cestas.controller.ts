@@ -198,4 +198,23 @@ export class CestasController {
             return { error: true, mensaje: 'Backend: Error: faltan datos en cestas/regalarProducto' };
         }
     }
+
+    @Post('addSuplemento')
+    addSuplemento(@Body() params) {
+        if(params.idCesta && params.idSuplemento && params.idArticulo) {
+            return cestas.addSuplemento(params.idCesta, params.idSuplemento, params.idArticulo).then((res) => {
+                return {
+                    error: false,
+                    bloqueado: false,
+                    cesta: res
+                };
+            }).catch((err) => {
+                console.log(err);
+                return {
+                    error: true,
+                    bloqueado: false
+                };
+            });
+        }
+    }
 }

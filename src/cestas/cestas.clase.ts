@@ -286,7 +286,6 @@ export class CestaClase {
 
     async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number, unidades: number = 1) {
         var cestaRetornar: CestasInterface = null;
-        console.log("LAL: ", infoAPeso);
         if(cajaInstance.cajaAbierta()) {
           
             try {
@@ -294,9 +293,15 @@ export class CestaClase {
                   
                     let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
                     if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
-                      
-                      cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
-                      
+                      if(infoArticulo.suplementos){
+                        await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                        return {
+                          suplementos: true,
+                          data: await articulosInstance.getSuplementos(infoArticulo.suplementos),
+                        }
+                      } else {
+                        cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                      }
                     } else {
                       
                       // vueToast.abrir('error', 'Este artículo tiene errores');
@@ -387,6 +392,21 @@ export class CestaClase {
     async insertarCestas(cestas) {
       if(cestas.info.length <= 0) return [];
       return cestas.info.map(async item => await this.crearNuevaCesta(item.valor, item.variable));
+    }
+
+    async addSuplemento(idCesta, idSuplemento, idArticulo) {
+      const cestaActual = await this.getCesta(idCesta);
+      const infoSuplemento = await articulosInstance.getInfoArticulo(idSuplemento);
+      const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
+      cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioBase;
+      cestaActual.lista[indexArticulo].nombre += ` + ${infoSuplemento.nombre}`;
+      return this.setCesta(cestaActual).then((res) => {
+        if(res) return cestaActual;
+        return false;
+      }).catch((err) => {
+        console.log(err);
+        return false;
+      });
     }
 }
 

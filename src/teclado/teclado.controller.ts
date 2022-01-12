@@ -6,6 +6,13 @@ export class TecladoController {
     @Post('clickTeclaArticulo')
     clickTecla(@Body() params) {
         return cestas.addItem(params.idArticulo, params.idBoton, params.peso, params.infoPeso, params.idCesta).then((res) => {
+            if(res['suplementos']) {
+                return {
+                    error: false,
+                    bloqueado: false,
+                    suplementos: res['data']
+                }
+            }
             return {
                 error: false,
                 bloqueado: false,

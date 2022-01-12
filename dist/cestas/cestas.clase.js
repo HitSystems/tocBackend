@@ -246,13 +246,21 @@ class CestaClase {
     }
     async addItem(idArticulo, idBoton, aPeso, infoAPeso, idCesta, unidades = 1) {
         var cestaRetornar = null;
-        console.log("LAL: ", infoAPeso);
         if (caja_clase_1.cajaInstance.cajaAbierta()) {
             try {
                 if (!aPeso) {
                     let infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
                     if (infoArticulo) {
-                        cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                        if (infoArticulo.suplementos) {
+                            await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                            return {
+                                suplementos: true,
+                                data: await articulos_clase_1.articulosInstance.getSuplementos(infoArticulo.suplementos),
+                            };
+                        }
+                        else {
+                            cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                        }
                     }
                     else {
                     }
@@ -333,6 +341,21 @@ class CestaClase {
         if (cestas.info.length <= 0)
             return [];
         return cestas.info.map(async (item) => await this.crearNuevaCesta(item.valor, item.variable));
+    }
+    async addSuplemento(idCesta, idSuplemento, idArticulo) {
+        const cestaActual = await this.getCesta(idCesta);
+        const infoSuplemento = await articulos_clase_1.articulosInstance.getInfoArticulo(idSuplemento);
+        const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
+        cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioBase;
+        cestaActual.lista[indexArticulo].nombre += ` + ${infoSuplemento.nombre}`;
+        return this.setCesta(cestaActual).then((res) => {
+            if (res)
+                return cestaActual;
+            return false;
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
     }
 }
 exports.CestaClase = CestaClase;
