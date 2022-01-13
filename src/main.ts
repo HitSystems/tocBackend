@@ -4,7 +4,8 @@ import axios from 'axios';
 require('./sincro');
 
 //axios.defaults.baseURL = (process.argv[2] === 'modoServer') ? ('http://localhost:3001') : ('http://54.74.52.150:3001'); // NORMAL
-axios.defaults.baseURL = 'http://localhost:3001'; // NORMAL
+//axios.defaults.baseURL = 'http://localhost:3001'; // NORMAL
+axios.defaults.baseURL = 'http://54.74.52.150:3001'; // NORMAL
 // axios.defaults.baseURL = (process.argv[2] === 'modoServer') ? ('http://localhost:3001') : ('http://localhost:3001'); // DEV LOCAL SANPEDRO
 
 async function bootstrap() {
