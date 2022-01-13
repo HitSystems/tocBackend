@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actualizarEstadoDevolucion = exports.getDevolucionMasAntigua = exports.insertarDevolucion = void 0;
+exports.getDevolucionByID = exports.actualizarEstadoDevolucion = exports.getDevolucionMasAntigua = exports.insertarDevolucion = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function insertarDevolucion(data) {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -27,4 +27,11 @@ async function actualizarEstadoDevolucion(devolucion) {
     return resultado;
 }
 exports.actualizarEstadoDevolucion = actualizarEstadoDevolucion;
+async function getDevolucionByID(id) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const devoluciones = database.collection('devoluciones');
+    const resultado = devoluciones.findOne({ _id: id });
+    return resultado;
+}
+exports.getDevolucionByID = getDevolucionByID;
 //# sourceMappingURL=devoluciones.mongodb.js.map

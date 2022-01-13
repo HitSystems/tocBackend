@@ -28,7 +28,7 @@ class Devoluciones {
             comentario: '',
         };
         if (this.insertarDevolucion(objDevolucion)) {
-            await impresora_class_1.impresoraInstance.imprimirTicket(nuevoIdTicket);
+            await impresora_class_1.impresoraInstance.imprimirTicket(nuevoIdTicket, true);
             return await cestas_clase_1.cestas.borrarCesta(idCesta);
         }
         else {
@@ -53,6 +53,9 @@ class Devoluciones {
             console.log(err);
             return false;
         });
+    }
+    getDevolucionByID(id) {
+        return schDevoluciones.getDevolucionByID(id);
     }
 }
 exports.Devoluciones = Devoluciones;

@@ -8,6 +8,7 @@ const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
 const clientes_clase_1 = require("../clientes/clientes.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const dispositivos_1 = require("../dispositivos");
+const devoluciones_clase_1 = require("../devoluciones/devoluciones.clase");
 const dispositivos = new dispositivos_1.Dispositivos();
 const escpos = require('escpos');
 const exec = require('child_process').exec;
@@ -58,9 +59,16 @@ function dateToString2(fecha) {
     return `${finalYear}-${finalMonth}-${finalDay} ${finalHours}:${finalMinutes}:${finalSeconds}`;
 }
 class Impresora {
-    async imprimirTicket(idTicket) {
+    async imprimirTicket(idTicket, esDevolucion = false) {
         const paramsTicket = await params_ticket_class_1.paramsTicketInstance.getParamsTicket();
-        const infoTicket = await tickets_clase_1.ticketsInstance.getTicketByID(idTicket);
+        let infoTicket;
+        if (!esDevolucion) {
+            infoTicket = await tickets_clase_1.ticketsInstance.getTicketByID(idTicket);
+        }
+        else {
+            infoTicket = await devoluciones_clase_1.devolucionesInstance.getDevolucionByID(idTicket);
+        }
+        console.log(infoTicket);
         const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getTrabajador(infoTicket.idTrabajador);
         const parametros = parametros_clase_1.parametrosInstance.getParametros();
         var sendObject;
@@ -116,6 +124,7 @@ class Impresora {
         const arrayCompra = info.arrayCompra;
         const total = info.total;
         const tipoPago = info.visa;
+        console.log(tipoPago);
         const tiposIva = info.tiposIva;
         const cabecera = info.cabecera;
         const pie = info.pie;
@@ -133,7 +142,7 @@ class Impresora {
             var detalleClienteVip = '';
             var detalleNombreCliente = '';
             var detallePuntosCliente = '';
-            if (infoClienteVip.esVip) {
+            if (infoClienteVip && infoClienteVip.esVip) {
                 detalleClienteVip = `Nom: ${infoClienteVip.nombre}\nNIF: ${infoClienteVip.nif}\nCP: ${infoClienteVip.cp}\nCiutat: ${infoClienteVip.ciudad}\nAdr: ${infoClienteVip.direccion}\n`;
             }
             if (infoCliente != null) {
@@ -175,6 +184,7 @@ class Impresora {
             }
             var pagoDevolucion = '';
             if (tipoPago == "DEVOLUCION") {
+                console.log('Entramos en tipo pago devolucion');
                 pagoDevolucion = '-- ES DEVOLUCION --\n';
             }
             var detalleIva4 = '';
