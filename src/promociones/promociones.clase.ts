@@ -206,8 +206,8 @@ export class OfertasClase {
         var dto = (precioTotalSinOferta-precioTotalOferta)/precioTotalSinOferta;
         
         return {
-            precioRealPrincipal: (precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta,
-            precioRealSecundario: (precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta
+            precioRealPrincipal: Math.round((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta *100)/100,
+            precioRealSecundario: Math.round((precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta*100)/100
         };
     }
 
@@ -231,7 +231,7 @@ export class OfertasClase {
         var dto = (precioTotalSinOferta-precioTotalOferta)/precioTotalSinOferta;
         
         return {
-            precioRealPrincipal: (precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta*cantidadPrincipal
+            precioRealPrincipal: Math.round((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta*cantidadPrincipal*100)/100
         };
     }
 
