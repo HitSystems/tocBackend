@@ -227,7 +227,6 @@ export class CestaClase {
                     }
                     else
                     {
-                      console.log("EO: ", infoAPeso);
                       miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
                       miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
                     }  

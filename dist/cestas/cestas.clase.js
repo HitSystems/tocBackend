@@ -198,7 +198,6 @@ class CestaClase {
                         miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva);
                     }
                     else {
-                        console.log("EO: ", infoAPeso);
                         miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
                         miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva, infoAPeso);
                     }
