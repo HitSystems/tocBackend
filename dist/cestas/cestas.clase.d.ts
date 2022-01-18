@@ -24,7 +24,7 @@ export declare class CestaClase {
     recalcularIvas(cesta: CestasInterface): Promise<CestasInterface>;
     borrarArticulosCesta(idCesta: number): Promise<boolean | CestasInterface>;
     insertarCestas(cestas: any): Promise<any>;
-    addSuplemento(idCesta: any, idSuplemento: any, idArticulo: any): Promise<boolean | CestasInterface>;
+    addSuplemento(idCesta: any, suplementos: any, idArticulo: any): Promise<boolean | CestasInterface>;
 }
 declare const cestas: CestaClase;
 export { cestas };

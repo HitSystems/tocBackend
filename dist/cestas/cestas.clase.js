@@ -342,12 +342,16 @@ class CestaClase {
             return [];
         return cestas.info.map(async (item) => await this.crearNuevaCesta(item.valor, item.variable));
     }
-    async addSuplemento(idCesta, idSuplemento, idArticulo) {
+    async addSuplemento(idCesta, suplementos, idArticulo) {
+        suplementos = suplementos.map(o => o.suplemento);
         const cestaActual = await this.getCesta(idCesta);
-        const infoSuplemento = await articulos_clase_1.articulosInstance.getInfoArticulo(idSuplemento);
-        const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
-        cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioBase;
-        cestaActual.lista[indexArticulo].nombre += ` + ${infoSuplemento.nombre}`;
+        for (let i in suplementos) {
+            const idSuplemento = suplementos[i];
+            const infoSuplemento = await articulos_clase_1.articulosInstance.getInfoArticulo(idSuplemento);
+            const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
+            cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioBase;
+            cestaActual.lista[indexArticulo].nombre += ` + ${infoSuplemento.nombre}`;
+        }
         return this.setCesta(cestaActual).then((res) => {
             if (res)
                 return cestaActual;

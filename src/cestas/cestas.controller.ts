@@ -201,8 +201,8 @@ export class CestasController {
 
     @Post('addSuplemento')
     addSuplemento(@Body() params) {
-        if(params.idCesta && params.idSuplemento && params.idArticulo) {
-            return cestas.addSuplemento(params.idCesta, params.idSuplemento, params.idArticulo).then((res) => {
+        if(params.idCesta && params.suplementos && params.idArticulo) {
+            return cestas.addSuplemento(params.idCesta, params.suplementos, params.idArticulo).then((res) => {
                 return {
                     error: false,
                     bloqueado: false,

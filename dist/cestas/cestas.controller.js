@@ -198,8 +198,8 @@ let CestasController = class CestasController {
         }
     }
     addSuplemento(params) {
-        if (params.idCesta && params.idSuplemento && params.idArticulo) {
-            return cestas_clase_1.cestas.addSuplemento(params.idCesta, params.idSuplemento, params.idArticulo).then((res) => {
+        if (params.idCesta && params.suplementos && params.idArticulo) {
+            return cestas_clase_1.cestas.addSuplemento(params.idCesta, params.suplementos, params.idArticulo).then((res) => {
                 return {
                     error: false,
                     bloqueado: false,
