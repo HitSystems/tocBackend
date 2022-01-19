@@ -17,9 +17,11 @@ function emitSocket(canal, datos = null) {
 }
 exports.emitSocket = emitSocket;
 socket.on('resSincroTickets', async (data) => {
+    console.log("Recibo respuesta del sanPedro: ", data);
     if (data.error == false) {
         if (data.arrayTickets.length > 0) {
             if (await tickets_clase_1.ticketsInstance.actualizarEstadoTicket(data.arrayTickets[0])) {
+                console.log("Vuelvo a ejecutar el sincronizarTickets()");
                 (0, sincro_1.sincronizarTickets)();
             }
             else {

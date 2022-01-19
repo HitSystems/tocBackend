@@ -10,10 +10,12 @@ const trabajadores_clase_1 = require("./trabajadores/trabajadores.clase");
 const devoluciones_clase_1 = require("./devoluciones/devoluciones.clase");
 const teclado_clase_1 = require("./teclado/teclado.clase");
 function sincronizarTickets() {
+    console.log("Entro en sincronizarTickets");
     parametros_clase_1.parametrosInstance.getEspecialParametros().then((parametros) => {
         if (parametros != null) {
             tickets_clase_1.ticketsInstance.getTicketMasAntiguo().then((res) => {
                 if (res.length > 0) {
+                    console.log("Se hace un emit de ", res);
                     (0, sanPedro_1.emitSocket)('sincroTickets', {
                         parametros,
                         arrayTickets: res

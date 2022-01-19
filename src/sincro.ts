@@ -8,10 +8,12 @@ import { devolucionesInstance } from './devoluciones/devoluciones.clase';
 import { tecladoInstance } from './teclado/teclado.clase';
 
 function sincronizarTickets() {
+    console.log("Entro en sincronizarTickets");
     parametrosInstance.getEspecialParametros().then((parametros) => {
         if (parametros != null) {
             ticketsInstance.getTicketMasAntiguo().then((res) => {
                 if (res.length > 0) {
+                    console.log("Se hace un emit de ", res);
                     emitSocket('sincroTickets', {
                         parametros,
                         arrayTickets: res
