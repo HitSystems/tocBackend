@@ -49,15 +49,15 @@ function construirObjetoIvas(infoArticulo, unidades, tipoIvaAnterior, infoAPeso 
         }
     }
     const aux = {
-        base1: redondearPrecio(base1) + tipoIvaAnterior.base1,
-        base2: redondearPrecio(base2) + tipoIvaAnterior.base2,
-        base3: redondearPrecio(base3) + tipoIvaAnterior.base3,
-        valorIva1: redondearPrecio(valor1) + tipoIvaAnterior.valorIva1,
-        valorIva2: redondearPrecio(valor2) + tipoIvaAnterior.valorIva2,
-        valorIva3: redondearPrecio(valor3) + tipoIvaAnterior.valorIva3,
-        importe1: redondearPrecio(importe1) + tipoIvaAnterior.importe1,
-        importe2: redondearPrecio(importe2) + tipoIvaAnterior.importe2,
-        importe3: redondearPrecio(importe3) + tipoIvaAnterior.importe3
+        base1: redondearPrecio(base1 + tipoIvaAnterior.base1),
+        base2: redondearPrecio(base2 + tipoIvaAnterior.base2),
+        base3: redondearPrecio(base3 + tipoIvaAnterior.base3),
+        valorIva1: redondearPrecio(valor1 + tipoIvaAnterior.valorIva1),
+        valorIva2: redondearPrecio(valor2 + tipoIvaAnterior.valorIva2),
+        valorIva3: redondearPrecio(valor3 + tipoIvaAnterior.valorIva3),
+        importe1: redondearPrecio(importe1 + tipoIvaAnterior.importe1),
+        importe2: redondearPrecio(importe2 + tipoIvaAnterior.importe2),
+        importe3: redondearPrecio(importe3 + tipoIvaAnterior.importe3)
     };
     return aux;
 }
