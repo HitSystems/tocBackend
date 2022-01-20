@@ -126,10 +126,4 @@ function actualizarTeclados() {
         console.log(err);
     });
 }
-setInterval(sincronizarTickets, 30000);
-setInterval(sincronizarCajas, 40000);
-setInterval(sincronizarMovimientos, 50000);
-setInterval(sincronizarFichajes, 20000);
-setInterval(sincronizarDevoluciones, 60000);
-setInterval(actualizarTeclados, 3600000);
 //# sourceMappingURL=sincro.js.map
