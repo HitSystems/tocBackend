@@ -1,6 +1,6 @@
 export declare class ParametrosController {
     todoInstalado(): {
-        todoInstalado: boolean;
+        todoInstalado: true;
         config: import("./parametros.interface").ParametrosInterface;
     } | {
         todoInstalado: boolean;

@@ -21,7 +21,7 @@ let ParametrosController = class ParametrosController {
         if (res) {
             const respuestaParametros = parametros_clase_1.parametrosInstance.getParametros();
             return {
-                todoInstalado: true,
+                todoInstalado: res,
                 config: respuestaParametros
             };
         }

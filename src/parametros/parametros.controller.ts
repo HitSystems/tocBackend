@@ -8,7 +8,7 @@ export class ParametrosController {
         if (res) {
             const respuestaParametros = parametrosInstance.getParametros();
             return {
-                todoInstalado: true,
+                todoInstalado: res,
                 config: respuestaParametros
             };
         } else {
