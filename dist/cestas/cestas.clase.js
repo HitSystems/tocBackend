@@ -345,10 +345,11 @@ class CestaClase {
     async addSuplemento(idCesta, suplementos, idArticulo) {
         suplementos = suplementos.map(o => o.suplemento);
         const cestaActual = await this.getCesta(idCesta);
+        const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
+        cestaActual.lista[indexArticulo].suplementosId = suplementos;
         for (let i in suplementos) {
             const idSuplemento = suplementos[i];
             const infoSuplemento = await articulos_clase_1.articulosInstance.getInfoArticulo(idSuplemento);
-            const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
             cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioBase;
             cestaActual.lista[indexArticulo].nombre += ` + ${infoSuplemento.nombre}`;
         }
@@ -360,6 +361,26 @@ class CestaClase {
             console.log(err);
             return false;
         });
+    }
+    async modificarSuplementos(cestaId, idArticulo) {
+        const cestaActual = await this.getCesta(cestaId);
+        const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
+        const suplementos = cestaActual.lista[indexArticulo].suplementosId;
+        const infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
+        const suplementosArticulo = await articulos_clase_1.articulosInstance.getSuplementos(infoArticulo.suplementos);
+        cestaActual.lista[indexArticulo].nombre = cestaActual.lista[indexArticulo].nombre.split('+')[0];
+        cestaActual.lista[indexArticulo].suplementosId = [];
+        for (let i = 0; i < suplementos.length; i++) {
+            const dataArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(suplementos[i]);
+            cestaActual.lista[indexArticulo].subtotal -= dataArticulo.precioBase;
+        }
+        this.setCesta(cestaActual);
+        const res = {
+            suplementos: suplementosArticulo.length > 0 ? true : false,
+            suplementosData: suplementosArticulo,
+            suplementosSeleccionados: suplementos,
+        };
+        return res;
     }
 }
 exports.CestaClase = CestaClase;

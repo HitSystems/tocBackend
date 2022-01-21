@@ -25,6 +25,11 @@ export declare class CestaClase {
     borrarArticulosCesta(idCesta: number): Promise<boolean | CestasInterface>;
     insertarCestas(cestas: any): Promise<any>;
     addSuplemento(idCesta: any, suplementos: any, idArticulo: any): Promise<boolean | CestasInterface>;
+    modificarSuplementos(cestaId: any, idArticulo: any): Promise<{
+        suplementos: boolean;
+        suplementosData: any[];
+        suplementosSeleccionados: number[];
+    }>;
 }
 declare const cestas: CestaClase;
 export { cestas };

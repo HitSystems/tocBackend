@@ -106,4 +106,13 @@ export declare class CestasController {
         error: boolean;
         bloqueado: boolean;
     }>;
+    modificarSuplementos(params: any): Promise<{
+        suplementos: boolean;
+        suplementosData: any[];
+        suplementosSeleccionados: number[];
+    } | {
+        suplementos: boolean;
+        suplementosData?: undefined;
+        suplementosSeleccionados?: undefined;
+    }>;
 }

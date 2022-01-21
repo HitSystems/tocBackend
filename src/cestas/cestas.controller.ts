@@ -217,4 +217,21 @@ export class CestasController {
             });
         }
     }
+
+    @Post('modificarSuplementos')
+    modificarSuplementos(@Body() params) {
+        console.log(params);
+        if(params.cestaId && params.idArticulo) {
+            return cestas.modificarSuplementos(params.cestaId, params.idArticulo).then((res) => {
+                if(res.suplementos) {
+                    return {
+                        suplementos: true,
+                        suplementosData: res.suplementosData, 
+                        suplementosSeleccionados: res.suplementosSeleccionados, 
+                    }
+                }
+                return { suplementos: false };
+            })
+        }
+    }
 }

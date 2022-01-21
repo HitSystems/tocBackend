@@ -214,6 +214,21 @@ let CestasController = class CestasController {
             });
         }
     }
+    modificarSuplementos(params) {
+        console.log(params);
+        if (params.cestaId && params.idArticulo) {
+            return cestas_clase_1.cestas.modificarSuplementos(params.cestaId, params.idArticulo).then((res) => {
+                if (res.suplementos) {
+                    return {
+                        suplementos: true,
+                        suplementosData: res.suplementosData,
+                        suplementosSeleccionados: res.suplementosSeleccionados,
+                    };
+                }
+                return { suplementos: false };
+            });
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('borrarCesta'),
@@ -290,6 +305,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "addSuplemento", null);
+__decorate([
+    (0, common_1.Post)('modificarSuplementos'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "modificarSuplementos", null);
 CestasController = __decorate([
     (0, common_1.Controller)('cestas')
 ], CestasController);
