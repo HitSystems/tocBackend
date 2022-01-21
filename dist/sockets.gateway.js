@@ -86,24 +86,12 @@ let SocketGateway = class SocketGateway {
                 let tpv = null;
                 let file = null;
                 let arr = [];
-                let errorLecturaArchivo = false;
                 try {
                     file = fs.readFileSync("/home/hit/clearOne/CoLinux.cfg", "utf8");
                     arr = file.split(/\r?\n/);
                 }
                 catch (err) {
                     console.log("Error: No se ha podido leer el archivo CoLinux");
-                    errorLecturaArchivo = true;
-                }
-                if (errorLecturaArchivo) {
-                    try {
-                        file = fs.readFileSync("/home/hit/clearOne/CoLinux.cnf", "utf8");
-                        arr = file.split(/\r?\n/);
-                    }
-                    catch (err) {
-                        console.log("Error: No se ha podido leer el archivo CoLinux");
-                        errorLecturaArchivo = true;
-                    }
                 }
                 for (let i = 0; i < arr.length; i++) {
                     if (arr[i].includes('[CLIENTE]')) {
