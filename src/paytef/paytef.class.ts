@@ -24,7 +24,7 @@ class PaytefClass {
                 method: "polling"
               },
               language: "es",
-              requestedAmount: Math.trunc(cantidad*100),
+              requestedAmount: Math.round(cantidad*100),
               requireConfirmation: false,
               transactionReference: `${idTicket}@${idCesta}`
       }).then((res: any) => {

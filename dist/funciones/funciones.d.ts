@@ -1,3 +1,4 @@
+import { ArticulosInterface } from "../articulos/articulos.interface";
 interface TiposIva {
     base1: number;
     base2: number;
@@ -9,7 +10,7 @@ interface TiposIva {
     importe2: number;
     importe3: number;
 }
-export declare function construirObjetoIvas(infoArticulo: any, unidades: any, tipoIvaAnterior: TiposIva, infoAPeso?: any): TiposIva;
+export declare function construirObjetoIvas(infoArticulo: ArticulosInterface, unidades: any, tipoIvaAnterior: TiposIva, infoAPeso?: any): TiposIva;
 export declare function convertirPuntosEnDinero(puntos: number): number;
 export declare function crearCestaVacia(): {
     _id: number;

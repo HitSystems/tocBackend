@@ -188,6 +188,7 @@ export class OfertasClase {
         let precioSinOfertaPrincipal    = 0;
         let precioSinOfertaSecundario   = 0;
         let precioTotalSinOferta        = 0;
+
         if(idPrincipal != 0)
         {
             precioSinOfertaPrincipal = (await articulosInstance.getInfoArticulo(idPrincipal)).precioConIva;
@@ -205,6 +206,17 @@ export class OfertasClase {
 
         var dto = (precioTotalSinOferta-precioTotalOferta)/precioTotalSinOferta;
         
+        let precioRealPrincipalDecimales = ((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta)%1;
+        let precioRealSecundarioDecimales = ((precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta)%1;
+
+        if (Math.round((precioRealPrincipalDecimales*cantidadPrincipal+precioRealSecundarioDecimales*cantidadSecundario)*100)/100 === 1) {
+            let sumaCentimos = 0.01/cantidadPrincipal;
+            return {
+                precioRealPrincipal: (Math.round((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta *100)/100)+sumaCentimos,
+                precioRealSecundario: Math.round((precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta*100)/100
+            };
+        }
+
         return {
             precioRealPrincipal: Math.round((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta *100)/100,
             precioRealSecundario: Math.round((precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta*100)/100

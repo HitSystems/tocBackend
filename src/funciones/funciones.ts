@@ -1,3 +1,4 @@
+import { ArticulosInterface } from "../articulos/articulos.interface";
 
 interface TiposIva 
 {
@@ -16,7 +17,7 @@ function redondearPrecio(precio) /* REDONDEA AL SEGUNDO DECIMAL */
 {
     return Math.round(precio * 100) / 100;
 }
-export function construirObjetoIvas(infoArticulo, unidades, tipoIvaAnterior: TiposIva, infoAPeso = null) : TiposIva
+export function construirObjetoIvas(infoArticulo: ArticulosInterface, unidades, tipoIvaAnterior: TiposIva, infoAPeso = null) : TiposIva
 {
     let base1 = 0, base2 = 0, base3 = 0;
     let valor1 = 0, valor2 = 0, valor3 = 0;
