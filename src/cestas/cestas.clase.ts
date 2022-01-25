@@ -6,6 +6,8 @@ import { articulosInstance } from '../articulos/articulos.clase';
 import { ofertas } from '../promociones/promociones.clase';
 import { cajaInstance } from '../caja/caja.clase';
 import { clienteInstance } from 'src/clientes/clientes.clase';
+import { impresoraInstance } from 'src/impresora/impresora.class';
+import { trabajadoresInstance } from 'src/trabajadores/trabajadores.clase';
 
 /* Siempre cargar la cesta desde MongoDB */
 export class CestaClase {
@@ -270,32 +272,42 @@ export class CestaClase {
 
     async addItem(idArticulo: number, idBoton: string, aPeso: boolean, infoAPeso: any, idCesta: number, unidades: number = 1) {
         var cestaRetornar: CestasInterface = null;
+        let infoArticulo;
         if(cajaInstance.cajaAbierta()) {
-          
-            try {
-                if(!aPeso) { // TIPO NORMAL                  
-                  
-                    let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
-                    if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
-                      
-                      cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
-                      
-                    } else {
-                      
-                      // vueToast.abrir('error', 'Este artículo tiene errores');
-                    }
-                }
-                else { //TIPO PESO
-                  let infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
-                  cestaRetornar = await this.insertarArticuloCesta(infoArticulo, 1, idCesta, infoAPeso);
-                }
+          try {
+            if(!aPeso) { // TIPO NORMAL                  
+              
+              infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
+              if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
+                
+                cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                
+              } else {
+                
+                // vueToast.abrir('error', 'Este artículo tiene errores');
+              }
             }
-            catch(err)
-            {
-                console.log(err);
-                // vueToast.abrir('error', 'Error al añadir el articulo');
-                this.udsAplicar = 1;
+            else { //TIPO PESO
+              infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
+              cestaRetornar = await this.insertarArticuloCesta(infoArticulo, 1, idCesta, infoAPeso);
             }
+            console.log(cestaRetornar);
+            trabajadoresInstance.getCurrentTrabajador().then((data) => {
+              console.log(data.nombre);
+              impresoraInstance.mostrarVisor({
+                dependienta: data.nombre,
+                total: (cestaRetornar.tiposIva.importe1 + cestaRetornar.tiposIva.importe2 + cestaRetornar.tiposIva.importe3).toFixed(2),
+                precio: infoArticulo.precioConIva.toString(),
+                texto: infoArticulo.nombre,
+              });
+            })
+          }
+          catch(err)
+          {
+              console.log(err);
+              // vueToast.abrir('error', 'Error al añadir el articulo');
+              this.udsAplicar = 1;
+          }
         }
         else
         {
@@ -309,7 +321,6 @@ export class CestaClase {
     setUnidadesAplicar(unidades: number) {
         this.udsAplicar = unidades;
     }
-
     async recalcularIvas(cesta: CestasInterface) {
         cesta.tiposIva = {
             base1: 0,

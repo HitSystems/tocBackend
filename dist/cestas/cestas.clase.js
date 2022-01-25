@@ -7,6 +7,8 @@ const articulos_clase_1 = require("../articulos/articulos.clase");
 const promociones_clase_1 = require("../promociones/promociones.clase");
 const caja_clase_1 = require("../caja/caja.clase");
 const clientes_clase_1 = require("../clientes/clientes.clase");
+const impresora_class_1 = require("../impresora/impresora.class");
+const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
 class CestaClase {
     constructor() {
         schCestas.getUnaCesta().then((respuesta) => {
@@ -232,10 +234,11 @@ class CestaClase {
     }
     async addItem(idArticulo, idBoton, aPeso, infoAPeso, idCesta, unidades = 1) {
         var cestaRetornar = null;
+        let infoArticulo;
         if (caja_clase_1.cajaInstance.cajaAbierta()) {
             try {
                 if (!aPeso) {
-                    let infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
+                    infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
                     if (infoArticulo) {
                         cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
                     }
@@ -243,9 +246,19 @@ class CestaClase {
                     }
                 }
                 else {
-                    let infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
+                    infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
                     cestaRetornar = await this.insertarArticuloCesta(infoArticulo, 1, idCesta, infoAPeso);
                 }
+                console.log(cestaRetornar);
+                trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((data) => {
+                    console.log(data.nombre);
+                    impresora_class_1.impresoraInstance.mostrarVisor({
+                        dependienta: data.nombre,
+                        total: (cestaRetornar.tiposIva.importe1 + cestaRetornar.tiposIva.importe2 + cestaRetornar.tiposIva.importe3).toFixed(2),
+                        precio: infoArticulo.precioConIva.toString(),
+                        texto: infoArticulo.nombre,
+                    });
+                });
             }
             catch (err) {
                 console.log(err);
