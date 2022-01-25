@@ -199,7 +199,7 @@ let CestasController = class CestasController {
     }
     addSuplemento(params) {
         if (params.idCesta && params.suplementos && params.idArticulo) {
-            return cestas_clase_1.cestas.addSuplemento(params.idCesta, params.suplementos, params.idArticulo).then((res) => {
+            return cestas_clase_1.cestas.addSuplemento(params.idCesta, params.suplementos, params.idArticulo, params.posArticulo).then((res) => {
                 return {
                     error: false,
                     bloqueado: false,
@@ -217,7 +217,7 @@ let CestasController = class CestasController {
     modificarSuplementos(params) {
         console.log(params);
         if (params.cestaId && params.idArticulo) {
-            return cestas_clase_1.cestas.modificarSuplementos(params.cestaId, params.idArticulo).then((res) => {
+            return cestas_clase_1.cestas.modificarSuplementos(params.cestaId, params.idArticulo, params.posArticulo).then((res) => {
                 if (res.suplementos) {
                     return {
                         suplementos: true,

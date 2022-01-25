@@ -202,7 +202,7 @@ export class CestasController {
     @Post('addSuplemento')
     addSuplemento(@Body() params) {
         if(params.idCesta && params.suplementos && params.idArticulo) {
-            return cestas.addSuplemento(params.idCesta, params.suplementos, params.idArticulo).then((res) => {
+            return cestas.addSuplemento(params.idCesta, params.suplementos, params.idArticulo, params.posArticulo).then((res) => {
                 return {
                     error: false,
                     bloqueado: false,
@@ -222,7 +222,7 @@ export class CestasController {
     modificarSuplementos(@Body() params) {
         console.log(params);
         if(params.cestaId && params.idArticulo) {
-            return cestas.modificarSuplementos(params.cestaId, params.idArticulo).then((res) => {
+            return cestas.modificarSuplementos(params.cestaId, params.idArticulo, params.posArticulo).then((res) => {
                 if(res.suplementos) {
                     return {
                         suplementos: true,

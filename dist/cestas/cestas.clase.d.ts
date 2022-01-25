@@ -24,8 +24,8 @@ export declare class CestaClase {
     recalcularIvas(cesta: CestasInterface): Promise<CestasInterface>;
     borrarArticulosCesta(idCesta: number): Promise<boolean | CestasInterface>;
     insertarCestas(cestas: any): Promise<any>;
-    addSuplemento(idCesta: any, suplementos: any, idArticulo: any): Promise<boolean | CestasInterface>;
-    modificarSuplementos(cestaId: any, idArticulo: any): Promise<{
+    addSuplemento(idCesta: any, suplementos: any, idArticulo: any, posArticulo?: number): Promise<boolean | CestasInterface>;
+    modificarSuplementos(cestaId: any, idArticulo: any, posArticulo: any): Promise<{
         suplementos: boolean;
         suplementosData: any[];
         suplementosSeleccionados: number[];
