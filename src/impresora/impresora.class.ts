@@ -603,7 +603,7 @@ export class Impresora {
     }
     mostrarVisor(data) {
         var eur = String.fromCharCode(128);
-        console.log(eur);
+        
         var limitNombre = 0;
         var lengthTotal = '';
         var datosExtra = '';
@@ -634,7 +634,7 @@ export class Impresora {
         }); 
         var options = { encoding: "ISO-8859-1" };
         var printer = new escpos.Screen(device, options);
-        console.log(data.texto);
+        
         device.open(function () 
         {
             printer
@@ -655,6 +655,6 @@ export class Impresora {
             console.log("Error: ", err)
             //errorImpresora(err, event);
         }
-      }
+    }
 }
 export const impresoraInstance = new Impresora();
