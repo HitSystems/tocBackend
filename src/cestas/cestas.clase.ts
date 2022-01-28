@@ -460,7 +460,7 @@ export class CestaClase {
     async enviarACocina(idCesta) {
       const cestaActual = await this.getCesta(idCesta);
       const articulos = cestaActual.lista.map(o => o._id);
-      return axios.post('http://gestiondelatienda.com/printer/cocina.php', { id_tienda: parametrosInstance.getParametros().codigoTienda, pedidos: articulos }).then((res: any) => {
+      return axios.post('http://gestiondelatienda.com/printer/cocina.php', { id_tienda: parametrosInstance.getParametros().codigoTienda, pedidos: articulos, empresa: parametrosInstance.getParametros().database }).then((res: any) => {
         return true;
     }).catch((err) => {
         return false;
