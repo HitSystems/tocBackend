@@ -229,6 +229,13 @@ let CestasController = class CestasController {
             });
         }
     }
+    enviarACocina(params) {
+        if (params.idCesta) {
+            return cestas_clase_1.cestas.enviarACocina(params.idCesta).then((res) => {
+                return res;
+            });
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('borrarCesta'),
@@ -312,6 +319,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "modificarSuplementos", null);
+__decorate([
+    (0, common_1.Post)('enviarACocina'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "enviarACocina", null);
 CestasController = __decorate([
     (0, common_1.Controller)('cestas')
 ], CestasController);

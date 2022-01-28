@@ -30,6 +30,7 @@ export declare class CestaClase {
         suplementosData: any[];
         suplementosSeleccionados: number[];
     }>;
+    enviarACocina(idCesta: any): Promise<boolean>;
 }
 declare const cestas: CestaClase;
 export { cestas };

@@ -234,4 +234,13 @@ export class CestasController {
             })
         }
     }
+
+    @Post('enviarACocina')
+    enviarACocina(@Body() params) {
+        if(params.idCesta) {
+            return cestas.enviarACocina(params.idCesta).then((res) => {
+                return res;
+            })
+        }
+    }
 }

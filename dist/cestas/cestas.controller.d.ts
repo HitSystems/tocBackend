@@ -115,4 +115,5 @@ export declare class CestasController {
         suplementosData?: undefined;
         suplementosSeleccionados?: undefined;
     }>;
+    enviarACocina(params: any): Promise<boolean>;
 }

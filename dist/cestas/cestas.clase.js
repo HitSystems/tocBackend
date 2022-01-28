@@ -7,6 +7,8 @@ const articulos_clase_1 = require("../articulos/articulos.clase");
 const promociones_clase_1 = require("../promociones/promociones.clase");
 const caja_clase_1 = require("../caja/caja.clase");
 const clientes_clase_1 = require("../clientes/clientes.clase");
+const parametros_clase_1 = require("../parametros/parametros.clase");
+const axios_1 = require("axios");
 class CestaClase {
     constructor() {
         schCestas.getUnaCesta().then((respuesta) => {
@@ -398,6 +400,15 @@ class CestaClase {
             suplementosSeleccionados: suplementos,
         };
         return res;
+    }
+    async enviarACocina(idCesta) {
+        const cestaActual = await this.getCesta(idCesta);
+        const articulos = cestaActual.lista.map(o => o._id);
+        return axios_1.default.post('http://gestiondelatienda.com/printer/cocina.php', { id_tienda: parametros_clase_1.parametrosInstance.getParametros().codigoTienda, pedidos: articulos }).then((res) => {
+            return true;
+        }).catch((err) => {
+            return false;
+        });
     }
 }
 exports.CestaClase = CestaClase;

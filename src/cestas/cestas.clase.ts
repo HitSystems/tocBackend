@@ -6,6 +6,8 @@ import { articulosInstance } from '../articulos/articulos.clase';
 import { ofertas } from '../promociones/promociones.clase';
 import { cajaInstance } from '../caja/caja.clase';
 import { clienteInstance } from 'src/clientes/clientes.clase';
+import { parametrosInstance } from 'src/parametros/parametros.clase';
+import axios from 'axios';
 
 /* Siempre cargar la cesta desde MongoDB */
 export class CestaClase {
@@ -453,6 +455,16 @@ export class CestaClase {
         suplementosSeleccionados: suplementos,
       };
       return res;
+    }
+
+    async enviarACocina(idCesta) {
+      const cestaActual = await this.getCesta(idCesta);
+      const articulos = cestaActual.lista.map(o => o._id);
+      return axios.post('http://gestiondelatienda.com/printer/cocina.php', { id_tienda: parametrosInstance.getParametros().codigoTienda, pedidos: articulos }).then((res: any) => {
+        return true;
+    }).catch((err) => {
+        return false;
+    });
     }
 }
 
