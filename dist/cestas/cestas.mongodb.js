@@ -20,6 +20,7 @@ async function getAllCestas() {
     const database = (await mongodb_1.conexion).db('tocgame');
     const cesta = database.collection('cestas');
     const resultado = await (await cesta.find()).toArray();
+    console.log(resultado);
     return resultado;
 }
 exports.getAllCestas = getAllCestas;

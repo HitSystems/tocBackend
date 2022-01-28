@@ -20,7 +20,7 @@ export async function getAllCestas(): Promise<any> {
     const database = (await conexion).db('tocgame');
     const cesta = database.collection('cestas');
     const resultado = await (await cesta.find()).toArray();
-    
+    console.log(resultado);
     return resultado;
 }
 

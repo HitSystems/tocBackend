@@ -340,9 +340,15 @@ class CestaClase {
         });
     }
     async insertarCestas(cestas) {
-        if (cestas.info.length <= 0)
-            return [];
-        return cestas.info.map(async (item) => await this.crearNuevaCesta(item.valor, item.variable));
+        console.log(cestas);
+        cestas.info = [];
+        for (let i = 1; i <= 100; i++) {
+            const resultado = await this.crearNuevaCesta(`TaulaNom${i}`, `Taula ${i}`);
+            console.log(resultado);
+            await new Promise(resolve => setTimeout(resolve, 10));
+        }
+        console.log(cestas.info);
+        return true;
     }
     async addSuplemento(idCesta, suplementos, idArticulo, posArticulo = -100) {
         suplementos = suplementos.map(o => o.suplemento);

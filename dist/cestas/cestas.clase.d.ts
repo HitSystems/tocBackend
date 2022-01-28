@@ -23,7 +23,7 @@ export declare class CestaClase {
     setUnidadesAplicar(unidades: number): void;
     recalcularIvas(cesta: CestasInterface): Promise<CestasInterface>;
     borrarArticulosCesta(idCesta: number): Promise<boolean | CestasInterface>;
-    insertarCestas(cestas: any): Promise<any>;
+    insertarCestas(cestas: any): Promise<boolean>;
     addSuplemento(idCesta: any, suplementos: any, idArticulo: any, posArticulo?: number): Promise<boolean | CestasInterface>;
     modificarSuplementos(cestaId: any, idArticulo: any, posArticulo: any): Promise<{
         suplementos: boolean;
