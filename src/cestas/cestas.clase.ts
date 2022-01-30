@@ -291,15 +291,17 @@ export class CestaClase {
               cestaRetornar = await this.insertarArticuloCesta(infoArticulo, 1, idCesta, infoAPeso);
             }
             console.log(cestaRetornar);
-            trabajadoresInstance.getCurrentTrabajador().then((data) => {
-              console.log(data.nombre);
-              impresoraInstance.mostrarVisor({
-                dependienta: data.nombre,
-                total: (cestaRetornar.tiposIva.importe1 + cestaRetornar.tiposIva.importe2 + cestaRetornar.tiposIva.importe3).toFixed(2),
-                precio: infoArticulo.precioConIva.toString(),
-                texto: infoArticulo.nombre,
-              });
-            })
+            if (cestaRetornar.tiposIva != undefined && cestaRetornar.tiposIva != null) {
+              trabajadoresInstance.getCurrentTrabajador().then((data) => {
+                console.log(data.nombre);
+                impresoraInstance.mostrarVisor({
+                  dependienta: data.nombre,
+                  total: (cestaRetornar.tiposIva.importe1 + cestaRetornar.tiposIva.importe2 + cestaRetornar.tiposIva.importe3).toFixed(2),
+                  precio: infoArticulo.precioConIva.toString(),
+                  texto: infoArticulo.nombre,
+                });
+              })
+            }
           }
           catch(err)
           {
