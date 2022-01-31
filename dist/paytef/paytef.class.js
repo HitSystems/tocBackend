@@ -27,7 +27,8 @@ class PaytefClass {
                 language: "es",
                 requestedAmount: Math.round(cantidad * 100),
                 requireConfirmation: false,
-                transactionReference: `${idTicket}@${idCesta}`
+                transactionReference: `${idTicket}@${idCesta}`,
+                showResultSeconds: 5
             }).then((res) => {
                 if (res.data.info.started) {
                     return true;
