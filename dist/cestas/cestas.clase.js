@@ -404,7 +404,6 @@ class CestaClase {
     async enviarACocina(idCesta) {
         const cestaActual = await this.getCesta(idCesta);
         const nombreMesa = cestaActual.idCestaSincro ? cestaActual.idCestaSincro.split(' ')[0] === 'Taula' ? cestaActual.idCestaSincro : 'Barra' : 'Barra';
-        console.log(nombreMesa);
         let articulos = '';
         const suplementos = cestaActual.lista.map(i => ({ [i._id]: i.suplementosId ? i.suplementosId.map(o => o) : [] }));
         for (let i in suplementos) {
