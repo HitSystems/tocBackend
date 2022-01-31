@@ -403,8 +403,20 @@ class CestaClase {
     }
     async enviarACocina(idCesta) {
         const cestaActual = await this.getCesta(idCesta);
-        const articulos = cestaActual.lista.map(o => o._id);
-        return axios_1.default.get(`http://gestiondelatienda.com/printer/cocina.php?id_tienda=${parametros_clase_1.parametrosInstance.getParametros().codigoTienda}&pedidos=${articulos}&empresa=${parametros_clase_1.parametrosInstance.getParametros().database}`).then((res) => {
+        const nombreMesa = cestaActual.idCestaSincro ? cestaActual.idCestaSincro.split(' ')[0] === 'Taula' ? cestaActual.idCestaSincro : 'Barra' : 'Barra';
+        console.log(nombreMesa);
+        let articulos = '';
+        const suplementos = cestaActual.lista.map(i => ({ [i._id]: i.suplementosId ? i.suplementosId.map(o => o) : [] }));
+        for (let i in suplementos) {
+            const key = Object.keys(suplementos[i])[0];
+            articulos += key;
+            if (suplementos[i][key].length) {
+                articulos += suplementos[i][key].map(i => `|${i}`).join('');
+            }
+            articulos += ',';
+        }
+        articulos = articulos.slice(0, -1);
+        return axios_1.default.get(`http://gestiondelatienda.com/printer/cocina.php?id_tienda=${parametros_clase_1.parametrosInstance.getParametros().codigoTienda}&pedidos=${articulos}&empresa=${parametros_clase_1.parametrosInstance.getParametros().database}&mesa=${nombreMesa}`).then((res) => {
             return true;
         }).catch((err) => {
             return false;
