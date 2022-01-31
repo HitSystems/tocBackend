@@ -15,29 +15,37 @@ function limpiarNombreTienda(cadena) {
 class PaytefClass {
     iniciarTransaccion(cantidad, idTicket, idCesta) {
         const params = parametros_clase_1.parametrosInstance.getParametros();
-        return axios_1.default.post(`http://10.129.${limpiarNombreTienda(params.nombreTienda)}.29:8887/transaction/start`, {
-            pinpad: "*",
-            opType: "sale",
-            cardNumberHashDomain: "branch",
-            createReceipt: true,
-            executeOptions: {
-                method: "polling"
-            },
-            language: "es",
-            requestedAmount: Math.round(cantidad * 100),
-            requireConfirmation: false,
-            transactionReference: `${idTicket}@${idCesta}`
-        }).then((res) => {
-            if (res.data.info.started) {
-                return true;
-            }
-            else {
+        if (params.ipTefpay != undefined && params.ipTefpay != null) {
+            return axios_1.default.post(`http://${params.ipTefpay}:8887/transaction/start`, {
+                pinpad: "*",
+                opType: "sale",
+                cardNumberHashDomain: "branch",
+                createReceipt: true,
+                executeOptions: {
+                    method: "polling"
+                },
+                language: "es",
+                requestedAmount: Math.round(cantidad * 100),
+                requireConfirmation: false,
+                transactionReference: `${idTicket}@${idCesta}`
+            }).then((res) => {
+                if (res.data.info.started) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }).catch((err) => {
+                console.log(err);
                 return false;
-            }
-        }).catch((err) => {
-            console.log(err);
-            return false;
-        });
+            });
+        }
+        else {
+            const devFalse = new Promise((dev, rej) => {
+                dev(false);
+            });
+            return devFalse;
+        }
     }
 }
 const paytefInstance = new PaytefClass();

@@ -19,5 +19,6 @@ export interface ParametrosInterface {
     impresoraUsbInfo: {
         vid: string,
         pid: string
-    }
+    },
+    ipTefpay?: string
 }

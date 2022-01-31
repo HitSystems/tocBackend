@@ -15,28 +15,35 @@ function limpiarNombreTienda(cadena: string) {
 class PaytefClass {
     iniciarTransaccion(cantidad: number, idTicket: number, idCesta: number) {
       const params = parametrosInstance.getParametros();
-      return axios.post(`http://10.129.${limpiarNombreTienda(params.nombreTienda)}.29:8887/transaction/start`, {
-              pinpad: "*",
-              opType: "sale",
-              cardNumberHashDomain: "branch",
-              createReceipt: true,
-              executeOptions: {
-                method: "polling"
-              },
-              language: "es",
-              requestedAmount: Math.round(cantidad*100),
-              requireConfirmation: false,
-              transactionReference: `${idTicket}@${idCesta}`
-      }).then((res: any) => {
-        if (res.data.info.started) {
-          return true;
-        } else {
-          return false;
-        }
-      }).catch((err) => {
-        console.log(err);
-        return false
-      });
+      if (params.ipTefpay != undefined && params.ipTefpay != null) {
+        return axios.post(`http://${params.ipTefpay}:8887/transaction/start`, {
+          pinpad: "*",
+          opType: "sale",
+          cardNumberHashDomain: "branch",
+          createReceipt: true,
+          executeOptions: {
+            method: "polling"
+          },
+          language: "es",
+          requestedAmount: Math.round(cantidad*100),
+          requireConfirmation: false,
+          transactionReference: `${idTicket}@${idCesta}`
+        }).then((res: any) => {
+          if (res.data.info.started) {
+            return true;
+          } else {
+            return false;
+          }
+        }).catch((err) => {
+          console.log(err);
+          return false
+        });
+      } else {
+        const devFalse: Promise<boolean> = new Promise((dev, rej) => {
+          dev(false);
+        });
+        return devFalse;
+      }
     }
 }
 

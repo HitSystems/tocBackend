@@ -50,11 +50,51 @@ export class ParametrosController {
             if (res.impresoraUsbInfo != undefined || res.impresoraUsbInfo != null) {
                 return { error: false, info: res };
             } else {
-                return { error: true, mensaje: 'Backend: impresoraUsbInfo no definido en MongoDB' };
+                return { error: false, info: {
+                    impresoraUsbInfo: {
+                        vid: '',
+                        pid: ''
+                    }
+                } };
             }
         }).catch((err) => {
             console.log(err);
             return { error: true, mensaje: 'Backend: Error en getVidAndPid CATCH' };
+        }); 
+    }
+    @Post('setIpPaytef')
+    setIpPaytef(@Body() params) {
+        if (params != undefined || params != null) {
+            if (params.ip != undefined || params.ip != null) {
+                return parametrosInstance.setIpPaytef(params.ip).then((res) => {
+                    if (res) {
+                        return { error: false };
+                    } else {
+                        return { error: true, mensaje: 'Backend: parametros/setIpPaytef setIpPaytef no se ha podido guardar' };
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: parametros/setIpPaytef setIpPaytef catch' };
+                });
+            } else {
+                return { error: true, mensaje: 'Backend: parametros/setIpPaytef faltan datos' };
+            }
+        } else {
+            return { error: true, mensaje: 'Backend: parametros/setIpPaytef faltan todos los datos' };
+        }
+    }
+
+    @Get('getIpPaytef')
+    getIpPaytef() {
+        return parametrosInstance.getEspecialParametros().then((res) => {
+            if (res.ipTefpay != undefined || res.ipTefpay != null) {
+                return { error: false, info: res.ipTefpay };
+            } else {
+                return { error: false, info: '' };
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en getIpPaytef CATCH' };
         }); 
     }
 

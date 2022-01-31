@@ -134,6 +134,19 @@ const parametrosVacios: ParametrosInterface = {
         });
     }
 
+    setIpPaytef(ip: string) {
+        return schParametros.setIpPaytef(ip).then((res) => {
+            if (res.acknowledged) {
+                return true;
+            } else {
+                return false;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+
 }
 
 const parametrosInstance = new ParametrosClase();

@@ -121,6 +121,19 @@ class ParametrosClase {
             return false;
         });
     }
+    setIpPaytef(ip) {
+        return schParametros.setIpPaytef(ip).then((res) => {
+            if (res.acknowledged) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
 }
 exports.ParametrosClase = ParametrosClase;
 const parametrosInstance = new ParametrosClase();

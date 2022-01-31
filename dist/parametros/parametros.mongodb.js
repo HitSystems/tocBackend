@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setVidAndPid = exports.setUltimoTicket = exports.setParametros = exports.getParametros = void 0;
+exports.setIpPaytef = exports.setVidAndPid = exports.setUltimoTicket = exports.setParametros = exports.getParametros = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getParametros() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -45,4 +45,11 @@ async function setVidAndPid(vid, pid) {
     return resultado;
 }
 exports.setVidAndPid = setVidAndPid;
+async function setIpPaytef(ip) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const parametros = database.collection('parametros');
+    const resultado = await parametros.updateOne({ _id: "PARAMETROS" }, { $set: { "ipTefpay": ip } }, { upsert: true });
+    return resultado;
+}
+exports.setIpPaytef = setIpPaytef;
 //# sourceMappingURL=parametros.mongodb.js.map

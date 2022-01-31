@@ -62,3 +62,10 @@ export async function setVidAndPid(vid: string, pid: string) {
     
     return resultado;
 }
+
+export async function setIpPaytef(ip: string) {
+    const database = (await conexion).db('tocgame');
+    const parametros = database.collection('parametros');
+    const resultado = await parametros.updateOne({_id: "PARAMETROS"}, {$set: {"ipTefpay": ip}}, {upsert: true});
+    return resultado;
+}
