@@ -189,9 +189,10 @@ let SocketGateway = class SocketGateway {
         }
     }
     async polling(params) {
-        if (params != null || params != undefined) {
-            if (params.idClienteFinal != null || params.idClienteFinal != undefined) {
-                return axios_1.default.post('http://10.129.118.29:8887/transaction/poll', {
+        const ipDatafono = parametros_clase_1.parametrosInstance.getParametros().ipTefpay;
+        if (params != null && params != undefined) {
+            if (params.idClienteFinal != null && params.idClienteFinal != undefined && ipDatafono != null && ipDatafono != undefined) {
+                return axios_1.default.post(`http://${ipDatafono}:8887/transaction/poll`, {
                     pinpad: "*"
                 }).then(async (res) => {
                     if (res.data.result == undefined || res.data.result == null) {
@@ -201,14 +202,11 @@ let SocketGateway = class SocketGateway {
                         if (res.data.result.approved && !res.data.result.failed) {
                             const infoTransaccion = res.data.result.transactionReference.split('@');
                             let total = Number(res.data.result.amountWithSign.replace(",", "."));
-                            console.log("amountWithSign: ", Number(res.data.result.amountWithSign));
                             let idCesta = Number(infoTransaccion[1]);
                             const idClienteFinal = (params.idClienteFinal != undefined) ? (params.idClienteFinal) : ('');
                             const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador();
                             const nuevoIdTicket = (await tickets_clase_1.ticketsInstance.getUltimoTicket()) + 1;
                             const cesta = await cestas_clase_1.cestas.getCesta(idCesta);
-                            console.log("infoTransaccion: ", infoTransaccion);
-                            console.log("idCesta: ", idCesta);
                             if (cesta == null || cesta.lista.length == 0) {
                                 console.log("Error, la cesta es null o está vacía");
                                 this.server.emit('resDatafono', {
