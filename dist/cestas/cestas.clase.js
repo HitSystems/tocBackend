@@ -342,14 +342,11 @@ class CestaClase {
         });
     }
     async insertarCestas(cestas) {
-        console.log(cestas);
         cestas.info = [];
         for (let i = 1; i <= 100; i++) {
-            const resultado = await this.crearNuevaCesta(`TaulaNom${i}`, `Taula ${i}`);
-            console.log(resultado);
+            await this.crearNuevaCesta(`TaulaNom${i}`, `Taula ${i}`);
             await new Promise(resolve => setTimeout(resolve, 10));
         }
-        console.log(cestas.info);
         return true;
     }
     async addSuplemento(idCesta, suplementos, idArticulo, posArticulo = -100) {
@@ -380,8 +377,6 @@ class CestaClase {
     async modificarSuplementos(cestaId, idArticulo, posArticulo) {
         const cestaActual = await this.getCesta(cestaId);
         cestaActual.lista = cestaActual.lista.reverse();
-        console.log('Hoa', cestaActual.lista);
-        console.log(posArticulo);
         const indexArticulo = posArticulo;
         const suplementos = cestaActual.lista[indexArticulo].suplementosId;
         const infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);

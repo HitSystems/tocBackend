@@ -394,14 +394,11 @@ export class CestaClase {
     }
 
     async insertarCestas(cestas) {
-      console.log(cestas);
       cestas.info = [];
       for(let i = 1; i <= 100; i++) {
-        const resultado = await this.crearNuevaCesta(`TaulaNom${i}`, `Taula ${i}`)
-        console.log(resultado);
+        await this.crearNuevaCesta(`TaulaNom${i}`, `Taula ${i}`)
         await new Promise(resolve => setTimeout(resolve, 10));
       }
-      console.log(cestas.info);
       // if(cestas.info.length <= 0) return [];
       // return cestas.info.map(async item => await this.crearNuevaCesta(item.valor, item.variable));
       return true;
@@ -435,8 +432,6 @@ export class CestaClase {
       const cestaActual = await this.getCesta(cestaId);
       // const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
       cestaActual.lista = cestaActual.lista.reverse();
-      console.log('Hoa', cestaActual.lista);
-      console.log(posArticulo);
       const indexArticulo = posArticulo;
       const suplementos = cestaActual.lista[indexArticulo].suplementosId;
       const infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
