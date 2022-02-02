@@ -623,29 +623,29 @@ export class Impresora {
         data.texto = datosExtra + "" + data.texto.substring(0, 14);
         data.texto += " " + data.precio + eur;
         try {
-          permisosImpresora();
-          //var device = new escpos.USB('067b','2303');
-          var device = new escpos.Serial('/dev/ttyUSB0', {
-          baudRate: 9600,
-          stopBit: 2
-        }); 
-        var options = { encoding: "ISO-8859-1" };
-        var printer = new escpos.Screen(device, options);
-        console.log(data.texto);
-        device.open(function () 
-        {
-            printer
-                // Espacios en blanco para limpiar el visor y volver a mostrar los datos en el sitio correcto
-                //.text(stringVacia)
-                .clear()
-                //.moveUp()
-                // Información del artículo (artículo + precio)
-                .text(data.texto)
-                //.moveDown()
-                //.text(datosExtra)
-                //.text(datosExtra)
-                .close()
-        });
+            permisosImpresora();
+            //var device = new escpos.USB('067b','2303');
+            var device = new escpos.Serial('/dev/ttyUSB0', {
+                baudRate: 9600,
+                stopBit: 2
+            }); 
+            var options = { encoding: "ISO-8859-1" };
+            var printer = new escpos.Screen(device, options);
+            console.log(data.texto);
+            device.open(function () 
+            {
+                printer
+                    // Espacios en blanco para limpiar el visor y volver a mostrar los datos en el sitio correcto
+                    //.text(stringVacia)
+                    .clear()
+                    //.moveUp()
+                    // Información del artículo (artículo + precio)
+                    .text(data.texto)
+                    //.moveDown()
+                    //.text(datosExtra)
+                    //.text(datosExtra)
+                    .close()
+            });
         }
         catch (err) 
         {
