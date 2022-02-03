@@ -148,12 +148,12 @@ export class TrabajadoresClase {
     }
 
     /* MongoDB Fichado = false + nuevo item sincro */
-    ficharTrabajador(idTrabajador: number): Promise<boolean> {
+    ficharTrabajador(idTrabajador: number, idPlan: string): Promise<boolean> {
         return schTrabajadores.ficharTrabajador(idTrabajador).then((res) => {
             if (res.acknowledged) {
                 return this.setCurrentTrabajador(idTrabajador).then((resSetCurrent) => {
                     if (resSetCurrent) {
-                        return this.nuevoFichajesSincro("ENTRADA", idTrabajador).then((res2) => {
+                        return this.nuevoFichajesSincro("ENTRADA", idTrabajador, idPlan).then((res2) => {
                             if (res2.acknowledged) {
                                 return true;
                             } else {
@@ -182,7 +182,7 @@ export class TrabajadoresClase {
     desficharTrabajador(idTrabajador: number): Promise<boolean> {
         return schTrabajadores.desficharTrabajador(idTrabajador).then((res) => {
             if (res.acknowledged) {
-                return this.nuevoFichajesSincro("SALIDA", idTrabajador).then((res2) => {
+                return this.nuevoFichajesSincro("SALIDA", idTrabajador, '').then((res2) => {
                     if (res2.acknowledged) {
                         return true;
                     } else {
@@ -204,7 +204,7 @@ export class TrabajadoresClase {
     }
 
     /* Inserta en el sincro un nuevo movimiento de fichaje */
-    nuevoFichajesSincro(tipo: "ENTRADA" | "SALIDA", idTrabajador: number) {
+    nuevoFichajesSincro(tipo: "ENTRADA" | "SALIDA", idTrabajador: number, idPlan: string) {
         const auxTime = new Date();
         const objGuardar: SincroFichajesInterface = {
             _id: Date.now(),
@@ -223,7 +223,8 @@ export class TrabajadoresClase {
             enviado: false,
             enTransito: false,
             intentos: 0,
-            comentario: ''
+            comentario: '',
+            idPlan: idPlan
         };
         return schTrabajadores.insertNuevoFichaje(objGuardar);
     }
@@ -235,17 +236,6 @@ export class TrabajadoresClase {
             console.log(err);
             return null;
         });
-        // sch.getTrabajadoresFichados().then((arrayTrabajadoresFichados) => {
-        //     if (arrayTrabajadoresFichados != null) {
-        //         if(arrayTrabajadoresFichados.length > 0) {
-        //             return true;
-        //         } else {
-        //             return false;
-        //         }
-        //     } else {
-        //         return false;
-        //     }
-        // });
     }
 
     insertarTrabajadores(arrayTrabajadores) {
@@ -267,6 +257,19 @@ export class TrabajadoresClase {
         }).catch((err) => {
             console.log(err);
             return false;
+        });
+    }
+
+    existePlan(idPlan: string) {
+        return schTrabajadores.existePlan(idPlan).then((res) => {
+            if (res != null) {
+                return true;
+            } 
+            return false;
+        }).catch((err) => {
+            console.log(err);
+            /* En caso de error, le devuelvo true para eliminar el plan de la lista, para que no se utilice */
+            return true;
         });
     }
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actualizarEstadoFichaje = exports.getFichajeMasAntiguo = exports.insertarTrabajadores = exports.borrarTrabajadores = exports.buscarTrabajadoresFichados = exports.insertNuevoFichaje = exports.desficharTrabajador = exports.ficharTrabajador = exports.getTrabajadoresFichados = exports.setCurrentIdTrabajador = exports.getTrabajadorPorNombre = exports.getTrabajador = exports.buscar = exports.getCurrentIdTrabajador = void 0;
+exports.existePlan = exports.actualizarEstadoFichaje = exports.getFichajeMasAntiguo = exports.insertarTrabajadores = exports.borrarTrabajadores = exports.buscarTrabajadoresFichados = exports.insertNuevoFichaje = exports.desficharTrabajador = exports.ficharTrabajador = exports.getTrabajadoresFichados = exports.setCurrentIdTrabajador = exports.getTrabajadorPorNombre = exports.getTrabajador = exports.buscar = exports.getCurrentIdTrabajador = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getCurrentIdTrabajador() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -125,4 +125,11 @@ async function actualizarEstadoFichaje(fichaje) {
     return resultado;
 }
 exports.actualizarEstadoFichaje = actualizarEstadoFichaje;
+async function existePlan(idPlan) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const sincroFichajes = database.collection('sincro-fichajes');
+    const resultado = sincroFichajes.findOne({ idPlan: idPlan });
+    return resultado;
+}
+exports.existePlan = existePlan;
 //# sourceMappingURL=trabajadores.mongodb.js.map

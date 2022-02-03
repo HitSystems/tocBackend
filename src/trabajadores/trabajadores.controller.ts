@@ -65,8 +65,8 @@ export class TrabajadoresController {
 
     @Post('fichar')
     fichar(@Body() params) {
-        if (params.idTrabajador != undefined) {
-            return trabajadoresInstance.ficharTrabajador(params.idTrabajador).then((res) => {
+        if (params.idTrabajador != undefined && params.idPlan != undefined && params.idPlan != null) {
+            return trabajadoresInstance.ficharTrabajador(params.idTrabajador, params.idPlan).then((res) => {
                 if (res) {
                     return { error: false };
                 } else {
@@ -96,7 +96,6 @@ export class TrabajadoresController {
     }
     @Post('actualizarTrabajadores')
     actualizarTrabajadores() {
-        console.log("Petición POST 1 llega");
         return trabajadoresInstance.actualizarTrabajadores().then((res) => {
             console.log(res);
             return res;

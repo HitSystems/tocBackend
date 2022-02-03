@@ -136,3 +136,10 @@ export async function actualizarEstadoFichaje(fichaje: SincroFichajesInterface) 
     } });
     return resultado;
 }
+
+export async function existePlan(idPlan: string) {
+    const database = (await conexion).db('tocgame');
+    const sincroFichajes = database.collection('sincro-fichajes');
+    const resultado = sincroFichajes.findOne({ idPlan: idPlan });
+    return resultado;
+}

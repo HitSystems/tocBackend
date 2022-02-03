@@ -145,12 +145,12 @@ class TrabajadoresClase {
     getTrabajador(idTrabajador) {
         return schTrabajadores.getTrabajador(idTrabajador);
     }
-    ficharTrabajador(idTrabajador) {
+    ficharTrabajador(idTrabajador, idPlan) {
         return schTrabajadores.ficharTrabajador(idTrabajador).then((res) => {
             if (res.acknowledged) {
                 return this.setCurrentTrabajador(idTrabajador).then((resSetCurrent) => {
                     if (resSetCurrent) {
-                        return this.nuevoFichajesSincro("ENTRADA", idTrabajador).then((res2) => {
+                        return this.nuevoFichajesSincro("ENTRADA", idTrabajador, idPlan).then((res2) => {
                             if (res2.acknowledged) {
                                 return true;
                             }
@@ -179,7 +179,7 @@ class TrabajadoresClase {
     desficharTrabajador(idTrabajador) {
         return schTrabajadores.desficharTrabajador(idTrabajador).then((res) => {
             if (res.acknowledged) {
-                return this.nuevoFichajesSincro("SALIDA", idTrabajador).then((res2) => {
+                return this.nuevoFichajesSincro("SALIDA", idTrabajador, '').then((res2) => {
                     if (res2.acknowledged) {
                         return true;
                     }
@@ -201,7 +201,7 @@ class TrabajadoresClase {
             return false;
         });
     }
-    nuevoFichajesSincro(tipo, idTrabajador) {
+    nuevoFichajesSincro(tipo, idTrabajador, idPlan) {
         const auxTime = new Date();
         const objGuardar = {
             _id: Date.now(),
@@ -220,7 +220,8 @@ class TrabajadoresClase {
             enviado: false,
             enTransito: false,
             intentos: 0,
-            comentario: ''
+            comentario: '',
+            idPlan: idPlan
         };
         return schTrabajadores.insertNuevoFichaje(objGuardar);
     }
@@ -249,6 +250,17 @@ class TrabajadoresClase {
         }).catch((err) => {
             console.log(err);
             return false;
+        });
+    }
+    existePlan(idPlan) {
+        return schTrabajadores.existePlan(idPlan).then((res) => {
+            if (res != null) {
+                return true;
+            }
+            return false;
+        }).catch((err) => {
+            console.log(err);
+            return true;
         });
     }
 }

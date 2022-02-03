@@ -27,12 +27,13 @@ export declare class TrabajadoresClase {
     setCurrentTrabajadorPorNombre(nombre: string): Promise<boolean>;
     getTrabajadoresFichados(): Promise<import("bson").Document[]>;
     getTrabajador(idTrabajador: number): Promise<TrabajadoresInterface>;
-    ficharTrabajador(idTrabajador: number): Promise<boolean>;
+    ficharTrabajador(idTrabajador: number, idPlan: string): Promise<boolean>;
     desficharTrabajador(idTrabajador: number): Promise<boolean>;
-    nuevoFichajesSincro(tipo: "ENTRADA" | "SALIDA", idTrabajador: number): Promise<import("mongodb").InsertOneResult<import("bson").Document>>;
+    nuevoFichajesSincro(tipo: "ENTRADA" | "SALIDA", idTrabajador: number, idPlan: string): Promise<import("mongodb").InsertOneResult<import("bson").Document>>;
     getFichados(): Promise<TrabajadoresInterface[]>;
     insertarTrabajadores(arrayTrabajadores: any): Promise<boolean>;
     getFichajeMasAntiguo(): Promise<import("bson").Document>;
     actualizarEstadoFichaje(fichaje: SincroFichajesInterface): Promise<boolean>;
+    existePlan(idPlan: string): Promise<boolean>;
 }
 export declare const trabajadoresInstance: TrabajadoresClase;

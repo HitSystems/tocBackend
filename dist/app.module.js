@@ -30,6 +30,7 @@ const params_ticket_controller_1 = require("./params-ticket/params-ticket.contro
 const paytef_controller_1 = require("./paytef/paytef.controller");
 const version_controller_1 = require("./version/version.controller");
 const test_controller_1 = require("./test/test.controller");
+const turnos_controller_1 = require("./turnos/turnos.controller");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -46,7 +47,7 @@ AppModule = __decorate([
             cestas_controller_1.CestasController,
             parametros_controller_1.ParametrosController,
             tickets_controller_1.TicketsController,
-            trabajadores_controller_1.TrabajadoresController, caja_controller_1.CajaController, clientes_controller_1.ClientesController, impresora_controller_1.ImpresoraController, devoluciones_controller_1.DevolucionesController, movimientos_controller_1.MovimientosController, pruebas_controller_1.PruebasController, instalador_controller_1.InstaladorController, familias_controller_1.FamiliasController, params_ticket_controller_1.ParamsTicketController, paytef_controller_1.PaytefController, version_controller_1.VersionController, test_controller_1.TestController
+            trabajadores_controller_1.TrabajadoresController, caja_controller_1.CajaController, clientes_controller_1.ClientesController, impresora_controller_1.ImpresoraController, devoluciones_controller_1.DevolucionesController, movimientos_controller_1.MovimientosController, pruebas_controller_1.PruebasController, instalador_controller_1.InstaladorController, familias_controller_1.FamiliasController, params_ticket_controller_1.ParamsTicketController, paytef_controller_1.PaytefController, version_controller_1.VersionController, test_controller_1.TestController, turnos_controller_1.TurnosController
         ],
         providers: [sockets_gateway_1.SocketGateway]
     })

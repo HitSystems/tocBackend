@@ -72,8 +72,8 @@ let TrabajadoresController = class TrabajadoresController {
         return trabajadores_clase_1.trabajadoresInstance.buscar(params.busqueda);
     }
     fichar(params) {
-        if (params.idTrabajador != undefined) {
-            return trabajadores_clase_1.trabajadoresInstance.ficharTrabajador(params.idTrabajador).then((res) => {
+        if (params.idTrabajador != undefined && params.idPlan != undefined && params.idPlan != null) {
+            return trabajadores_clase_1.trabajadoresInstance.ficharTrabajador(params.idTrabajador, params.idPlan).then((res) => {
                 if (res) {
                     return { error: false };
                 }
@@ -103,7 +103,6 @@ let TrabajadoresController = class TrabajadoresController {
         });
     }
     actualizarTrabajadores() {
-        console.log("Petición POST 1 llega");
         return trabajadores_clase_1.trabajadoresInstance.actualizarTrabajadores().then((res) => {
             console.log(res);
             return res;

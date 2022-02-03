@@ -14,3 +14,4 @@ export declare function borrarTrabajadores(): Promise<boolean>;
 export declare function insertarTrabajadores(arrayTrabajadores: any): Promise<InsertManyResult<import("bson").Document>>;
 export declare function getFichajeMasAntiguo(): Promise<import("bson").Document>;
 export declare function actualizarEstadoFichaje(fichaje: SincroFichajesInterface): Promise<import("mongodb").UpdateResult>;
+export declare function existePlan(idPlan: string): Promise<import("bson").Document>;
