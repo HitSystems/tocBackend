@@ -12,7 +12,7 @@ exports.getMenus = getMenus;
 async function getTecladoMain(nombreMenu) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const teclas = database.collection('teclas');
-    const resultado = await (await teclas.find({ nomMenu: nombreMenu })).toArray();
+    const resultado = await (teclas.find({ nomMenu: nombreMenu })).toArray();
     return resultado;
 }
 exports.getTecladoMain = getTecladoMain;

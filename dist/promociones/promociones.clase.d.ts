@@ -1,4 +1,5 @@
 import { CestasInterface } from "../cestas/cestas.interface";
+import { PromocionesInterface } from "./promociones.interface";
 export declare class OfertasClase {
     private promociones;
     constructor();
@@ -15,7 +16,8 @@ export declare class OfertasClase {
     calcularPrecioRealIndividual(tipoPromo: number, idPrincipal: number, cantidadPrincipal: number, unidadesOferta: number, precioTotalOferta: number): Promise<{
         precioRealPrincipal: number;
     }>;
-    insertarPromociones(arrayPromociones: any): Promise<boolean>;
+    insertarPromociones(arrayPromociones: PromocionesInterface[]): Promise<boolean>;
+    devuelveTrue(): Promise<boolean>;
     descargarPromociones(): Promise<boolean>;
 }
 declare const ofertas: OfertasClase;

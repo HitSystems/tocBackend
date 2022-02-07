@@ -249,16 +249,24 @@ export class OfertasClase {
 
     /* Inserta un array de promociones en la base de datos. Se utiliza al instalar una licencia o para actualizar teclado */
     /* También renueva la variable privada de promociones */
-    insertarPromociones(arrayPromociones) {
-        return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
-            if (res) {
-                this.promociones = arrayPromociones;
-            }
-            return res.acknowledged;
-        }).catch((err) => {
-            console.log(err);
-            return false;
-        });
+    insertarPromociones(arrayPromociones: PromocionesInterface[]): Promise<boolean> {
+        if (arrayPromociones.length > 0) {
+            return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
+                if (res) {
+                    this.promociones = arrayPromociones;
+                }
+                return res.acknowledged;
+            }).catch((err) => {
+                console.log(err);
+                return false;
+            });
+        } else {
+            return this.devuelveTrue();
+        }
+    }
+
+    async devuelveTrue() {
+        return true;
     }
 
     /* Petición de descarga de promociones. También renueva la variable privada de promociones (siempre se utiliza esta) */

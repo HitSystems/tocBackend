@@ -188,15 +188,23 @@ class OfertasClase {
         };
     }
     insertarPromociones(arrayPromociones) {
-        return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
-            if (res) {
-                this.promociones = arrayPromociones;
-            }
-            return res.acknowledged;
-        }).catch((err) => {
-            console.log(err);
-            return false;
-        });
+        if (arrayPromociones.length > 0) {
+            return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
+                if (res) {
+                    this.promociones = arrayPromociones;
+                }
+                return res.acknowledged;
+            }).catch((err) => {
+                console.log(err);
+                return false;
+            });
+        }
+        else {
+            return this.devuelveTrue();
+        }
+    }
+    async devuelveTrue() {
+        return true;
     }
     descargarPromociones() {
         return schPromociones.getPromociones().then((arrayPromos) => {

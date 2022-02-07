@@ -67,7 +67,7 @@ export class InstaladorController {
             if (res.data.error === false) {
                 
                 const info1 = await trabajadoresInstance.insertarTrabajadores(res.data.info.dependientas);
-                const info2 = await articulosInstance.insertarArticulos(res.data.info.articulos); // FALLA
+                const info2 = await articulosInstance.insertarArticulos(res.data.info.articulos);
                 const info3 = await clienteInstance.insertarClientes(res.data.info.clientes);
                 const info4 = await familiasInstance.insertarFamilias(res.data.info.familias);
                 const info5 = await ofertas.insertarPromociones(res.data.info.promociones);
