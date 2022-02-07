@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.24](https://github.com/HitSystems/tocBackend/compare/v3.0.23...v3.0.24) (2022-02-07)
+
 ### [3.0.23](https://github.com/HitSystems/tocBackend/compare/v3.0.22...v3.0.23) (2022-02-03)
 
 ### [3.0.22](https://github.com/HitSystems/tocBackend/compare/v3.0.21...v3.0.22) (2022-02-01)
