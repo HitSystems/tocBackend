@@ -8,7 +8,7 @@ const SERVER_URL = "https://sanpedroserver.com";
 // // if(process.argv[2] == 'test') {
 // //     tipoEntorno = 'http://localhost:8080'
 // // } else {
-// //     tipoEntorno = 'http://54.74.52.150:8080';
+// //     tipoEntorno = 'http://34.78.247.153:8080';
 // // }
 
 // tipoEntorno = "https://sanpedroserver.com";
