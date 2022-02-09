@@ -227,7 +227,7 @@ export class CajaClase {
         currentCaja["inicioTime"] = cajaDirectaBBDD.inicioTime;
         currentCaja["totalApertura"] = cajaDirectaBBDD.totalApertura;
         currentCaja["enviado"] = false;
-    
+        currentCaja["finalTime"] = unaCaja.finalTime;
         if(arrayTicketsCaja.length > 0) {
             currentCaja.primerTicket = arrayTicketsCaja[0]._id;
             currentCaja.ultimoTicket = arrayTicketsCaja[arrayTicketsCaja.length-1]._id;
