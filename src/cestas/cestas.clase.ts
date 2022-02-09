@@ -415,7 +415,7 @@ export class CestaClase {
       for(let i in suplementos) {
         const idSuplemento = suplementos[i];
         const infoSuplemento = await articulosInstance.getInfoArticulo(idSuplemento);
-        cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioBase;
+        cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioConIva;
         cestaActual.lista[indexArticulo].nombre += ` + ${infoSuplemento.nombre}`;
       }
       cestaActual.lista = cestaActual.lista.reverse();
@@ -440,7 +440,7 @@ export class CestaClase {
       cestaActual.lista[indexArticulo].suplementosId = [];
       for(let i = 0; i < suplementos.length; i++) {
         const dataArticulo = await articulosInstance.getInfoArticulo(suplementos[i]);
-        cestaActual.lista[indexArticulo].subtotal -= dataArticulo.precioBase;
+        cestaActual.lista[indexArticulo].subtotal -= dataArticulo.precioConIva;
       }
       cestaActual.lista = cestaActual.lista.reverse();
       this.setCesta(cestaActual);
