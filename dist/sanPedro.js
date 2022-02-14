@@ -8,7 +8,7 @@ const movimientos_clase_1 = require("./movimientos/movimientos.clase");
 const trabajadores_clase_1 = require("./trabajadores/trabajadores.clase");
 const devoluciones_clase_1 = require("./devoluciones/devoluciones.clase");
 const io = require("socket.io-client");
-const socket = io('http://54.74.52.150:3001');
+const socket = io('http://34.78.247.153:3001');
 exports.socket = socket;
 socket.on('resSincroTickets', async (data) => {
     if (data.error == false) {
