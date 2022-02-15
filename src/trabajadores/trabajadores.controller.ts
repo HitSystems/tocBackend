@@ -1,5 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { trabajadoresInstance } from './trabajadores.clase';
+import { UtilesModule } from '../utiles/utiles.module';
+import { parametrosInstance } from '../parametros/parametros.clase';
+import axios from 'axios';
 
 @Controller('trabajadores')
 export class TrabajadoresController {
@@ -103,5 +106,28 @@ export class TrabajadoresController {
             console.log(err);
             return { error: true, mensaje: 'Backend: Error en trabajadores/actualizarTrabajadores CATCH' }
         });
+    }
+
+    @Post('crearPlan')
+    crearPlan(@Body() params) {
+        if (UtilesModule.checkVariable(params.horaEntrada, params.horaSalida)) {
+            const parametros = parametrosInstance.getParametros();
+            return axios.post('dependientas/crearPlan', {
+                parametros,
+                horaEntrada: params.horaEntrada,
+                horaSalida: params.horaSalida
+            }).then((res: any) => {
+                if (res.data.error == false) {
+                    return { error: false };
+                } else {
+                    return { error: true, mensaje: res.data.mensaje };
+                }
+            }).catch((err) => {
+                console.log(err);
+                return { error: true, mensaje: 'Error en backend crearPlan CATCH' };
+            });
+        } else {
+            return { error: true, mensaje: 'Error, faltan datos trabajadores/crearPlan' };
+        }
     }
 }

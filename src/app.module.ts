@@ -23,12 +23,14 @@ import { PaytefController } from './paytef/paytef.controller';
 import { VersionController } from './version/version.controller';
 import { TestController } from './test/test.controller';
 import { TurnosController } from './turnos/turnos.controller';
+import { UtilesModule } from './utiles/utiles.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public')
-    })
+    }),
+    UtilesModule
   ],
   controllers: [
     ArticulosController, 

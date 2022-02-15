@@ -459,7 +459,7 @@ class Impresora {
         data.texto += " " + data.precio + eur;
         try {
             permisosImpresora();
-            var device = new escpos.Serial('/dev/ttyUSB0', {
+            var device = new escpos.Serial('', {
                 baudRate: 9600,
                 stopBit: 2
             });

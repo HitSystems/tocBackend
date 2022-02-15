@@ -627,11 +627,11 @@ export class Impresora {
         data.texto += " " + data.precio + eur;
         try {
           permisosImpresora();
-          //var device = new escpos.USB('067b','2303');
-          var device = new escpos.Serial('/dev/ttyUSB0', {
-          baudRate: 9600,
-          stopBit: 2
-        }); 
+        //   var device = new escpos.USB('0x67b','0x2303');
+          var device = new escpos.Serial('', {
+            baudRate: 9600,
+            stopBit: 2
+          }); 
         var options = { encoding: "ISO-8859-1" };
         var printer = new escpos.Screen(device, options);
         

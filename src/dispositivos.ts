@@ -50,5 +50,16 @@ export class Dispositivos {
             }  
         }
     }
+
+    getDeviceVisor() {
+        if (os.platform() === 'win32') {
+            const device = new escpos.Serial('/dev/ttyUSB0', {
+                baudRate: 9600,
+                stopBit: 2
+            });
+        } else if (os.platform() === 'linux') {
+
+        }
+    }
 }
 

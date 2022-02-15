@@ -59,4 +59,17 @@ export declare class TrabajadoresController {
         error: boolean;
         mensaje: string;
     }>;
+    crearPlan(params: any): Promise<{
+        error: boolean;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: any;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
 }

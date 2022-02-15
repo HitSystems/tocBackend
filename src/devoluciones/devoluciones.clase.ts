@@ -5,34 +5,44 @@ import { DevolucionesInterface } from "./devoluciones.interface";
 import * as schDevoluciones from "./devoluciones.mongodb";
 
 export class Devoluciones {
-    async nuevaDevolucion(total: number, idCesta: number): Promise<boolean> {
-        const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
-        const nuevoIdTicket = Date.now();
-        const cesta = await cestas.getCesta(idCesta);
+    private bloqueado = false;
 
-        if (cesta == null || cesta.lista.length == 0) {
-            console.log("Error, la cesta es null o está vacía");
-            return false;
-        }
-        const objDevolucion: DevolucionesInterface = {
-            _id: nuevoIdTicket,
-            timestamp: Date.now(),
-            total: total,
-            lista: cesta.lista,
-            tipoPago: "DEVOLUCION",
-            idTrabajador: infoTrabajador._id,
-            tiposIva: cesta.tiposIva,
-            enviado: false,
-            enTransito: false,
-            intentos: 0,
-            comentario: '',
-        }
-        if (this.insertarDevolucion(objDevolucion)) {
-            await impresoraInstance.imprimirTicket(nuevoIdTicket, true);
-            return await cestas.borrarCesta(idCesta);
+    async nuevaDevolucion(total: number, idCesta: number): Promise<boolean> {
+        if (this.bloqueado == false) {
+            this.bloqueado = true;
+            const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
+            const nuevoIdTicket = Date.now();
+            const cesta = await cestas.getCesta(idCesta);
+    
+            if (cesta == null || cesta.lista.length == 0) {
+                console.log("Error, la cesta es null o está vacía");
+                return false;
+            }
+            const objDevolucion: DevolucionesInterface = {
+                _id: nuevoIdTicket,
+                timestamp: Date.now(),
+                total: total,
+                lista: cesta.lista,
+                tipoPago: "DEVOLUCION",
+                idTrabajador: infoTrabajador._id,
+                tiposIva: cesta.tiposIva,
+                enviado: false,
+                enTransito: false,
+                intentos: 0,
+                comentario: '',
+            }
+            if (this.insertarDevolucion(objDevolucion)) {
+                await impresoraInstance.imprimirTicket(nuevoIdTicket, true);
+                this.bloqueado = false;
+                return await cestas.borrarCesta(idCesta);
+            } else {
+                this.bloqueado = false;
+                return false;
+            }
         } else {
             return false;
         }
+
     }
     
     getDevolucionMasAntigua() {

@@ -31,6 +31,7 @@ const paytef_controller_1 = require("./paytef/paytef.controller");
 const version_controller_1 = require("./version/version.controller");
 const test_controller_1 = require("./test/test.controller");
 const turnos_controller_1 = require("./turnos/turnos.controller");
+const utiles_module_1 = require("./utiles/utiles.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -38,7 +39,8 @@ AppModule = __decorate([
         imports: [
             serve_static_1.ServeStaticModule.forRoot({
                 rootPath: (0, path_1.join)(__dirname, '..', 'public')
-            })
+            }),
+            utiles_module_1.UtilesModule
         ],
         controllers: [
             articulos_controller_1.ArticulosController,
