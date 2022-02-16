@@ -68,7 +68,6 @@ class Impresora {
         else {
             infoTicket = await devoluciones_clase_1.devolucionesInstance.getDevolucionByID(idTicket);
         }
-        console.log(infoTicket);
         const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getTrabajador(infoTicket.idTrabajador);
         const parametros = parametros_clase_1.parametrosInstance.getParametros();
         var sendObject;
@@ -126,7 +125,6 @@ class Impresora {
         const arrayCompra = info.arrayCompra;
         const total = info.total;
         const tipoPago = info.visa;
-        console.log(tipoPago);
         const tiposIva = info.tiposIva;
         const cabecera = info.cabecera;
         const pie = info.pie;
@@ -137,6 +135,9 @@ class Impresora {
         try {
             permisosImpresora();
             const device = await dispositivos.getDevice();
+            if (device == null) {
+                throw 'Error controlado: El dispositivo es null';
+            }
             var printer = new escpos.Printer(device);
             var detalles = '';
             var pagoTarjeta = '';
@@ -186,7 +187,6 @@ class Impresora {
             }
             var pagoDevolucion = '';
             if (tipoPago == "DEVOLUCION") {
-                console.log('Entramos en tipo pago devolucion');
                 pagoDevolucion = '-- ES DEVOLUCION --\n';
             }
             var detalleIva4 = '';
@@ -459,18 +459,20 @@ class Impresora {
         data.texto += " " + data.precio + eur;
         try {
             permisosImpresora();
-            var device = new escpos.Serial('', {
-                baudRate: 9600,
-                stopBit: 2
-            });
-            var options = { encoding: "ISO-8859-1" };
-            var printer = new escpos.Screen(device, options);
-            device.open(function () {
-                printer
-                    .clear()
-                    .text(data.texto)
-                    .close();
-            });
+            const device = dispositivos.getDeviceVisor();
+            if (device != null) {
+                var options = { encoding: "ISO-8859-1" };
+                var printer = new escpos.Screen(device, options);
+                device.open(function () {
+                    printer
+                        .clear()
+                        .text(data.texto)
+                        .close();
+                });
+            }
+            else {
+                console.log("Controlado: dispositivo es null");
+            }
         }
         catch (err) {
             console.log("Error: ", err);

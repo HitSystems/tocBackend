@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const menus_clase_1 = require("./menus.clase");
 let MenusController = class MenusController {
     clickMenu(params) {
-        console.log('Fecha de llegada: ', Date.now());
         if (menus_clase_1.menusInstance.getBloqueado() == false) {
             menus_clase_1.menusInstance.setBloqueado(true);
             return menus_clase_1.menusInstance.clickMenu(params.nombreMenu).then((res) => {

@@ -67,7 +67,7 @@ socket.on('resCajas', (data) => {
         }
     }
     else {
-        console.log("Eoo: " + data.mensaje);
+        console.log(data.mensaje);
     }
 });
 socket.on('resMovimientos', (data) => {

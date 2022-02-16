@@ -76,7 +76,7 @@ export class Impresora {
         } else {
             infoTicket = await devolucionesInstance.getDevolucionByID(idTicket);
         }
-        console.log(infoTicket)
+        // console.log(infoTicket)
         const infoTrabajador: TrabajadoresInterface = await trabajadoresInstance.getTrabajador(infoTicket.idTrabajador);
         const parametros = parametrosInstance.getParametros();
         var sendObject;
@@ -138,7 +138,7 @@ export class Impresora {
         const arrayCompra = info.arrayCompra;
         const total = info.total;
         const tipoPago = info.visa;
-        console.log(tipoPago)
+        // console.log(tipoPago)
         const tiposIva = info.tiposIva;
         const cabecera = info.cabecera;
         const pie = info.pie;
@@ -174,6 +174,9 @@ export class Impresora {
             //     }
             // }
             const device = await dispositivos.getDevice();
+            if (device == null) {
+                throw 'Error controlado: El dispositivo es null';
+            }
             var printer = new escpos.Printer(device);
     
             var detalles = '';
@@ -240,7 +243,7 @@ export class Impresora {
     
             if(tipoPago == "DEVOLUCION")
             {
-                console.log('Entramos en tipo pago devolucion')
+                // console.log('Entramos en tipo pago devolucion')
                 pagoDevolucion = '-- ES DEVOLUCION --\n';
             }
     
@@ -626,32 +629,31 @@ export class Impresora {
         data.texto = datosExtra + "" + data.texto.substring(0, 14);
         data.texto += " " + data.precio + eur;
         try {
-          permisosImpresora();
-        //   var device = new escpos.USB('0x67b','0x2303');
-          var device = new escpos.Serial('', {
-            baudRate: 9600,
-            stopBit: 2
-          }); 
-        var options = { encoding: "ISO-8859-1" };
-        var printer = new escpos.Screen(device, options);
-        
-        device.open(function () 
-        {
-            printer
-                // Espacios en blanco para limpiar el visor y volver a mostrar los datos en el sitio correcto
-                //.text(stringVacia)
-                .clear()
-                //.moveUp()
-                // Información del artículo (artículo + precio)
-                .text(data.texto)
-                //.moveDown()
-                //.text(datosExtra)
-                //.text(datosExtra)
-                .close()
-        });
-        }
-        catch (err) 
-        {
+            permisosImpresora();
+            //   var device = new escpos.USB('0x67b','0x2303');
+            const device = dispositivos.getDeviceVisor();
+            
+            if (device != null) {
+                var options = { encoding: "ISO-8859-1" };
+                var printer = new escpos.Screen(device, options);
+                
+                device.open(function () {
+                    printer
+                        // Espacios en blanco para limpiar el visor y volver a mostrar los datos en el sitio correcto
+                        //.text(stringVacia)
+                        .clear()
+                        //.moveUp()
+                        // Información del artículo (artículo + precio)
+                        .text(data.texto)
+                        //.moveDown()
+                        //.text(datosExtra)
+                        //.text(datosExtra)
+                        .close()
+                });
+            } else {
+                console.log("Controlado: dispositivo es null");
+            }
+        } catch (err) {
             console.log("Error: ", err)
             //errorImpresora(err, event);
         }

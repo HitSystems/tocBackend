@@ -63,7 +63,7 @@ socket.on('resCajas', (data) => {
             // cambiar estado infoCaja en mongo (enviado + comentario)
         }
     } else {
-        console.log("Eoo: " + data.mensaje);
+        console.log(data.mensaje);
     }
 });
 

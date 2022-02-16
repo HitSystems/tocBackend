@@ -31,8 +31,8 @@ export class Devoluciones {
                 intentos: 0,
                 comentario: '',
             }
-            if (this.insertarDevolucion(objDevolucion)) {
-                await impresoraInstance.imprimirTicket(nuevoIdTicket, true);
+            if (await this.insertarDevolucion(objDevolucion)) {
+                impresoraInstance.imprimirTicket(nuevoIdTicket, true);
                 this.bloqueado = false;
                 return await cestas.borrarCesta(idCesta);
             } else {

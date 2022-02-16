@@ -294,13 +294,17 @@ export class CestaClase {
             if (cestaRetornar != undefined && cestaRetornar != null) {
               if (cestaRetornar.tiposIva != undefined && cestaRetornar.tiposIva != null) {
                 trabajadoresInstance.getCurrentTrabajador().then((data) => {
-                  console.log(data.nombre);
-                  impresoraInstance.mostrarVisor({
-                    dependienta: data.nombre,
-                    total: (cestaRetornar.tiposIva.importe1 + cestaRetornar.tiposIva.importe2 + cestaRetornar.tiposIva.importe3).toFixed(2),
-                    precio: infoArticulo.precioConIva.toString(),
-                    texto: infoArticulo.nombre,
-                  });
+                  // console.log(data.nombre);
+                  try {
+                    impresoraInstance.mostrarVisor({
+                      dependienta: data.nombre,
+                      total: (cestaRetornar.tiposIva.importe1 + cestaRetornar.tiposIva.importe2 + cestaRetornar.tiposIva.importe3).toFixed(2),
+                      precio: infoArticulo.precioConIva.toString(),
+                      texto: infoArticulo.nombre,
+                    });
+                  } catch(err) {
+                    console.log(err);
+                  }
                 })
               }
             }

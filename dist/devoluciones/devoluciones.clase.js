@@ -32,8 +32,8 @@ class Devoluciones {
                 intentos: 0,
                 comentario: '',
             };
-            if (this.insertarDevolucion(objDevolucion)) {
-                await impresora_class_1.impresoraInstance.imprimirTicket(nuevoIdTicket, true);
+            if (await this.insertarDevolucion(objDevolucion)) {
+                impresora_class_1.impresoraInstance.imprimirTicket(nuevoIdTicket, true);
                 this.bloqueado = false;
                 return await cestas_clase_1.cestas.borrarCesta(idCesta);
             }

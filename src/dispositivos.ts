@@ -35,11 +35,12 @@ export class Dispositivos {
                     const device: number = new escpos.USB();
                     return device;
                 } else if (parametros.tipoImpresora == 'SERIE') {
-                    const device = new escpos.Serial('/dev/ttyS0', {
-                        baudRate: 115200,
-                        stopBit: 2
-                    });
-                    return device;
+                    // const device = new escpos.Serial('COM1', {
+                    //     baudRate: 115200,
+                    //     stopBit: 2
+                    // });
+                    // return device;
+                    return null;
                 } else {
                     console.log("Parametros de impresora no configurados");
                     return null;
@@ -53,12 +54,16 @@ export class Dispositivos {
 
     getDeviceVisor() {
         if (os.platform() === 'win32') {
-            const device = new escpos.Serial('/dev/ttyUSB0', {
+            // const device = new escpos.Serial('/dev/ttyUSB0', {
+            //     baudRate: 9600,
+            //     stopBit: 2
+            // });
+            return null;
+        } else if (os.platform() === 'linux') {
+            return new escpos.Serial('/dev/ttyUSB0', {
                 baudRate: 9600,
                 stopBit: 2
-            });
-        } else if (os.platform() === 'linux') {
-
+            }); 
         }
     }
 }
