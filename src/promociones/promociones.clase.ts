@@ -9,6 +9,8 @@ import * as schPromociones from "./promociones.mongodb";
 
 export class OfertasClase {
     private promociones: PromocionesInterface[];
+    private promocionesActivas = true;
+
 
     /* Inicializa las promociones en su variable privada */
     constructor() {
@@ -36,52 +38,63 @@ export class OfertasClase {
         return -1; //IMPORTANTE QUE SEA ESTE VALOR SINO HAY SECUNDARIO
     }
 
+    setEstadoPromociones(x: boolean) {
+        this.promocionesActivas = x;
+    }
+
+    getEstadoPromociones(): boolean {
+        return this.promocionesActivas;
+    }
+
     /* Aplica las promociones en la cesta de todo tipo, tanto individuales como combos */
-    async teLoAplicoTodo(necesariasPrincipal: number, necesariasSecundario: number, cesta: CestasInterface, posicionPrincipal: number, posicionSecundario: number, pideDelA: number, pideDelB: number, precioPromo: number, idPromo: string) {
-        let numeroPrincipal     = 0;
-        let numeroSecundario    = 0;
-        let sobranPrincipal     = 0;
-        let sobranSecundario    = 0;
-        let nVeces              = 0;
-
-        var idPrincipal         = (typeof cesta.lista[posicionPrincipal] !== "undefined") ? cesta.lista[posicionPrincipal]._id: 0;
-        var idSecundario        = (typeof cesta.lista[posicionSecundario] !== "undefined") ? cesta.lista[posicionSecundario]._id: 0;
-
-        if(pideDelA !== -1 && pideDelB !== -1)
-        {
-            numeroPrincipal          = cesta.lista[posicionPrincipal].unidades/necesariasPrincipal;
-            numeroSecundario         = cesta.lista[posicionSecundario].unidades/necesariasSecundario;
-            nVeces                   = Math.trunc(Math.min(numeroPrincipal, numeroSecundario));
-            sobranPrincipal          = cesta.lista[posicionPrincipal].unidades-nVeces*necesariasPrincipal;
-            sobranSecundario         = cesta.lista[posicionSecundario].unidades-nVeces*necesariasSecundario;
-
-            cesta = await cestas.limpiarCesta(cesta, posicionPrincipal, posicionSecundario, sobranPrincipal, sobranSecundario, pideDelA, pideDelB);
-            cesta = await this.insertarLineaPromoCestaCombo(cesta, 1, nVeces, precioPromo*nVeces, idPromo, idPrincipal, idSecundario, necesariasPrincipal, necesariasSecundario);
-        }
-        else
-        {
-            if(pideDelA !== -1 && pideDelB === -1)
+    async teLoAplicoTodo(necesariasPrincipal: number, necesariasSecundario: number, cesta: CestasInterface, posicionPrincipal: number, posicionSecundario: number, pideDelA: number, pideDelB: number, precioPromo: number, idPromo: string): Promise<CestasInterface> {
+        if (this.getEstadoPromociones()) {
+            let numeroPrincipal     = 0;
+            let numeroSecundario    = 0;
+            let sobranPrincipal     = 0;
+            let sobranSecundario    = 0;
+            let nVeces              = 0;
+    
+            var idPrincipal         = (typeof cesta.lista[posicionPrincipal] !== "undefined") ? cesta.lista[posicionPrincipal]._id: 0;
+            var idSecundario        = (typeof cesta.lista[posicionSecundario] !== "undefined") ? cesta.lista[posicionSecundario]._id: 0;
+    
+            if(pideDelA !== -1 && pideDelB !== -1)
             {
-                numeroPrincipal = cesta.lista[posicionPrincipal].unidades/necesariasPrincipal;
-                nVeces          = Math.trunc(numeroPrincipal);
-                sobranPrincipal = cesta.lista[posicionPrincipal].unidades-nVeces*necesariasPrincipal;
-
+                numeroPrincipal          = cesta.lista[posicionPrincipal].unidades/necesariasPrincipal;
+                numeroSecundario         = cesta.lista[posicionSecundario].unidades/necesariasSecundario;
+                nVeces                   = Math.trunc(Math.min(numeroPrincipal, numeroSecundario));
+                sobranPrincipal          = cesta.lista[posicionPrincipal].unidades-nVeces*necesariasPrincipal;
+                sobranSecundario         = cesta.lista[posicionSecundario].unidades-nVeces*necesariasSecundario;
+    
                 cesta = await cestas.limpiarCesta(cesta, posicionPrincipal, posicionSecundario, sobranPrincipal, sobranSecundario, pideDelA, pideDelB);
-                cesta = await this.insertarLineaPromoCestaIndividual(cesta, 2, nVeces, precioPromo*nVeces*necesariasPrincipal, idPromo, idPrincipal, necesariasPrincipal);
+                cesta = await this.insertarLineaPromoCestaCombo(cesta, 1, nVeces, precioPromo*nVeces, idPromo, idPrincipal, idSecundario, necesariasPrincipal, necesariasSecundario);
             }
             else
             {
-                if(pideDelA === -1 && pideDelB !== -1)
+                if(pideDelA !== -1 && pideDelB === -1)
                 {
-                    numeroSecundario = cesta.lista[posicionSecundario].unidades/necesariasSecundario;
-                    nVeces          = Math.trunc(numeroSecundario);
-                    sobranSecundario = cesta.lista[posicionSecundario].unidades-nVeces*necesariasSecundario;
-
+                    numeroPrincipal = cesta.lista[posicionPrincipal].unidades/necesariasPrincipal;
+                    nVeces          = Math.trunc(numeroPrincipal);
+                    sobranPrincipal = cesta.lista[posicionPrincipal].unidades-nVeces*necesariasPrincipal;
+    
                     cesta = await cestas.limpiarCesta(cesta, posicionPrincipal, posicionSecundario, sobranPrincipal, sobranSecundario, pideDelA, pideDelB);
-                    cesta = await this.insertarLineaPromoCestaIndividual(cesta, 2, nVeces, precioPromo*nVeces*necesariasSecundario, idPromo, idPrincipal, necesariasPrincipal); //se trata como si fueran principales
+                    cesta = await this.insertarLineaPromoCestaIndividual(cesta, 2, nVeces, precioPromo*nVeces*necesariasPrincipal, idPromo, idPrincipal, necesariasPrincipal);
+                }
+                else
+                {
+                    if(pideDelA === -1 && pideDelB !== -1)
+                    {
+                        numeroSecundario = cesta.lista[posicionSecundario].unidades/necesariasSecundario;
+                        nVeces          = Math.trunc(numeroSecundario);
+                        sobranSecundario = cesta.lista[posicionSecundario].unidades-nVeces*necesariasSecundario;
+    
+                        cesta = await cestas.limpiarCesta(cesta, posicionPrincipal, posicionSecundario, sobranPrincipal, sobranSecundario, pideDelA, pideDelB);
+                        cesta = await this.insertarLineaPromoCestaIndividual(cesta, 2, nVeces, precioPromo*nVeces*necesariasSecundario, idPromo, idPrincipal, necesariasPrincipal); //se trata como si fueran principales
+                    }
                 }
             }
         }
+
         return cesta;
     }
 

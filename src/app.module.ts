@@ -24,6 +24,7 @@ import { VersionController } from './version/version.controller';
 import { TestController } from './test/test.controller';
 import { TurnosController } from './turnos/turnos.controller';
 import { UtilesModule } from './utiles/utiles.module';
+import { PromocionesController } from './promociones/promociones.controller';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { UtilesModule } from './utiles/utiles.module';
     CestasController, 
     ParametrosController, 
     TicketsController, 
-    TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController, FamiliasController, ParamsTicketController, PaytefController, VersionController, TestController, TurnosController],
+    TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController, FamiliasController, ParamsTicketController, PaytefController, VersionController, TestController, TurnosController, PromocionesController],
   providers: [SocketGateway]  
 })
 export class AppModule {}
