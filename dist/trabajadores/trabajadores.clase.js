@@ -263,6 +263,29 @@ class TrabajadoresClase {
             return true;
         });
     }
+    getInicioFinalDiaAnterior() {
+        const ayer = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+        ayer.setHours(0, 0, 0, 0);
+        const inicioTime = ayer.getTime();
+        ayer.setHours(23, 59, 59, 999);
+        const finalTime = ayer.getTime();
+        return { inicioTime, finalTime };
+    }
+    async getTrabajaronAyer() {
+        const infoTime = this.getInicioFinalDiaAnterior();
+        try {
+            const idsAyer = await schTrabajadores.getTrabajaronAyer(infoTime.inicioTime, infoTime.finalTime);
+            let arrayTrabajadores = [];
+            for (let i = 0; i < idsAyer.length; i++) {
+                arrayTrabajadores.push(await this.getTrabajador(idsAyer[i].infoFichaje.idTrabajador));
+            }
+            return arrayTrabajadores;
+        }
+        catch (err) {
+            console.log(err);
+            return [];
+        }
+    }
 }
 exports.TrabajadoresClase = TrabajadoresClase;
 exports.trabajadoresInstance = new TrabajadoresClase();

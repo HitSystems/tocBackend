@@ -35,5 +35,10 @@ export declare class TrabajadoresClase {
     getFichajeMasAntiguo(): Promise<import("bson").Document>;
     actualizarEstadoFichaje(fichaje: SincroFichajesInterface): Promise<boolean>;
     existePlan(idPlan: string): Promise<boolean>;
+    getInicioFinalDiaAnterior(): {
+        inicioTime: number;
+        finalTime: number;
+    };
+    getTrabajaronAyer(): Promise<TrabajadoresInterface[]>;
 }
 export declare const trabajadoresInstance: TrabajadoresClase;

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Get } from '@nestjs/common';
 import { trabajadoresInstance } from './trabajadores.clase';
 import { UtilesModule } from '../utiles/utiles.module';
 import { parametrosInstance } from '../parametros/parametros.clase';
@@ -129,5 +129,10 @@ export class TrabajadoresController {
         } else {
             return { error: true, mensaje: 'Error, faltan datos trabajadores/crearPlan' };
         }
+    }
+
+    @Get('getTrabajaronAyer')
+    getTrabajaronAyer() {
+        return trabajadoresInstance.getTrabajaronAyer();
     }
 }

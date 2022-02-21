@@ -72,4 +72,5 @@ export declare class TrabajadoresController {
         error: boolean;
         mensaje: string;
     };
+    getTrabajaronAyer(): Promise<import("./trabajadores.interface").TrabajadoresInterface[]>;
 }

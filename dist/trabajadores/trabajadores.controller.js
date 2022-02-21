@@ -137,6 +137,9 @@ let TrabajadoresController = class TrabajadoresController {
             return { error: true, mensaje: 'Error, faltan datos trabajadores/crearPlan' };
         }
     }
+    getTrabajaronAyer() {
+        return trabajadores_clase_1.trabajadoresInstance.getTrabajaronAyer();
+    }
 };
 __decorate([
     (0, common_1.Post)('getTrabajadoresFichados'),
@@ -191,6 +194,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TrabajadoresController.prototype, "crearPlan", null);
+__decorate([
+    (0, common_1.Get)('getTrabajaronAyer'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TrabajadoresController.prototype, "getTrabajaronAyer", null);
 TrabajadoresController = __decorate([
     (0, common_1.Controller)('trabajadores')
 ], TrabajadoresController);
