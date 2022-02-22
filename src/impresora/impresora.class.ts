@@ -8,6 +8,7 @@ import { clienteInstance } from "../clientes/clientes.clase";
 import { parametrosInstance } from "../parametros/parametros.clase";
 import { Dispositivos } from "../dispositivos";
 import { devolucionesInstance } from "src/devoluciones/devoluciones.clase";
+import axios from "axios";
 
 
 const dispositivos = new Dispositivos();
@@ -658,6 +659,38 @@ export class Impresora {
         //     //errorImpresora(err, event);
         // }
         console.log('El visor da muchos problemas');
+    }
+    async imprimirEntregas() {
+        const params = parametrosInstance.getParametros();
+        return axios.post('entregas/getEntregas', { database: params.database, licencia: params.licencia }).then(async (res: any) => {
+            try {
+                permisosImpresora();
+                const device = await dispositivos.getDevice();
+                if (device != null) {
+                    var options = { encoding: "ISO-8859-15" }; //"GB18030" };
+                    var printer = new escpos.Printer(device, options);
+                    device.open(function () {
+                        printer
+                            .font('a')
+                            .style('b')
+                            .align('CT')
+                            .size(1, 1)
+                            .text(res.data.info)
+                            .cut()
+                            .close()
+                    });
+                    return { error: false, info: 'OK' };
+                }
+                return { error: true, info: 'Error, no se encuentra la impresora', }
+            }
+            catch (err) {
+                console.log(err);
+                return { error: true, info: 'Error en CATCH imprimirEntregas() 2', }
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, info: 'Error en CATCH imprimirEntregas() 1', }
+        });
     }
 }
 export const impresoraInstance = new Impresora();

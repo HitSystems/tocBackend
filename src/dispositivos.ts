@@ -46,9 +46,9 @@ export class Dispositivos {
                     return null;
                 }
             } catch(err) {
-                console.log(err);
+                console.log(err.message);
                 return null;
-            }  
+            }
         }
     }
 

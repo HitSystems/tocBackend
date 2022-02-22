@@ -13,4 +13,9 @@ export class ImpresoraController {
     abrirCajon() {
         impresoraInstance.abrirCajon();
     }
+
+    @Post('imprimirEntregas')
+    imprimirEntregas() {
+        return impresoraInstance.imprimirEntregas();
+    }
 }

@@ -9,6 +9,7 @@ const clientes_clase_1 = require("../clientes/clientes.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const dispositivos_1 = require("../dispositivos");
 const devoluciones_clase_1 = require("../devoluciones/devoluciones.clase");
+const axios_1 = require("axios");
 const dispositivos = new dispositivos_1.Dispositivos();
 const escpos = require('escpos');
 const exec = require('child_process').exec;
@@ -430,6 +431,38 @@ class Impresora {
     }
     mostrarVisor(data) {
         console.log('El visor da muchos problemas');
+    }
+    async imprimirEntregas() {
+        const params = parametros_clase_1.parametrosInstance.getParametros();
+        return axios_1.default.post('entregas/getEntregas', { database: params.database, licencia: params.licencia }).then(async (res) => {
+            try {
+                permisosImpresora();
+                const device = await dispositivos.getDevice();
+                if (device != null) {
+                    var options = { encoding: "ISO-8859-15" };
+                    var printer = new escpos.Printer(device, options);
+                    device.open(function () {
+                        printer
+                            .font('a')
+                            .style('b')
+                            .align('CT')
+                            .size(1, 1)
+                            .text(res.data.info)
+                            .cut()
+                            .close();
+                    });
+                    return { error: false, info: 'OK' };
+                }
+                return { error: true, info: 'Error, no se encuentra la impresora', };
+            }
+            catch (err) {
+                console.log(err);
+                return { error: true, info: 'Error en CATCH imprimirEntregas() 2', };
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, info: 'Error en CATCH imprimirEntregas() 1', };
+        });
     }
 }
 exports.Impresora = Impresora;
