@@ -7,5 +7,6 @@ export declare class Impresora {
     imprimirCaja(calaixFet: any, nombreTrabajador: any, descuadre: any, nClientes: any, recaudado: any, arrayMovimientos: any[], nombreTienda: any, fI: any, fF: any, cInicioCaja: any, cFinalCaja: any, tipoImpresora: any): Promise<void>;
     abrirCajon(): Promise<void>;
     mostrarVisor(data: any): void;
+    imprimirEntregas(): Promise<void>;
 }
 export declare const impresoraInstance: Impresora;

@@ -23,6 +23,9 @@ let ImpresoraController = class ImpresoraController {
     abrirCajon() {
         impresora_class_1.impresoraInstance.abrirCajon();
     }
+    imprimirEntregas(params) {
+        impresora_class_1.impresoraInstance.imprimirEntregas();
+    }
 };
 __decorate([
     (0, common_1.Post)('imprimirTicket'),
@@ -37,6 +40,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ImpresoraController.prototype, "abrirCajon", null);
+__decorate([
+    (0, common_1.Post)('imprimirEntregas'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ImpresoraController.prototype, "imprimirEntregas", null);
 ImpresoraController = __decorate([
     (0, common_1.Controller)('impresora')
 ], ImpresoraController);
