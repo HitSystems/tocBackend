@@ -674,7 +674,7 @@ export class Impresora {
                             .font('a')
                             .style('b')
                             .align('CT')
-                            .size(1, 1)
+                            .size(0, 0)
                             .text(res.data.info)
                             .cut()
                             .close()
