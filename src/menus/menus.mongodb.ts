@@ -20,7 +20,7 @@ export async function getMenus(): Promise<any> {
 export async function getTecladoMain(nombreMenu: string): Promise<any> {
     const database = (await conexion).db('tocgame');
     const teclas = database.collection('teclas');
-    const resultado = await (await teclas.find({nomMenu: nombreMenu})).toArray();
+    const resultado = await (teclas.find({nomMenu: nombreMenu})).toArray();
     
     return resultado;
 }

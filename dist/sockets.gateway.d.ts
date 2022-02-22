@@ -1,6 +1,6 @@
 export declare class SocketGateway {
     server: any;
-    test(): void;
+    test(params: any): void;
     consultarPuntos(params: any): void;
     cobrarConClearone(params: any): Promise<void>;
     polling(params: any): Promise<boolean | void>;

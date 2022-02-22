@@ -1,3 +1,4 @@
+import { ArticulosInterface } from "../articulos/articulos.interface";
 
 interface TiposIva 
 {
@@ -16,7 +17,7 @@ function redondearPrecio(precio) /* REDONDEA AL SEGUNDO DECIMAL */
 {
     return Math.round(precio * 100) / 100;
 }
-export function construirObjetoIvas(infoArticulo, unidades, tipoIvaAnterior: TiposIva, infoAPeso = null) : TiposIva
+export function construirObjetoIvas(infoArticulo: ArticulosInterface, unidades, tipoIvaAnterior: TiposIva, infoAPeso = null) : TiposIva
 {
     let base1 = 0, base2 = 0, base3 = 0;
     let valor1 = 0, valor2 = 0, valor3 = 0;
@@ -44,15 +45,15 @@ export function construirObjetoIvas(infoArticulo, unidades, tipoIvaAnterior: Tip
     }
 
     const aux = {
-        base1: redondearPrecio(base1) + tipoIvaAnterior.base1,
-        base2: redondearPrecio(base2) + tipoIvaAnterior.base2,
-        base3: redondearPrecio(base3) + tipoIvaAnterior.base3,
-        valorIva1: redondearPrecio(valor1) + tipoIvaAnterior.valorIva1,
-        valorIva2: redondearPrecio(valor2) + tipoIvaAnterior.valorIva2,
-        valorIva3: redondearPrecio(valor3) + tipoIvaAnterior.valorIva3,
-        importe1: redondearPrecio(importe1) + tipoIvaAnterior.importe1,
-        importe2: redondearPrecio(importe2) + tipoIvaAnterior.importe2,
-        importe3: redondearPrecio(importe3) + tipoIvaAnterior.importe3
+        base1: redondearPrecio(base1 + tipoIvaAnterior.base1),
+        base2: redondearPrecio(base2 + tipoIvaAnterior.base2),
+        base3: redondearPrecio(base3 + tipoIvaAnterior.base3),
+        valorIva1: redondearPrecio(valor1 + tipoIvaAnterior.valorIva1),
+        valorIva2: redondearPrecio(valor2 + tipoIvaAnterior.valorIva2),
+        valorIva3: redondearPrecio(valor3 + tipoIvaAnterior.valorIva3),
+        importe1: redondearPrecio(importe1 + tipoIvaAnterior.importe1),
+        importe2: redondearPrecio(importe2 + tipoIvaAnterior.importe2),
+        importe3: redondearPrecio(importe3 + tipoIvaAnterior.importe3)
     };
 
     return aux;

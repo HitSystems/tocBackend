@@ -10,6 +10,7 @@ export declare class ParametrosClase {
     actualizarParametros(): void;
     setUltimoTicket(idTicket: number): Promise<boolean>;
     setVidAndPid(vid: string, pid: string): Promise<boolean>;
+    setIpPaytef(ip: string): Promise<boolean>;
 }
 declare const parametrosInstance: ParametrosClase;
 export { parametrosInstance };

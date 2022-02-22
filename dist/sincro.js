@@ -14,7 +14,7 @@ function sincronizarTickets() {
         if (parametros != null) {
             tickets_clase_1.ticketsInstance.getTicketMasAntiguo().then((res) => {
                 if (res.length > 0) {
-                    sanPedro_1.socket.emit('sincroTickets', {
+                    (0, sanPedro_1.emitSocket)('sincroTickets', {
                         parametros,
                         arrayTickets: res
                     });
@@ -36,7 +36,7 @@ function sincronizarCajas() {
         if (parametros != null) {
             caja_clase_1.cajaInstance.getCajaMasAntigua().then((res) => {
                 if (res.length > 0) {
-                    sanPedro_1.socket.emit('sincroCajas', {
+                    (0, sanPedro_1.emitSocket)('sincroCajas', {
                         parametros,
                         infoCaja: res[0]
                     });
@@ -58,7 +58,7 @@ function sincronizarMovimientos() {
         if (parametros != null) {
             movimientos_clase_1.movimientosInstance.getMovimientoMasAntiguo().then((res) => {
                 if (res != null) {
-                    sanPedro_1.socket.emit('sincroMovimientos', {
+                    (0, sanPedro_1.emitSocket)('sincroMovimientos', {
                         parametros,
                         movimiento: res
                     });
@@ -80,7 +80,7 @@ function sincronizarFichajes() {
         if (parametros != null) {
             trabajadores_clase_1.trabajadoresInstance.getFichajeMasAntiguo().then((res) => {
                 if (res != null) {
-                    sanPedro_1.socket.emit('sincroFichajes', {
+                    (0, sanPedro_1.emitSocket)('sincroFichajes', {
                         parametros,
                         fichaje: res
                     });
@@ -102,7 +102,7 @@ function sincronizarDevoluciones() {
         if (parametros !== null) {
             devoluciones_clase_1.devolucionesInstance.getDevolucionMasAntigua().then((res) => {
                 if (res !== null) {
-                    sanPedro_1.socket.emit('sincroDevoluciones', {
+                    (0, sanPedro_1.emitSocket)('sincroDevoluciones', {
                         parametros,
                         devolucion: res,
                     });

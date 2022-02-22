@@ -23,6 +23,7 @@ export interface SincroFichajesInterface {
     enTransito: boolean;
     intentos: number;
     comentario: string;
+    idPlan: string;
 }
 export declare const trabajadorVacio: {
     _id: number;

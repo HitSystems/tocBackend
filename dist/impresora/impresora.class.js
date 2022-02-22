@@ -68,55 +68,56 @@ class Impresora {
         else {
             infoTicket = await devoluciones_clase_1.devolucionesInstance.getDevolucionByID(idTicket);
         }
-        console.log(infoTicket);
         const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getTrabajador(infoTicket.idTrabajador);
         const parametros = parametros_clase_1.parametrosInstance.getParametros();
         var sendObject;
-        if (infoTicket.cliente != null && infoTicket.tipoPago != 'DEUDA' && infoTicket.cliente != undefined) {
-            const infoClienteAux = await clientes_clase_1.clienteInstance.getClienteByID(infoTicket.cliente);
-            const infoCliente = infoClienteAux;
-            var auxNombre = '';
-            var puntosCliente = 0;
-            if (infoCliente != null) {
-                auxNombre = infoCliente.nombre;
-                puntosCliente = await clientes_clase_1.clienteInstance.getPuntosCliente(infoTicket.cliente);
+        if (infoTicket != null) {
+            if (infoTicket.cliente != null && infoTicket.tipoPago != 'DEUDA' && infoTicket.cliente != undefined) {
+                const infoClienteAux = await clientes_clase_1.clienteInstance.getClienteByID(infoTicket.cliente);
+                const infoCliente = infoClienteAux;
+                var auxNombre = '';
+                var puntosCliente = 0;
+                if (infoCliente != null) {
+                    auxNombre = infoCliente.nombre;
+                    puntosCliente = await clientes_clase_1.clienteInstance.getPuntosCliente(infoTicket.cliente);
+                }
+                else {
+                    auxNombre = '';
+                }
+                sendObject = {
+                    numFactura: infoTicket._id,
+                    arrayCompra: infoTicket.lista,
+                    total: infoTicket.total,
+                    visa: infoTicket.tipoPago,
+                    tiposIva: infoTicket.tiposIva,
+                    cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato : '',
+                    pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato : '',
+                    nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto) : (''),
+                    impresora: parametros.tipoImpresora,
+                    infoClienteVip: infoTicket.infoClienteVip,
+                    infoCliente: {
+                        nombre: auxNombre,
+                        puntos: puntosCliente
+                    }
+                };
+                this._venta(sendObject);
             }
             else {
-                auxNombre = '';
+                sendObject = {
+                    numFactura: infoTicket._id,
+                    arrayCompra: infoTicket.lista,
+                    total: infoTicket.total,
+                    visa: infoTicket.tipoPago,
+                    tiposIva: infoTicket.tiposIva,
+                    cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato : '',
+                    pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato : '',
+                    nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto) : (''),
+                    impresora: parametros.tipoImpresora,
+                    infoClienteVip: infoTicket.infoClienteVip,
+                    infoCliente: null
+                };
+                this._venta(sendObject);
             }
-            sendObject = {
-                numFactura: infoTicket._id,
-                arrayCompra: infoTicket.lista,
-                total: infoTicket.total,
-                visa: infoTicket.tipoPago,
-                tiposIva: infoTicket.tiposIva,
-                cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato : '',
-                pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato : '',
-                nombreTrabajador: infoTrabajador.nombreCorto,
-                impresora: parametros.tipoImpresora,
-                infoClienteVip: infoTicket.infoClienteVip,
-                infoCliente: {
-                    nombre: auxNombre,
-                    puntos: puntosCliente
-                }
-            };
-            this._venta(sendObject);
-        }
-        else {
-            sendObject = {
-                numFactura: infoTicket._id,
-                arrayCompra: infoTicket.lista,
-                total: infoTicket.total,
-                visa: infoTicket.tipoPago,
-                tiposIva: infoTicket.tiposIva,
-                cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato : '',
-                pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato : '',
-                nombreTrabajador: infoTrabajador.nombreCorto,
-                impresora: parametros.tipoImpresora,
-                infoClienteVip: infoTicket.infoClienteVip,
-                infoCliente: null
-            };
-            this._venta(sendObject);
         }
     }
     async _venta(info) {
@@ -124,7 +125,6 @@ class Impresora {
         const arrayCompra = info.arrayCompra;
         const total = info.total;
         const tipoPago = info.visa;
-        console.log(tipoPago);
         const tiposIva = info.tiposIva;
         const cabecera = info.cabecera;
         const pie = info.pie;
@@ -135,6 +135,9 @@ class Impresora {
         try {
             permisosImpresora();
             const device = await dispositivos.getDevice();
+            if (device == null) {
+                throw 'Error controlado: El dispositivo es null';
+            }
             var printer = new escpos.Printer(device);
             var detalles = '';
             var pagoTarjeta = '';
@@ -184,7 +187,6 @@ class Impresora {
             }
             var pagoDevolucion = '';
             if (tipoPago == "DEVOLUCION") {
-                console.log('Entramos en tipo pago devolucion');
                 pagoDevolucion = '-- ES DEVOLUCION --\n';
             }
             var detalleIva4 = '';
@@ -427,54 +429,7 @@ class Impresora {
         }
     }
     mostrarVisor(data) {
-        var eur = String.fromCharCode(128);
-        console.log(eur);
-        var limitNombre = 0;
-        var lengthTotal = '';
-        var datosExtra = '';
-        if (data.total !== undefined) {
-            lengthTotal = (data.total).toString();
-            if (lengthTotal.length == 1)
-                limitNombre = 17;
-            else if (lengthTotal.length == 2)
-                limitNombre = 16;
-            else if (lengthTotal.length == 3)
-                limitNombre = 15;
-            else if (lengthTotal.length == 4)
-                limitNombre = 14;
-            else if (lengthTotal.length == 5)
-                limitNombre = 13;
-            else if (lengthTotal.length == 6)
-                limitNombre = 12;
-            else if (lengthTotal.length == 7)
-                limitNombre = 11;
-            datosExtra = data.dependienta.substring(0, limitNombre) + " " + data.total + eur;
-        }
-        if (datosExtra.length <= 2) {
-            datosExtra = "";
-            eur = "";
-        }
-        data.texto = datosExtra + "" + data.texto.substring(0, 14);
-        data.texto += " " + data.precio + eur;
-        try {
-            permisosImpresora();
-            var device = new escpos.Serial('/dev/ttyUSB0', {
-                baudRate: 9600,
-                stopBit: 2
-            });
-            var options = { encoding: "ISO-8859-1" };
-            var printer = new escpos.Screen(device, options);
-            console.log(data.texto);
-            device.open(function () {
-                printer
-                    .clear()
-                    .text(data.texto)
-                    .close();
-            });
-        }
-        catch (err) {
-            console.log("Error: ", err);
-        }
+        console.log('El visor da muchos problemas');
     }
 }
 exports.Impresora = Impresora;

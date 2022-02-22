@@ -1,10 +1,11 @@
-import { Controller, Post, Query, Body } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { menusInstance } from './menus.clase';
 
 @Controller('menus')
 export class MenusController {
     @Post('clickMenu')
     clickMenu(@Body() params) {
+        // console.log('Fecha de llegada: ', Date.now());
         if (menusInstance.getBloqueado() == false) {
             menusInstance.setBloqueado(true);
             return menusInstance.clickMenu(params.nombreMenu).then((res) => {

@@ -227,7 +227,7 @@ export class CajaClase {
         currentCaja["inicioTime"] = cajaDirectaBBDD.inicioTime;
         currentCaja["totalApertura"] = cajaDirectaBBDD.totalApertura;
         currentCaja["enviado"] = false;
-    
+        currentCaja["finalTime"] = unaCaja.finalTime;
         if(arrayTicketsCaja.length > 0) {
             currentCaja.primerTicket = arrayTicketsCaja[0]._id;
             currentCaja.ultimoTicket = arrayTicketsCaja[arrayTicketsCaja.length-1]._id;
@@ -278,10 +278,10 @@ export class CajaClase {
         currentCaja.infoExtra['cambioInicial'] = cambioInicial;
         currentCaja.infoExtra['totalSalidas'] = totalSalidas;
         currentCaja.infoExtra['totalEntradas'] = totalEntradas;
-        currentCaja.infoExtra['totalEnEfectivo'] = totalEnEfectivo;
+        currentCaja.infoExtra['totalEnEfectivo'] = totalEnEfectivo-unaCaja.totalDatafono3G;
         currentCaja.infoExtra['totalTarjeta'] = totalTarjeta;
         currentCaja.infoExtra['totalDeuda'] = totalDeuda;
-        descuadre = cambioFinal-cambioInicial+totalSalidas-totalEntradas-totalTickets;
+        descuadre = cambioFinal-cambioInicial+totalSalidas-totalEntradas-totalTickets+unaCaja.totalDatafono3G;
         recaudado = totalTickets + descuadre - totalTarjeta - totalDeuda;
         
         const objImpresion = {

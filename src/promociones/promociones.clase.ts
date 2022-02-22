@@ -9,6 +9,8 @@ import * as schPromociones from "./promociones.mongodb";
 
 export class OfertasClase {
     private promociones: PromocionesInterface[];
+    private promocionesActivas = true;
+
 
     /* Inicializa las promociones en su variable privada */
     constructor() {
@@ -36,52 +38,63 @@ export class OfertasClase {
         return -1; //IMPORTANTE QUE SEA ESTE VALOR SINO HAY SECUNDARIO
     }
 
+    setEstadoPromociones(x: boolean) {
+        this.promocionesActivas = x;
+    }
+
+    getEstadoPromociones(): boolean {
+        return this.promocionesActivas;
+    }
+
     /* Aplica las promociones en la cesta de todo tipo, tanto individuales como combos */
-    async teLoAplicoTodo(necesariasPrincipal: number, necesariasSecundario: number, cesta: CestasInterface, posicionPrincipal: number, posicionSecundario: number, pideDelA: number, pideDelB: number, precioPromo: number, idPromo: string) {
-        let numeroPrincipal     = 0;
-        let numeroSecundario    = 0;
-        let sobranPrincipal     = 0;
-        let sobranSecundario    = 0;
-        let nVeces              = 0;
-
-        var idPrincipal         = (typeof cesta.lista[posicionPrincipal] !== "undefined") ? cesta.lista[posicionPrincipal]._id: 0;
-        var idSecundario        = (typeof cesta.lista[posicionSecundario] !== "undefined") ? cesta.lista[posicionSecundario]._id: 0;
-
-        if(pideDelA !== -1 && pideDelB !== -1)
-        {
-            numeroPrincipal          = cesta.lista[posicionPrincipal].unidades/necesariasPrincipal;
-            numeroSecundario         = cesta.lista[posicionSecundario].unidades/necesariasSecundario;
-            nVeces                   = Math.trunc(Math.min(numeroPrincipal, numeroSecundario));
-            sobranPrincipal          = cesta.lista[posicionPrincipal].unidades-nVeces*necesariasPrincipal;
-            sobranSecundario         = cesta.lista[posicionSecundario].unidades-nVeces*necesariasSecundario;
-
-            cesta = await cestas.limpiarCesta(cesta, posicionPrincipal, posicionSecundario, sobranPrincipal, sobranSecundario, pideDelA, pideDelB);
-            cesta = await this.insertarLineaPromoCestaCombo(cesta, 1, nVeces, precioPromo*nVeces, idPromo, idPrincipal, idSecundario, necesariasPrincipal, necesariasSecundario);
-        }
-        else
-        {
-            if(pideDelA !== -1 && pideDelB === -1)
+    async teLoAplicoTodo(necesariasPrincipal: number, necesariasSecundario: number, cesta: CestasInterface, posicionPrincipal: number, posicionSecundario: number, pideDelA: number, pideDelB: number, precioPromo: number, idPromo: string): Promise<CestasInterface> {
+        if (this.getEstadoPromociones()) {
+            let numeroPrincipal     = 0;
+            let numeroSecundario    = 0;
+            let sobranPrincipal     = 0;
+            let sobranSecundario    = 0;
+            let nVeces              = 0;
+    
+            var idPrincipal         = (typeof cesta.lista[posicionPrincipal] !== "undefined") ? cesta.lista[posicionPrincipal]._id: 0;
+            var idSecundario        = (typeof cesta.lista[posicionSecundario] !== "undefined") ? cesta.lista[posicionSecundario]._id: 0;
+    
+            if(pideDelA !== -1 && pideDelB !== -1)
             {
-                numeroPrincipal = cesta.lista[posicionPrincipal].unidades/necesariasPrincipal;
-                nVeces          = Math.trunc(numeroPrincipal);
-                sobranPrincipal = cesta.lista[posicionPrincipal].unidades-nVeces*necesariasPrincipal;
-
+                numeroPrincipal          = cesta.lista[posicionPrincipal].unidades/necesariasPrincipal;
+                numeroSecundario         = cesta.lista[posicionSecundario].unidades/necesariasSecundario;
+                nVeces                   = Math.trunc(Math.min(numeroPrincipal, numeroSecundario));
+                sobranPrincipal          = cesta.lista[posicionPrincipal].unidades-nVeces*necesariasPrincipal;
+                sobranSecundario         = cesta.lista[posicionSecundario].unidades-nVeces*necesariasSecundario;
+    
                 cesta = await cestas.limpiarCesta(cesta, posicionPrincipal, posicionSecundario, sobranPrincipal, sobranSecundario, pideDelA, pideDelB);
-                cesta = await this.insertarLineaPromoCestaIndividual(cesta, 2, nVeces, precioPromo*nVeces*necesariasPrincipal, idPromo, idPrincipal, necesariasPrincipal);
+                cesta = await this.insertarLineaPromoCestaCombo(cesta, 1, nVeces, precioPromo*nVeces, idPromo, idPrincipal, idSecundario, necesariasPrincipal, necesariasSecundario);
             }
             else
             {
-                if(pideDelA === -1 && pideDelB !== -1)
+                if(pideDelA !== -1 && pideDelB === -1)
                 {
-                    numeroSecundario = cesta.lista[posicionSecundario].unidades/necesariasSecundario;
-                    nVeces          = Math.trunc(numeroSecundario);
-                    sobranSecundario = cesta.lista[posicionSecundario].unidades-nVeces*necesariasSecundario;
-
+                    numeroPrincipal = cesta.lista[posicionPrincipal].unidades/necesariasPrincipal;
+                    nVeces          = Math.trunc(numeroPrincipal);
+                    sobranPrincipal = cesta.lista[posicionPrincipal].unidades-nVeces*necesariasPrincipal;
+    
                     cesta = await cestas.limpiarCesta(cesta, posicionPrincipal, posicionSecundario, sobranPrincipal, sobranSecundario, pideDelA, pideDelB);
-                    cesta = await this.insertarLineaPromoCestaIndividual(cesta, 2, nVeces, precioPromo*nVeces*necesariasSecundario, idPromo, idPrincipal, necesariasPrincipal); //se trata como si fueran principales
+                    cesta = await this.insertarLineaPromoCestaIndividual(cesta, 2, nVeces, precioPromo*nVeces*necesariasPrincipal, idPromo, idPrincipal, necesariasPrincipal);
+                }
+                else
+                {
+                    if(pideDelA === -1 && pideDelB !== -1)
+                    {
+                        numeroSecundario = cesta.lista[posicionSecundario].unidades/necesariasSecundario;
+                        nVeces          = Math.trunc(numeroSecundario);
+                        sobranSecundario = cesta.lista[posicionSecundario].unidades-nVeces*necesariasSecundario;
+    
+                        cesta = await cestas.limpiarCesta(cesta, posicionPrincipal, posicionSecundario, sobranPrincipal, sobranSecundario, pideDelA, pideDelB);
+                        cesta = await this.insertarLineaPromoCestaIndividual(cesta, 2, nVeces, precioPromo*nVeces*necesariasSecundario, idPromo, idPrincipal, necesariasPrincipal); //se trata como si fueran principales
+                    }
                 }
             }
         }
+
         return cesta;
     }
 
@@ -188,6 +201,7 @@ export class OfertasClase {
         let precioSinOfertaPrincipal    = 0;
         let precioSinOfertaSecundario   = 0;
         let precioTotalSinOferta        = 0;
+
         if(idPrincipal != 0)
         {
             precioSinOfertaPrincipal = (await articulosInstance.getInfoArticulo(idPrincipal)).precioConIva;
@@ -205,9 +219,20 @@ export class OfertasClase {
 
         var dto = (precioTotalSinOferta-precioTotalOferta)/precioTotalSinOferta;
         
+        let precioRealPrincipalDecimales = ((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta)%1;
+        let precioRealSecundarioDecimales = ((precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta)%1;
+
+        if (Math.round((precioRealPrincipalDecimales*cantidadPrincipal+precioRealSecundarioDecimales*cantidadSecundario)*100)/100 === 1) {
+            let sumaCentimos = 0.01/cantidadPrincipal;
+            return {
+                precioRealPrincipal: (Math.round((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta *100)/100)+sumaCentimos,
+                precioRealSecundario: Math.round((precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta*100)/100
+            };
+        }
+
         return {
-            precioRealPrincipal: (precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta,
-            precioRealSecundario: (precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta
+            precioRealPrincipal: Math.round((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta *100)/100,
+            precioRealSecundario: Math.round((precioSinOfertaSecundario - (precioSinOfertaSecundario*dto))*unidadesOferta*100)/100
         };
     }
 
@@ -231,22 +256,30 @@ export class OfertasClase {
         var dto = (precioTotalSinOferta-precioTotalOferta)/precioTotalSinOferta;
         
         return {
-            precioRealPrincipal: (precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta*cantidadPrincipal
+            precioRealPrincipal: Math.round((precioSinOfertaPrincipal - (precioSinOfertaPrincipal*dto))*unidadesOferta*cantidadPrincipal*100)/100
         };
     }
 
     /* Inserta un array de promociones en la base de datos. Se utiliza al instalar una licencia o para actualizar teclado */
     /* También renueva la variable privada de promociones */
-    insertarPromociones(arrayPromociones) {
-        return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
-            if (res) {
-                this.promociones = arrayPromociones;
-            }
-            return res.acknowledged;
-        }).catch((err) => {
-            console.log(err);
-            return false;
-        });
+    insertarPromociones(arrayPromociones: PromocionesInterface[]): Promise<boolean> {
+        if (arrayPromociones.length > 0) {
+            return schPromociones.insertarPromociones(arrayPromociones).then((res) => {
+                if (res) {
+                    this.promociones = arrayPromociones;
+                }
+                return res.acknowledged;
+            }).catch((err) => {
+                console.log(err);
+                return false;
+            });
+        } else {
+            return this.devuelveTrue();
+        }
+    }
+
+    async devuelveTrue() {
+        return true;
     }
 
     /* Petición de descarga de promociones. También renueva la variable privada de promociones (siempre se utiliza esta) */

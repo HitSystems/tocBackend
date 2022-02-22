@@ -200,7 +200,6 @@ class CestaClase {
                         miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva);
                     }
                     else {
-                        console.log("EO: ", infoAPeso);
                         miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
                         miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva, infoAPeso);
                     }
@@ -249,16 +248,23 @@ class CestaClase {
                     infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
                     cestaRetornar = await this.insertarArticuloCesta(infoArticulo, 1, idCesta, infoAPeso);
                 }
-                console.log(cestaRetornar);
-                trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((data) => {
-                    console.log(data.nombre);
-                    impresora_class_1.impresoraInstance.mostrarVisor({
-                        dependienta: data.nombre,
-                        total: (cestaRetornar.tiposIva.importe1 + cestaRetornar.tiposIva.importe2 + cestaRetornar.tiposIva.importe3).toFixed(2),
-                        precio: infoArticulo.precioConIva.toString(),
-                        texto: infoArticulo.nombre,
-                    });
-                });
+                if (cestaRetornar != undefined && cestaRetornar != null) {
+                    if (cestaRetornar.tiposIva != undefined && cestaRetornar.tiposIva != null) {
+                        trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((data) => {
+                            try {
+                                impresora_class_1.impresoraInstance.mostrarVisor({
+                                    dependienta: data.nombre,
+                                    total: (cestaRetornar.tiposIva.importe1 + cestaRetornar.tiposIva.importe2 + cestaRetornar.tiposIva.importe3).toFixed(2),
+                                    precio: infoArticulo.precioConIva.toString(),
+                                    texto: infoArticulo.nombre,
+                                });
+                            }
+                            catch (err) {
+                                console.log(err);
+                            }
+                        });
+                    }
+                }
             }
             catch (err) {
                 console.log(err);

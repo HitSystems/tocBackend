@@ -20,4 +20,5 @@ export interface ParametrosInterface {
         vid: string;
         pid: string;
     };
+    ipTefpay?: string;
 }

@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TrabajadoresController = void 0;
 const common_1 = require("@nestjs/common");
 const trabajadores_clase_1 = require("./trabajadores.clase");
+const utiles_module_1 = require("../utiles/utiles.module");
+const parametros_clase_1 = require("../parametros/parametros.clase");
+const axios_1 = require("axios");
 let TrabajadoresController = class TrabajadoresController {
     getTrabajadoresFichados() {
         return trabajadores_clase_1.trabajadoresInstance.getTrabajadoresFichados().then((res) => {
@@ -72,8 +75,8 @@ let TrabajadoresController = class TrabajadoresController {
         return trabajadores_clase_1.trabajadoresInstance.buscar(params.busqueda);
     }
     fichar(params) {
-        if (params.idTrabajador != undefined) {
-            return trabajadores_clase_1.trabajadoresInstance.ficharTrabajador(params.idTrabajador).then((res) => {
+        if (params.idTrabajador != undefined && params.idPlan != undefined && params.idPlan != null) {
+            return trabajadores_clase_1.trabajadoresInstance.ficharTrabajador(params.idTrabajador, params.idPlan).then((res) => {
                 if (res) {
                     return { error: false };
                 }
@@ -101,6 +104,41 @@ let TrabajadoresController = class TrabajadoresController {
             console.log(err);
             return { error: true, mensaje: 'Error, mirar consola nest' };
         });
+    }
+    actualizarTrabajadores() {
+        return trabajadores_clase_1.trabajadoresInstance.actualizarTrabajadores().then((res) => {
+            console.log(res);
+            return res;
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Backend: Error en trabajadores/actualizarTrabajadores CATCH' };
+        });
+    }
+    crearPlan(params) {
+        if (utiles_module_1.UtilesModule.checkVariable(params.horaEntrada, params.horaSalida)) {
+            const parametros = parametros_clase_1.parametrosInstance.getParametros();
+            return axios_1.default.post('dependientas/crearPlan', {
+                parametros,
+                horaEntrada: params.horaEntrada,
+                horaSalida: params.horaSalida
+            }).then((res) => {
+                if (res.data.error == false) {
+                    return { error: false };
+                }
+                else {
+                    return { error: true, mensaje: res.data.mensaje };
+                }
+            }).catch((err) => {
+                console.log(err);
+                return { error: true, mensaje: 'Error en backend crearPlan CATCH' };
+            });
+        }
+        else {
+            return { error: true, mensaje: 'Error, faltan datos trabajadores/crearPlan' };
+        }
+    }
+    getTrabajaronAyer() {
+        return trabajadores_clase_1.trabajadoresInstance.getTrabajaronAyer();
     }
 };
 __decorate([
@@ -143,6 +181,25 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TrabajadoresController.prototype, "desfichar", null);
+__decorate([
+    (0, common_1.Post)('actualizarTrabajadores'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TrabajadoresController.prototype, "actualizarTrabajadores", null);
+__decorate([
+    (0, common_1.Post)('crearPlan'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TrabajadoresController.prototype, "crearPlan", null);
+__decorate([
+    (0, common_1.Get)('getTrabajaronAyer'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TrabajadoresController.prototype, "getTrabajaronAyer", null);
 TrabajadoresController = __decorate([
     (0, common_1.Controller)('trabajadores')
 ], TrabajadoresController);

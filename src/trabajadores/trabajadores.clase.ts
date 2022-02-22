@@ -4,6 +4,7 @@ import { socket } from "../conexion/socket";
 import { SincroFichajesInterface, TrabajadoresInterface } from "./trabajadores.interface";
 import * as schTrabajadores from "./trabajadores.mongodb";
 import { parametrosInstance } from "../parametros/parametros.clase";
+import axios from "axios";
 
 export class TrabajadoresClase {
 
@@ -20,10 +21,56 @@ export class TrabajadoresClase {
         });
     }
 
+    mantenerTrabajadoresFichados(nuevoArray: TrabajadoresInterface[]) {
+        return this.getFichados().then((arrayFichados) => {
+            for (let i = 0; i < arrayFichados.length; i++) {
+                for (let j = 0; j < nuevoArray.length; j++) {
+                    if (arrayFichados[i]._id == nuevoArray[j]._id) {
+                        nuevoArray[j]["fichado"] = true;
+                        break;
+                    }
+                }
+            }
+            return { error: false, info: nuevoArray }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, info: [] };
+        });
+    }
+
     actualizarTrabajadores() {
-        globalInstance.setStopNecesario(true);
+        // globalInstance.setStopNecesario(true);
         const params = parametrosInstance.getParametros();
-        socket.emit('descargar-trabajadores', { licencia: params.licencia, database: params.database, codigoTienda: params.codigoTienda});
+        // socket.emit('descargar-trabajadores', { licencia: params.licencia, database: params.database, codigoTienda: params.codigoTienda});
+        return axios.post("dependientas/descargar", { database: params.database }).then((res: any) => {
+            if (res.data.error == false) {
+                if (res.data.info.length > 0) {
+                    return this.mantenerTrabajadoresFichados(res.data.info).then((resKeep) => {
+                        if (resKeep.error == false) {
+                            return this.insertarTrabajadores(resKeep.info).then((resInsert) => {
+                                if (resInsert) {
+                                    return { error: false };
+                                } else {
+                                    return { error: true, mensaje: 'Backend: Error actualizarTrabajadores ultimo momento' }
+                                }
+                            }).catch((err) => {
+                                console.log(err);
+                                return { error: true, mensaje: 'Backend: Error actualizarTrabajadores CATCH' };
+                            });
+                        } else {
+                            return { error: true, mensaje: 'Backend: Error en actualizarTrabajadores/mantenerTrabajadoresFichados normal' };
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en actualizarTrabajadores/mantenerTrabajadoresFichados CATCH' };
+                    });
+                } else {
+                    return { error: true, mensaje: 'No hay ningún trabajador en la base de datos para añadir' };
+                }
+            } else {
+                return { error: true, mensaje: res.data.error };
+            }
+        });
     }
 
     getCurrentIdTrabajador() {
@@ -101,12 +148,12 @@ export class TrabajadoresClase {
     }
 
     /* MongoDB Fichado = false + nuevo item sincro */
-    ficharTrabajador(idTrabajador: number): Promise<boolean> {
+    ficharTrabajador(idTrabajador: number, idPlan: string): Promise<boolean> {
         return schTrabajadores.ficharTrabajador(idTrabajador).then((res) => {
             if (res.acknowledged) {
                 return this.setCurrentTrabajador(idTrabajador).then((resSetCurrent) => {
                     if (resSetCurrent) {
-                        return this.nuevoFichajesSincro("ENTRADA", idTrabajador).then((res2) => {
+                        return this.nuevoFichajesSincro("ENTRADA", idTrabajador, idPlan).then((res2) => {
                             if (res2.acknowledged) {
                                 return true;
                             } else {
@@ -135,7 +182,7 @@ export class TrabajadoresClase {
     desficharTrabajador(idTrabajador: number): Promise<boolean> {
         return schTrabajadores.desficharTrabajador(idTrabajador).then((res) => {
             if (res.acknowledged) {
-                return this.nuevoFichajesSincro("SALIDA", idTrabajador).then((res2) => {
+                return this.nuevoFichajesSincro("SALIDA", idTrabajador, '').then((res2) => {
                     if (res2.acknowledged) {
                         return true;
                     } else {
@@ -157,7 +204,7 @@ export class TrabajadoresClase {
     }
 
     /* Inserta en el sincro un nuevo movimiento de fichaje */
-    nuevoFichajesSincro(tipo: "ENTRADA" | "SALIDA", idTrabajador: number) {
+    nuevoFichajesSincro(tipo: "ENTRADA" | "SALIDA", idTrabajador: number, idPlan: string) {
         const auxTime = new Date();
         const objGuardar: SincroFichajesInterface = {
             _id: Date.now(),
@@ -176,7 +223,8 @@ export class TrabajadoresClase {
             enviado: false,
             enTransito: false,
             intentos: 0,
-            comentario: ''
+            comentario: '',
+            idPlan: idPlan
         };
         return schTrabajadores.insertNuevoFichaje(objGuardar);
     }
@@ -188,17 +236,6 @@ export class TrabajadoresClase {
             console.log(err);
             return null;
         });
-        // sch.getTrabajadoresFichados().then((arrayTrabajadoresFichados) => {
-        //     if (arrayTrabajadoresFichados != null) {
-        //         if(arrayTrabajadoresFichados.length > 0) {
-        //             return true;
-        //         } else {
-        //             return false;
-        //         }
-        //     } else {
-        //         return false;
-        //     }
-        // });
     }
 
     insertarTrabajadores(arrayTrabajadores) {
@@ -221,6 +258,46 @@ export class TrabajadoresClase {
             console.log(err);
             return false;
         });
+    }
+
+    existePlan(idPlan: string) {
+        return schTrabajadores.existePlan(idPlan).then((res) => {
+            if (res != null) {
+                return true;
+            } 
+            return false;
+        }).catch((err) => {
+            console.log(err);
+            /* En caso de error, le devuelvo true para eliminar el plan de la lista, para que no se utilice */
+            return true;
+        });
+    }
+
+    /* Devuelve un objeto con la fecha inicial y final del día anterior */
+    getInicioFinalDiaAnterior() {
+        const ayer = new Date(new Date().getTime() - 24*60*60*1000);
+        ayer.setHours(0, 0, 0, 0);
+        const inicioTime = ayer.getTime();
+        ayer.setHours(23, 59, 59, 999);
+        const finalTime = ayer.getTime();
+        return { inicioTime, finalTime };
+    }
+
+    async getTrabajaronAyer() {
+        const infoTime = this.getInicioFinalDiaAnterior();
+        try {
+            const idsAyer = await schTrabajadores.getTrabajaronAyer(infoTime.inicioTime, infoTime.finalTime);
+            let arrayTrabajadores: TrabajadoresInterface[] = [];
+    
+            for (let i = 0; i < idsAyer.length; i++) {
+                arrayTrabajadores.push(await this.getTrabajador(idsAyer[i].infoFichaje.idTrabajador));
+            }
+            
+            return arrayTrabajadores;
+        } catch(err) {
+            console.log(err);
+            return [];
+        }
     }
 }
 

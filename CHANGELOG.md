@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.28](https://github.com/HitSystems/tocBackend/compare/v3.0.27...v3.0.28) (2022-02-21)
+
+### [3.0.27](https://github.com/HitSystems/tocBackend/compare/v3.0.26...v3.0.27) (2022-02-18)
+
+### [3.0.26](https://github.com/HitSystems/tocBackend/compare/v3.0.25...v3.0.26) (2022-02-16)
+
+### [3.0.25](https://github.com/HitSystems/tocBackend/compare/v3.0.24...v3.0.25) (2022-02-15)
+
+### [3.0.24](https://github.com/HitSystems/tocBackend/compare/v3.0.23...v3.0.24) (2022-02-07)
+
+### [3.0.23](https://github.com/HitSystems/tocBackend/compare/v3.0.22...v3.0.23) (2022-02-03)
+
+### [3.0.22](https://github.com/HitSystems/tocBackend/compare/v3.0.21...v3.0.22) (2022-02-01)
+
+### [3.0.21](https://github.com/HitSystems/tocBackend/compare/v3.0.20...v3.0.21) (2022-01-31)
+
+### [3.0.20](https://github.com/HitSystems/tocBackend/compare/v3.0.19...v3.0.20) (2022-01-26)
+
+### [3.0.19](https://github.com/HitSystems/tocBackend/compare/v3.0.18...v3.0.19) (2022-01-22)
+
+### [3.0.18](https://github.com/HitSystems/tocBackend/compare/v3.0.17...v3.0.18) (2022-01-20)
+
+### [3.0.17](https://github.com/HitSystems/tocBackend/compare/v3.0.16...v3.0.17) (2022-01-20)
+
+### [3.0.16](https://github.com/HitSystems/tocBackend/compare/v3.0.15...v3.0.16) (2022-01-20)
+
+### [3.0.15](https://github.com/HitSystems/tocBackend/compare/v3.0.14...v3.0.15) (2022-01-12)
+
+### [3.0.14](https://github.com/HitSystems/tocBackend/compare/v3.0.13...v3.0.14) (2022-01-11)
+
+### [3.0.13](https://github.com/HitSystems/tocBackend/compare/v3.0.12...v3.0.13) (2022-01-02)
+
 ### [3.0.12](https://github.com/HitSystems/tocBackend/compare/v3.0.11...v3.0.12) (2021-12-23)
 
 ### [3.0.11](https://github.com/HitSystems/tocBackend/compare/v3.0.10...v3.0.11) (2021-12-21)

@@ -1,6 +1,6 @@
 {
   "name": "toc-backend-nest",
-  "version": "3.0.12",
+  "version": "3.0.28",
   "description": "",
   "author": "",
   "private": true,
@@ -24,8 +24,9 @@
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
-    "@nestjs/core": "^8.0.0",
+    "@nestjs/core": "^8.0.7",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/platform-fastify": "^8.3.1",
     "@nestjs/platform-socket.io": "^8.1.1",
     "@nestjs/platform-ws": "^8.1.1",
     "@nestjs/serve-static": "^2.2.2",
@@ -39,6 +40,7 @@
     "escpos-screen": "^3.0.0-alpha.6",
     "escpos-serialport": "^3.0.0-alpha.4",
     "escpos-usb": "^3.0.0-alpha.4",
+    "fastify-static": "^4.5.0",
     "moment": "^2.29.1",
     "mongodb": "^4.1.2",
     "reflect-metadata": "^0.1.13",

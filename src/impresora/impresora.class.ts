@@ -76,58 +76,61 @@ export class Impresora {
         } else {
             infoTicket = await devolucionesInstance.getDevolucionByID(idTicket);
         }
-        console.log(infoTicket)
+        // console.log(infoTicket)
         const infoTrabajador: TrabajadoresInterface = await trabajadoresInstance.getTrabajador(infoTicket.idTrabajador);
         const parametros = parametrosInstance.getParametros();
         var sendObject;
 
-        if(infoTicket.cliente != null && infoTicket.tipoPago != 'DEUDA' && infoTicket.cliente != undefined) {
-            const infoClienteAux = await clienteInstance.getClienteByID(infoTicket.cliente);
-            const infoCliente = infoClienteAux;
-            var auxNombre = '';
-            var puntosCliente = 0;
-            if(infoCliente != null) {
-                auxNombre = infoCliente.nombre;
-                puntosCliente = await clienteInstance.getPuntosCliente(infoTicket.cliente);
-            } else {
-                auxNombre = '';
-            }
-            
-            sendObject = {
-                numFactura: infoTicket._id,
-                arrayCompra: infoTicket.lista,
-                total: infoTicket.total,
-                visa: infoTicket.tipoPago,
-                tiposIva: infoTicket.tiposIva,
-                cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato: '',
-                pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato: '',
-                nombreTrabajador: infoTrabajador.nombreCorto,
-                impresora: parametros.tipoImpresora,
-                infoClienteVip: infoTicket.infoClienteVip,
-                infoCliente: {
-                    nombre: auxNombre,
-                    puntos: puntosCliente
+        if (infoTicket != null) {
+            if(infoTicket.cliente != null && infoTicket.tipoPago != 'DEUDA' && infoTicket.cliente != undefined) {
+                const infoClienteAux = await clienteInstance.getClienteByID(infoTicket.cliente);
+                const infoCliente = infoClienteAux;
+                var auxNombre = '';
+                var puntosCliente = 0;
+                if(infoCliente != null) {
+                    auxNombre = infoCliente.nombre;
+                    puntosCliente = await clienteInstance.getPuntosCliente(infoTicket.cliente);
+                } else {
+                    auxNombre = '';
                 }
-            };
-            this._venta(sendObject);
+                
+                sendObject = {
+                    numFactura: infoTicket._id,
+                    arrayCompra: infoTicket.lista,
+                    total: infoTicket.total,
+                    visa: infoTicket.tipoPago,
+                    tiposIva: infoTicket.tiposIva,
+                    cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato: '',
+                    pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato: '',
+                    nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto): (''),
+                    impresora: parametros.tipoImpresora,
+                    infoClienteVip: infoTicket.infoClienteVip,
+                    infoCliente: {
+                        nombre: auxNombre,
+                        puntos: puntosCliente
+                    }
+                };
+                this._venta(sendObject);
+            }
+            else {
+                sendObject = {
+                    numFactura: infoTicket._id,
+                    arrayCompra: infoTicket.lista,
+                    total: infoTicket.total,
+                    visa: infoTicket.tipoPago,
+                    tiposIva: infoTicket.tiposIva,
+                    cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato: '',
+                    pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato: '',
+                    nombreTrabajador: (infoTrabajador.nombreCorto != null) ? (infoTrabajador.nombreCorto): (''),
+                    impresora: parametros.tipoImpresora,
+                    infoClienteVip: infoTicket.infoClienteVip,
+                    infoCliente: null
+                };
+    
+                this._venta(sendObject);
+            }
         }
-        else {
-            sendObject = {
-                numFactura: infoTicket._id,
-                arrayCompra: infoTicket.lista,
-                total: infoTicket.total,
-                visa: infoTicket.tipoPago,
-                tiposIva: infoTicket.tiposIva,
-                cabecera: paramsTicket[0] !== undefined ? paramsTicket[0].valorDato: '',
-                pie: paramsTicket[1] !== undefined ? paramsTicket[1].valorDato: '',
-                nombreTrabajador: infoTrabajador.nombreCorto,
-                impresora: parametros.tipoImpresora,
-                infoClienteVip: infoTicket.infoClienteVip,
-                infoCliente: null
-            };
 
-            this._venta(sendObject);
-        }
     }
 
     private async _venta(info) {
@@ -135,7 +138,7 @@ export class Impresora {
         const arrayCompra = info.arrayCompra;
         const total = info.total;
         const tipoPago = info.visa;
-        console.log(tipoPago)
+        // console.log(tipoPago)
         const tiposIva = info.tiposIva;
         const cabecera = info.cabecera;
         const pie = info.pie;
@@ -171,6 +174,9 @@ export class Impresora {
             //     }
             // }
             const device = await dispositivos.getDevice();
+            if (device == null) {
+                throw 'Error controlado: El dispositivo es null';
+            }
             var printer = new escpos.Printer(device);
     
             var detalles = '';
@@ -237,7 +243,7 @@ export class Impresora {
     
             if(tipoPago == "DEVOLUCION")
             {
-                console.log('Entramos en tipo pago devolucion')
+                // console.log('Entramos en tipo pago devolucion')
                 pagoDevolucion = '-- ES DEVOLUCION --\n';
             }
     
@@ -599,59 +605,59 @@ export class Impresora {
         }
     }
     mostrarVisor(data) {
-        var eur = String.fromCharCode(128);
-        console.log(eur);
-        var limitNombre = 0;
-        var lengthTotal = '';
-        var datosExtra = '';
-        if(data.total !== undefined) {
-            lengthTotal = (data.total).toString();
-            if(lengthTotal.length == 1) limitNombre = 17;
-            else if(lengthTotal.length == 2) limitNombre = 16;
-            else if(lengthTotal.length == 3) limitNombre = 15;
-            else if(lengthTotal.length == 4) limitNombre = 14;
-            else if(lengthTotal.length == 5) limitNombre = 13;
-            else if(lengthTotal.length == 6) limitNombre = 12;
-            else if(lengthTotal.length == 7) limitNombre = 11;
-            datosExtra = data.dependienta.substring(0, limitNombre) + " " + data.total + eur; 
-        }
-        if(datosExtra.length <= 2) {
-            datosExtra = ""; 
-            eur = "";
-        }
-        // Limito el texto a 14, ya que la línea completa tiene 20 espacios. (1-14 -> artículo, 15 -> espacio en blanco, 16-20 -> precio)
-        data.texto = datosExtra + "" + data.texto.substring(0, 14);
-        data.texto += " " + data.precio + eur;
-        try {
-            permisosImpresora();
-            //var device = new escpos.USB('067b','2303');
-            var device = new escpos.Serial('/dev/ttyUSB0', {
-                baudRate: 9600,
-                stopBit: 2
-            }); 
-            var options = { encoding: "ISO-8859-1" };
-            var printer = new escpos.Screen(device, options);
-            console.log(data.texto);
-            device.open(function () 
-            {
-                printer
-                    // Espacios en blanco para limpiar el visor y volver a mostrar los datos en el sitio correcto
-                    //.text(stringVacia)
-                    .clear()
-                    //.moveUp()
-                    // Información del artículo (artículo + precio)
-                    .text(data.texto)
-                    //.moveDown()
-                    //.text(datosExtra)
-                    //.text(datosExtra)
-                    .close()
-            });
-        }
-        catch (err) 
-        {
-            console.log("Error: ", err)
-            //errorImpresora(err, event);
-        }
-      }
+        // var eur = String.fromCharCode(128);
+        
+        // var limitNombre = 0;
+        // var lengthTotal = '';
+        // var datosExtra = '';
+        // if(data.total !== undefined) {
+        //     lengthTotal = (data.total).toString();
+        //     if(lengthTotal.length == 1) limitNombre = 17;
+        //     else if(lengthTotal.length == 2) limitNombre = 16;
+        //     else if(lengthTotal.length == 3) limitNombre = 15;
+        //     else if(lengthTotal.length == 4) limitNombre = 14;
+        //     else if(lengthTotal.length == 5) limitNombre = 13;
+        //     else if(lengthTotal.length == 6) limitNombre = 12;
+        //     else if(lengthTotal.length == 7) limitNombre = 11;
+        //     datosExtra = data.dependienta.substring(0, limitNombre) + " " + data.total + eur; 
+        // }
+        // if(datosExtra.length <= 2) {
+        //     datosExtra = ""; 
+        //     eur = "";
+        // }
+        // // Limito el texto a 14, ya que la línea completa tiene 20 espacios. (1-14 -> artículo, 15 -> espacio en blanco, 16-20 -> precio)
+        // data.texto = datosExtra + "" + data.texto.substring(0, 14);
+        // data.texto += " " + data.precio + eur;
+        // try {
+        //     permisosImpresora();
+        //     //   var device = new escpos.USB('0x67b','0x2303');
+        //     const device = dispositivos.getDeviceVisor();
+            
+        //     if (device != null) {
+        //         var options = { encoding: "ISO-8859-1" };
+        //         var printer = new escpos.Screen(device, options);
+                
+        //         device.open(function () {
+        //             printer
+        //                 // Espacios en blanco para limpiar el visor y volver a mostrar los datos en el sitio correcto
+        //                 //.text(stringVacia)
+        //                 .clear()
+        //                 //.moveUp()
+        //                 // Información del artículo (artículo + precio)
+        //                 .text(data.texto)
+        //                 //.moveDown()
+        //                 //.text(datosExtra)
+        //                 //.text(datosExtra)
+        //                 .close()
+        //         });
+        //     } else {
+        //         console.log("Controlado: dispositivo es null");
+        //     }
+        // } catch (err) {
+        //     console.log("Error: ", err)
+        //     //errorImpresora(err, event);
+        // }
+        console.log('El visor da muchos problemas');
+    }
 }
 export const impresoraInstance = new Impresora();

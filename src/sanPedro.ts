@@ -6,8 +6,15 @@ import { trabajadoresInstance } from "./trabajadores/trabajadores.clase";
 import { devolucionesInstance } from "./devoluciones/devoluciones.clase";
 
 const io = require("socket.io-client");
-const socket = io('http://54.74.52.150:3001'); // NORMAL
+const socket = io('http://34.78.247.153:3001'); // NORMAL
 //const socket = io('http://localhost:3001'); // DEV SANPEDRO EN LOCAL
+
+
+function emitSocket(canal: string, datos: any = null) {
+    if (socket.connected) {
+      socket.emit(canal, datos);
+    }
+}
 
 socket.on('resSincroTickets', async (data) => {
     if (data.error == false) {
@@ -108,4 +115,4 @@ socket.on('resSincroDevoluciones', (data) => {
     }
 })
 
-export { socket };
+export { socket, emitSocket };

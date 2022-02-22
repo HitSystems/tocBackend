@@ -1,1 +1,3 @@
-export declare function insertarTeclas(arrayTeclas: any): Promise<import("mongodb").InsertManyResult<import("bson").Document>>;
+import { InsertManyResult } from "mongodb";
+export declare function insertarTeclas(arrayTeclas: any): Promise<InsertManyResult<import("bson").Document>>;
+export declare function borrarArticulos(): Promise<boolean>;
