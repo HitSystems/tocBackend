@@ -129,7 +129,7 @@ export async function getFichajeMasAntiguo() {
 export async function getTrabajaronAyer(inicioTime: number, finalTime: number) {
     const database = (await conexion).db('tocgame');
     const sincroFichajes = database.collection('sincro-fichajes');
-    const resultado = await sincroFichajes.find( { $and: [ { _id: { $gte: inicioTime } }, { _id: { $lte: finalTime } } ] } ).toArray();
+    const resultado = await sincroFichajes.find( { $and: [ { _id: { $gte: inicioTime } }, { _id: { $lte: finalTime } }, {tipo: "SALIDA"} ] } ).toArray();
     return resultado;
 }
 
