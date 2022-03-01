@@ -12,7 +12,9 @@ exports.getUnaCesta = getUnaCesta;
 async function getCestaConcreta(idCesta) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const cesta = database.collection('cestas');
-    const resultado = await cesta.findOne({ _id: idCesta });
+    let resultado = await cesta.findOne({ _id: idCesta });
+    if (!resultado)
+        resultado = await cesta.findOne({ _id: idCesta.toString() });
     return resultado;
 }
 exports.getCestaConcreta = getCestaConcreta;

@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CestasController = void 0;
 const common_1 = require("@nestjs/common");
+const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
 const cestas_clase_1 = require("./cestas.clase");
 let CestasController = class CestasController {
     borrarCesta(params) {
@@ -103,11 +104,18 @@ let CestasController = class CestasController {
         if (params.idCesta != undefined && params.idCesta != null) {
             console.log(params);
             if (params.idCesta == -1) {
-                return cestas_clase_1.cestas.getCestaRandom().then((res) => {
-                    return { error: false, info: res };
-                }).catch((err) => {
-                    console.log(err);
-                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
+                return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
+                    console.log('Hola', res);
+                    return cestas_clase_1.cestas.getCesta(res._id).then((res) => {
+                        if (res) {
+                            return { error: false, info: res };
+                        }
+                        console.log('Holaa', res);
+                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+                    });
                 });
             }
             else {

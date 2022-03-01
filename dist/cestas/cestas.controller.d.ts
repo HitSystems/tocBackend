@@ -40,6 +40,11 @@ export declare class CestasController {
     getCestaByID(params: any): Promise<{
         error: boolean;
         info: import("./cestas.interface").CestasInterface;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+        info?: undefined;
     } | {
         error: boolean;
         mensaje: string;

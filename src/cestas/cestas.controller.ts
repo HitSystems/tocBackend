@@ -1,4 +1,5 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
+import { trabajadoresInstance } from 'src/trabajadores/trabajadores.clase';
 import { cestas } from './cestas.clase';
 
 @Controller('cestas')
@@ -100,12 +101,25 @@ export class CestasController {
         if (params.idCesta != undefined && params.idCesta != null) {
             console.log(params)
             if (params.idCesta == -1) {
-                return cestas.getCestaRandom().then((res) => {
-                    return { error: false, info: res };
-                }).catch((err) => {
-                    console.log(err);
-                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
-                });
+                return trabajadoresInstance.getCurrentTrabajador().then((res) => {
+                    console.log('Hola', res)
+                    return cestas.getCesta(res._id).then((res) => {
+                        if (res) {
+                            return { error: false, info: res };
+                        }
+                        console.log('Holaa',res);
+                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+                    });
+                })
+                // return cestas.getCestaRandom().then((res) => {
+                //     return { error: false, info: res };
+                // }).catch((err) => {
+                //     console.log(err);
+                //     return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
+                // });
             } else {
                 return cestas.getCesta(params.idCesta).then((res) => {
                     if (res) {
