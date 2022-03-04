@@ -4,6 +4,7 @@ exports.trabajadoresInstance = exports.TrabajadoresClase = void 0;
 const schTrabajadores = require("./trabajadores.mongodb");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const axios_1 = require("axios");
+const cestas_clase_1 = require("../cestas/cestas.clase");
 class TrabajadoresClase {
     buscar(busqueda) {
         return schTrabajadores.buscar(busqueda).then((res) => {
@@ -112,8 +113,8 @@ class TrabajadoresClase {
             return false;
         });
     }
-    setCurrentTrabajadorPorNombre(nombre) {
-        return schTrabajadores.getTrabajadorPorNombre(nombre).then((infoTrabajador) => {
+    setCurrentTrabajadorPorNombre(id) {
+        return schTrabajadores.getTrabajadorPorNombre(id).then((infoTrabajador) => {
             if (infoTrabajador != null) {
                 return schTrabajadores.setCurrentIdTrabajador(infoTrabajador._id).then((res) => {
                     if (res.acknowledged) {
@@ -152,6 +153,9 @@ class TrabajadoresClase {
                     if (resSetCurrent) {
                         return this.nuevoFichajesSincro("ENTRADA", idTrabajador, idPlan).then((res2) => {
                             if (res2.acknowledged) {
+                                cestas_clase_1.cestas.crearNuevaCesta(idTrabajador.toString()).then((data) => {
+                                    cestas_clase_1.cestas.updateIdCestaTrabajador(idTrabajador.toString());
+                                });
                                 return true;
                             }
                             else {
@@ -181,6 +185,9 @@ class TrabajadoresClase {
             if (res.acknowledged) {
                 return this.nuevoFichajesSincro("SALIDA", idTrabajador, '').then((res2) => {
                     if (res2.acknowledged) {
+                        cestas_clase_1.cestas.eliminarCesta(idTrabajador).then((res) => {
+                            console.log(res);
+                        });
                         return true;
                     }
                     else {
@@ -277,14 +284,49 @@ class TrabajadoresClase {
             const idsAyer = await schTrabajadores.getTrabajaronAyer(infoTime.inicioTime, infoTime.finalTime);
             let arrayTrabajadores = [];
             for (let i = 0; i < idsAyer.length; i++) {
-                arrayTrabajadores.push(await this.getTrabajador(idsAyer[i].infoFichaje.idTrabajador));
+                arrayTrabajadores.push({ infoTrabajador: await this.getTrabajador(idsAyer[i].infoFichaje.idTrabajador), timestamp: idsAyer[i]._id });
             }
-            return arrayTrabajadores;
+            console.log("lool:", arrayTrabajadores);
+            const parametros = parametros_clase_1.parametrosInstance.getParametros();
+            return axios_1.default.post('turnos/getHorasExtraCoordinacion', {
+                parametros: parametros,
+                arrayTrabajaronAyer: arrayTrabajadores,
+                ayer: infoTime.finalTime
+            }).then((res) => {
+                if (res.data.error == false) {
+                    return res.data.info;
+                }
+                else {
+                    console.log(res.data.mensaje);
+                }
+            }).catch((err) => {
+                console.log(err);
+                return [];
+            });
         }
         catch (err) {
             console.log(err);
             return [];
         }
+    }
+    async guardarHorasExtraCoordinacion(horasExtra, horasCoordinacion, idTrabajador, timestamp) {
+        return axios_1.default.post('turnos/guardarHorasExtraCoordinacion', {
+            horasExtra,
+            horasCoordinacion,
+            idEmpleado: idTrabajador,
+            fechaFichaje: timestamp,
+            parametros: parametros_clase_1.parametrosInstance.getParametros()
+        }).then((res) => {
+            if (res.data.error == false) {
+                return { error: false };
+            }
+            else {
+                return { error: true, mensaje: res.data.mensaje };
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Error Backend: trabajadores/guardarHorasExtraCoordinacion' };
+        });
     }
 }
 exports.TrabajadoresClase = TrabajadoresClase;

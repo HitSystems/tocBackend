@@ -34,6 +34,14 @@ export class Articulos {
             return false;
         });
     }
+
+    setSuplemento(suplemento) {
+        console.log(suplemento);
+    }
+
+    async getSuplementos(suplementos) {
+        return await schArticulos.getSuplementos(suplementos);
+    }
 }
 const articulosInstance = new Articulos();
 export { articulosInstance };

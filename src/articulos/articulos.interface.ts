@@ -5,5 +5,6 @@ export interface ArticulosInterface {
     precioBase: number,
     nombre: string,
     familia: string,    
-    esSumable: boolean  
+    esSumable: boolean,
+    suplementos?: [],
 }

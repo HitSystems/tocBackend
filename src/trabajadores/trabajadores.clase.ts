@@ -5,6 +5,7 @@ import { SincroFichajesInterface, TrabajadoresInterface } from "./trabajadores.i
 import * as schTrabajadores from "./trabajadores.mongodb";
 import { parametrosInstance } from "../parametros/parametros.clase";
 import axios from "axios";
+import { cestas } from "../cestas/cestas.clase";
 
 export class TrabajadoresClase {
 
@@ -113,8 +114,8 @@ export class TrabajadoresClase {
         });
     }
 
-    setCurrentTrabajadorPorNombre(nombre: string): Promise<boolean> {
-        return schTrabajadores.getTrabajadorPorNombre(nombre).then((infoTrabajador: TrabajadoresInterface) => {
+    setCurrentTrabajadorPorNombre(id: number): Promise<boolean> {
+        return schTrabajadores.getTrabajadorPorNombre(id).then((infoTrabajador: TrabajadoresInterface) => {
             if (infoTrabajador != null) {
                 return schTrabajadores.setCurrentIdTrabajador(infoTrabajador._id).then((res) => {
                     if (res.acknowledged) {
@@ -155,6 +156,9 @@ export class TrabajadoresClase {
                     if (resSetCurrent) {
                         return this.nuevoFichajesSincro("ENTRADA", idTrabajador, idPlan).then((res2) => {
                             if (res2.acknowledged) {
+                                cestas.crearNuevaCesta(idTrabajador.toString()).then((data) => {
+                                    cestas.updateIdCestaTrabajador(idTrabajador.toString());
+                                });
                                 return true;
                             } else {
                                 return false;
@@ -184,6 +188,9 @@ export class TrabajadoresClase {
             if (res.acknowledged) {
                 return this.nuevoFichajesSincro("SALIDA", idTrabajador, '').then((res2) => {
                     if (res2.acknowledged) {
+                        cestas.eliminarCesta(idTrabajador).then((res) => {
+                            console.log(res)
+                        });
                         return true;
                     } else {
                         console.log(123);
@@ -287,17 +294,52 @@ export class TrabajadoresClase {
         const infoTime = this.getInicioFinalDiaAnterior();
         try {
             const idsAyer = await schTrabajadores.getTrabajaronAyer(infoTime.inicioTime, infoTime.finalTime);
-            let arrayTrabajadores: TrabajadoresInterface[] = [];
+            let arrayTrabajadores = [];
     
             for (let i = 0; i < idsAyer.length; i++) {
-                arrayTrabajadores.push(await this.getTrabajador(idsAyer[i].infoFichaje.idTrabajador));
+                arrayTrabajadores.push({ infoTrabajador: await this.getTrabajador(idsAyer[i].infoFichaje.idTrabajador), timestamp: idsAyer[i]._id});
             }
             
-            return arrayTrabajadores;
+            console.log("lool:", arrayTrabajadores);
+
+            const parametros = parametrosInstance.getParametros();
+            return axios.post('turnos/getHorasExtraCoordinacion', {
+                parametros: parametros,
+                arrayTrabajaronAyer: arrayTrabajadores,
+                ayer: infoTime.finalTime
+            }).then((res: any) => {
+                if (res.data.error == false) {
+                    return res.data.info;
+                } else {
+                    console.log(res.data.mensaje);
+                }
+            }).catch((err) => {
+                console.log(err);
+                return [];
+            });
         } catch(err) {
             console.log(err);
             return [];
         }
+    }
+
+    async guardarHorasExtraCoordinacion(horasExtra: number, horasCoordinacion: number, idTrabajador: number, timestamp: number) {
+        return axios.post('turnos/guardarHorasExtraCoordinacion', {
+            horasExtra,
+            horasCoordinacion,
+            idEmpleado: idTrabajador,
+            fechaFichaje: timestamp,
+            parametros: parametrosInstance.getParametros()
+        }).then((res: any) => {
+            if (res.data.error == false) {
+                return { error: false };
+            } else {
+                return { error: true, mensaje: res.data.mensaje };
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true, mensaje: 'Error Backend: trabajadores/guardarHorasExtraCoordinacion' };
+        })
     }
 }
 

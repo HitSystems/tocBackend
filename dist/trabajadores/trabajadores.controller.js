@@ -41,7 +41,7 @@ let TrabajadoresController = class TrabajadoresController {
         });
     }
     setTrabajadorActivo(params) {
-        return trabajadores_clase_1.trabajadoresInstance.setCurrentTrabajadorPorNombre(params.nombre).then((res) => {
+        return trabajadores_clase_1.trabajadoresInstance.setCurrentTrabajadorPorNombre(params.id).then((res) => {
             if (res) {
                 return {
                     error: false,
@@ -140,6 +140,18 @@ let TrabajadoresController = class TrabajadoresController {
     getTrabajaronAyer() {
         return trabajadores_clase_1.trabajadoresInstance.getTrabajaronAyer();
     }
+    guardarHorasExtraCoordinacion(params) {
+        if (utiles_module_1.UtilesModule.checkVariable(params.horasExtra, params.horasCoordinacion, params.idTrabajador, params.timestamp)) {
+            return trabajadores_clase_1.trabajadoresInstance.guardarHorasExtraCoordinacion(params.horasExtra, params.horasCoordinacion, params.idTrabajador, params.timestamp).then((res) => {
+                return res;
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Error faltan datos en trabajadores/guardarHorasExtrCoordinacion' };
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('getTrabajadoresFichados'),
@@ -200,6 +212,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], TrabajadoresController.prototype, "getTrabajaronAyer", null);
+__decorate([
+    (0, common_1.Post)('guardarHorasExtraCoordinacion'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TrabajadoresController.prototype, "guardarHorasExtraCoordinacion", null);
 TrabajadoresController = __decorate([
     (0, common_1.Controller)('trabajadores')
 ], TrabajadoresController);

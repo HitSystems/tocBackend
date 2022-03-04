@@ -1,4 +1,5 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
+import { trabajadoresInstance } from '../trabajadores/trabajadores.clase';
 import { cestas } from './cestas.clase';
 
 @Controller('cestas')
@@ -98,13 +99,27 @@ export class CestasController {
     @Post('getCestaByID')
     getCestaByID(@Body() params) {
         if (params.idCesta != undefined && params.idCesta != null) {
+            console.log(params)
             if (params.idCesta == -1) {
-                return cestas.getCestaRandom().then((res) => {
-                    return { error: false, info: res };
-                }).catch((err) => {
-                    console.log(err);
-                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
-                });
+                return trabajadoresInstance.getCurrentTrabajador().then((res) => {
+                    console.log('Hola', res)
+                    return cestas.getCesta(res._id).then((res) => {
+                        if (res) {
+                            return { error: false, info: res };
+                        }
+                        console.log('Holaa', res);
+                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+                    });
+                })
+                // return cestas.getCestaRandom().then((res) => {
+                //     return { error: false, info: res };
+                // }).catch((err) => {
+                //     console.log(err);
+                //     return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
+                // });
             } else {
                 return cestas.getCesta(params.idCesta).then((res) => {
                     if (res) {
@@ -195,6 +210,51 @@ export class CestasController {
             });
         } else {
             return { error: true, mensaje: 'Backend: Error: faltan datos en cestas/regalarProducto' };
+        }
+    }
+
+    @Post('addSuplemento')
+    addSuplemento(@Body() params) {
+        if(params.idCesta && params.suplementos && params.idArticulo) {
+            return cestas.addSuplemento(params.idCesta, params.suplementos, params.idArticulo, params.posArticulo).then((res) => {
+                return {
+                    error: false,
+                    bloqueado: false,
+                    cesta: res
+                };
+            }).catch((err) => {
+                console.log(err);
+                return {
+                    error: true,
+                    bloqueado: false
+                };
+            });
+        }
+    }
+
+    @Post('modificarSuplementos')
+    modificarSuplementos(@Body() params) {
+        console.log(params);
+        if(params.cestaId && params.idArticulo) {
+            return cestas.modificarSuplementos(params.cestaId, params.idArticulo, params.posArticulo).then((res) => {
+                if(res.suplementos) {
+                    return {
+                        suplementos: true,
+                        suplementosData: res.suplementosData, 
+                        suplementosSeleccionados: res.suplementosSeleccionados, 
+                    }
+                }
+                return { suplementos: false };
+            })
+        }
+    }
+
+    @Post('enviarACocina')
+    enviarACocina(@Body() params) {
+        if(params.idCesta) {
+            return cestas.enviarACocina(params.idCesta).then((res) => {
+                return res;
+            })
         }
     }
 }
