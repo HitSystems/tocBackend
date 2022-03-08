@@ -95,6 +95,22 @@ export class CestasController {
             };
         });
     }
+    
+    @Post('getCestaDiferente')
+    getCestaDiferent(@Body() params) {
+        // params.id = 1631781881687; // para postman
+        // params.idArticulo = 8571;
+        if(params.id_cesta) {
+            return cestas.getCestaDiferente(params.id_cesta).then((res) => {
+                return res;
+            }).catch((err) => {
+                return {
+                    okey: false,
+                    error: "Error en borrarItemCesta"
+                };
+            });
+        }
+    }
 
     @Post('getCestaByID')
     getCestaByID(@Body() params) {

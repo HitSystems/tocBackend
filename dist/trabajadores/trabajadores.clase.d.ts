@@ -24,7 +24,7 @@ export declare class TrabajadoresClase {
     getCurrentIdTrabajador(): Promise<any>;
     getCurrentTrabajador(): Promise<TrabajadoresInterface>;
     setCurrentTrabajador(idTrabajador: number): Promise<boolean>;
-    setCurrentTrabajadorPorNombre(id: number): Promise<boolean>;
+    setCurrentTrabajadorPorNombre(id: any): Promise<boolean>;
     getTrabajadoresFichados(): Promise<import("bson").Document[]>;
     getTrabajador(idTrabajador: number): Promise<TrabajadoresInterface>;
     ficharTrabajador(idTrabajador: number, idPlan: string): Promise<boolean>;

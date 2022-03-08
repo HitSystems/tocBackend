@@ -37,6 +37,10 @@ export declare class CestasController {
         okey: boolean;
         error: string;
     }>;
+    getCestaDiferent(params: any): Promise<false | import("bson").Document | {
+        okey: boolean;
+        error: string;
+    }>;
     getCestaByID(params: any): Promise<{
         error: boolean;
         info: import("./cestas.interface").CestasInterface;

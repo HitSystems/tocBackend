@@ -73,3 +73,10 @@ export async function setCesta(cesta: CestasInterface) {
     
     return resultado;
 }
+
+export async function getCestaDiferente(id_cesta: string) {
+    const database = (await conexion).db('tocgame');
+    const cestas = database.collection('cestas');
+    const resultado = await cestas.findOne({ _id: { $ne: id_cesta }, nombreCesta: { $ne: 'PRINCIPAL' }});
+    return resultado;
+}

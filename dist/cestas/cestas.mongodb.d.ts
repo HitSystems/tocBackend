@@ -6,3 +6,4 @@ export declare function updateIdCestaTrabajador(id: string): Promise<import("mon
 export declare function getAllCestas(): Promise<any>;
 export declare function borrarCesta(idCesta: number): Promise<import("mongodb").UpdateResult>;
 export declare function setCesta(cesta: CestasInterface): Promise<import("bson").Document | import("mongodb").UpdateResult>;
+export declare function getCestaDiferente(id_cesta: string): Promise<import("bson").Document>;

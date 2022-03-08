@@ -88,7 +88,7 @@ export class ClientesController {
     @Post('crearNuevoCliente')
     crearNuevoCliente(@Body() params) {
         if (UtilesModule.checkVariable(params.idTarjetaCliente, params.nombreCliente)) {
-            if (params.idTarjetaCliente.length > 5 && params.nombreCliente.length >= 3) {
+            if (params.idTarjetaCliente.toString().length > 5 && params.nombreCliente.length >= 3) {
                 const parametros = parametrosInstance.getParametros();
                 return axios.post('clientes/crearNuevoCliente', {
                     idTarjetaCliente: params.idTarjetaCliente,

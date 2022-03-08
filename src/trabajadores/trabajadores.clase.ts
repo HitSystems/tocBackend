@@ -89,7 +89,9 @@ export class TrabajadoresClase {
 
     getCurrentTrabajador(): Promise<TrabajadoresInterface> {
         return this.getCurrentIdTrabajador().then((idCurrentTrabajador) => {
+            console.log('ID Trabajador', idCurrentTrabajador)
             if (idCurrentTrabajador != null) {
+                console.log('Data trabajador', this.getTrabajador(idCurrentTrabajador))
                 return this.getTrabajador(idCurrentTrabajador);
             } else {
                 return null;
@@ -114,30 +116,20 @@ export class TrabajadoresClase {
         });
     }
 
-    setCurrentTrabajadorPorNombre(id: number): Promise<boolean> {
-        return schTrabajadores.getTrabajadorPorNombre(id).then((infoTrabajador: TrabajadoresInterface) => {
-            if (infoTrabajador != null) {
-                return schTrabajadores.setCurrentIdTrabajador(infoTrabajador._id).then((res) => {
-                    if (res.acknowledged) {
-                        parametrosInstance.actualizarParametros();
-                        return true;
-                    } else {
-                        console.log(123);
-                        return false;
-                    };
-                }).catch((err) => {
-                    console.log(err);
-                    return false;
-                });
+    setCurrentTrabajadorPorNombre(id: any): Promise<boolean> {
+        id = parseInt(id);
+        return schTrabajadores.setCurrentIdTrabajador(id).then((res) => {
+            if (res.acknowledged) {
+                parametrosInstance.actualizarParametros();
+                return true;
             } else {
-                console.log(321);
+                console.log(123);
                 return false;
-            }
+            };
         }).catch((err) => {
-            console.log(987);
+            console.log(err);
             return false;
         });
-
     }
 
     getTrabajadoresFichados() {

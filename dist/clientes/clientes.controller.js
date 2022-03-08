@@ -94,7 +94,7 @@ let ClientesController = class ClientesController {
     }
     crearNuevoCliente(params) {
         if (utiles_module_1.UtilesModule.checkVariable(params.idTarjetaCliente, params.nombreCliente)) {
-            if (params.idTarjetaCliente.length > 5 && params.nombreCliente.length >= 3) {
+            if (params.idTarjetaCliente.toString().length > 5 && params.nombreCliente.length >= 3) {
                 const parametros = parametros_clase_1.parametrosInstance.getParametros();
                 return axios_1.default.post('clientes/crearNuevoCliente', {
                     idTarjetaCliente: params.idTarjetaCliente,

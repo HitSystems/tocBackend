@@ -100,6 +100,18 @@ let CestasController = class CestasController {
             };
         });
     }
+    getCestaDiferent(params) {
+        if (params.id_cesta) {
+            return cestas_clase_1.cestas.getCestaDiferente(params.id_cesta).then((res) => {
+                return res;
+            }).catch((err) => {
+                return {
+                    okey: false,
+                    error: "Error en borrarItemCesta"
+                };
+            });
+        }
+    }
     getCestaByID(params) {
         if (params.idCesta != undefined && params.idCesta != null) {
             console.log(params);
@@ -272,6 +284,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "getCesta", null);
+__decorate([
+    (0, common_1.Post)('getCestaDiferente'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "getCestaDiferent", null);
 __decorate([
     (0, common_1.Post)('getCestaByID'),
     __param(0, (0, common_1.Body)()),

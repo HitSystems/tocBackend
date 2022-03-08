@@ -30,18 +30,20 @@ export class TrabajadoresController {
 
     @Post('setActivo')
     setTrabajadorActivo(@Body() params) {
-        return trabajadoresInstance.setCurrentTrabajadorPorNombre(params.id).then((res) => {
-            if (res) {
-                return {
-                    error: false,
+        if(params.id) {
+            return trabajadoresInstance.setCurrentTrabajadorPorNombre(params.id).then((res) => {
+                if (res) {
+                    return {
+                        error: false,
+                    }
+                } else {
+                    return { error: true };
                 }
-            } else {
+            }).catch((err) => {
+                console.log(err);
                 return { error: true };
-            }
-        }).catch((err) => {
-            console.log(err);
-            return { error: true };
-        });
+            });
+        }
     }
 
     @Post('getCurrentTrabajador')

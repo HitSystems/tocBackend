@@ -41,19 +41,21 @@ let TrabajadoresController = class TrabajadoresController {
         });
     }
     setTrabajadorActivo(params) {
-        return trabajadores_clase_1.trabajadoresInstance.setCurrentTrabajadorPorNombre(params.id).then((res) => {
-            if (res) {
-                return {
-                    error: false,
-                };
-            }
-            else {
+        if (params.id) {
+            return trabajadores_clase_1.trabajadoresInstance.setCurrentTrabajadorPorNombre(params.id).then((res) => {
+                if (res) {
+                    return {
+                        error: false,
+                    };
+                }
+                else {
+                    return { error: true };
+                }
+            }).catch((err) => {
+                console.log(err);
                 return { error: true };
-            }
-        }).catch((err) => {
-            console.log(err);
-            return { error: true };
-        });
+            });
+        }
     }
     getCurrentTrabajador() {
         return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {

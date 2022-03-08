@@ -412,6 +412,11 @@ class CestaClase {
             return false;
         });
     }
+    async getCestaDiferente(id_cesta) {
+        return schCestas.getCestaDiferente(id_cesta).then((result) => {
+            return result ? result : false;
+        });
+    }
 }
 exports.CestaClase = CestaClase;
 const cestas = new CestaClase();

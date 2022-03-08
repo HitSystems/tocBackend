@@ -87,7 +87,9 @@ class TrabajadoresClase {
     }
     getCurrentTrabajador() {
         return this.getCurrentIdTrabajador().then((idCurrentTrabajador) => {
+            console.log('ID Trabajador', idCurrentTrabajador);
             if (idCurrentTrabajador != null) {
+                console.log('Data trabajador', this.getTrabajador(idCurrentTrabajador));
                 return this.getTrabajador(idCurrentTrabajador);
             }
             else {
@@ -114,29 +116,19 @@ class TrabajadoresClase {
         });
     }
     setCurrentTrabajadorPorNombre(id) {
-        return schTrabajadores.getTrabajadorPorNombre(id).then((infoTrabajador) => {
-            if (infoTrabajador != null) {
-                return schTrabajadores.setCurrentIdTrabajador(infoTrabajador._id).then((res) => {
-                    if (res.acknowledged) {
-                        parametros_clase_1.parametrosInstance.actualizarParametros();
-                        return true;
-                    }
-                    else {
-                        console.log(123);
-                        return false;
-                    }
-                    ;
-                }).catch((err) => {
-                    console.log(err);
-                    return false;
-                });
+        id = parseInt(id);
+        return schTrabajadores.setCurrentIdTrabajador(id).then((res) => {
+            if (res.acknowledged) {
+                parametros_clase_1.parametrosInstance.actualizarParametros();
+                return true;
             }
             else {
-                console.log(321);
+                console.log(123);
                 return false;
             }
+            ;
         }).catch((err) => {
-            console.log(987);
+            console.log(err);
             return false;
         });
     }

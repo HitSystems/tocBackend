@@ -470,6 +470,12 @@ export class CestaClase {
           return false;
       });
     }
+
+    async getCestaDiferente(id_cesta) {
+      return schCestas.getCestaDiferente(id_cesta).then((result) => {
+        return result ? result : false;
+      })
+    }
 }
 
 const cestas = new CestaClase();

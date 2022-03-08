@@ -27,6 +27,7 @@ export declare class CestaClase {
         suplementosSeleccionados: number[];
     }>;
     enviarACocina(idCesta: any): Promise<boolean>;
+    getCestaDiferente(id_cesta: any): Promise<false | import("bson").Document>;
 }
 declare const cestas: CestaClase;
 export { cestas };
