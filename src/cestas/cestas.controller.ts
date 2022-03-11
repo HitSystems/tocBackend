@@ -118,12 +118,10 @@ export class CestasController {
             console.log(params)
             if (params.idCesta == -1) {
                 return trabajadoresInstance.getCurrentTrabajador().then((res) => {
-                    console.log('Hola', res)
                     return cestas.getCesta(res._id).then((res) => {
                         if (res) {
                             return { error: false, info: res };
                         }
-                        console.log('Holaa', res);
                         return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
                     }).catch((err) => {
                         console.log(err);

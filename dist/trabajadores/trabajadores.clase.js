@@ -87,9 +87,7 @@ class TrabajadoresClase {
     }
     getCurrentTrabajador() {
         return this.getCurrentIdTrabajador().then((idCurrentTrabajador) => {
-            console.log('ID Trabajador', idCurrentTrabajador);
             if (idCurrentTrabajador != null) {
-                console.log('Data trabajador', this.getTrabajador(idCurrentTrabajador));
                 return this.getTrabajador(idCurrentTrabajador);
             }
             else {
