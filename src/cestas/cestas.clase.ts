@@ -111,6 +111,7 @@ export class CestaClase {
   }
 
   borrarCesta(idCestaBorrar): Promise<boolean> {
+    /* SOLO PARA HACER ALGO */
     return schCestas.borrarCesta(idCestaBorrar).then((res) => {
       return res.acknowledged;
     }).catch((err) => {
