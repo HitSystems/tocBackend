@@ -3,7 +3,7 @@ import { SincroFichajesInterface } from "./trabajadores.interface";
 export declare function getCurrentIdTrabajador(): Promise<import("bson").Document>;
 export declare function buscar(busqueda: string): Promise<import("bson").Document[]>;
 export declare function getTrabajador(idTrabajador: number): Promise<any>;
-export declare function getTrabajadorPorNombre(id: number): Promise<import("bson").Document>;
+export declare function getTrabajadorPorNombre(nombre: string): Promise<import("bson").Document>;
 export declare function setCurrentIdTrabajador(idTrabajador: number): Promise<import("mongodb").UpdateResult>;
 export declare function getTrabajadoresFichados(): Promise<import("bson").Document[]>;
 export declare function ficharTrabajador(idTrabajador: number): Promise<import("mongodb").UpdateResult>;

@@ -10,10 +10,6 @@ export declare class ParametrosController {
         error: boolean;
         parametros: import("./parametros.interface").ParametrosInterface;
     };
-    getParametrosBonito(): {
-        error: boolean;
-        parametros: import("./parametros.interface").ParametrosInterface;
-    };
     vidAndPid(params: any): Promise<{
         error: boolean;
         mensaje?: undefined;

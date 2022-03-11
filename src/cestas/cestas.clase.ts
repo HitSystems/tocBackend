@@ -5,11 +5,9 @@ import { construirObjetoIvas, crearCestaVacia } from '../funciones/funciones';
 import { articulosInstance } from '../articulos/articulos.clase';
 import { ofertas } from '../promociones/promociones.clase';
 import { cajaInstance } from '../caja/caja.clase';
-import { clienteInstance } from '../clientes/clientes.clase';
-import { impresoraInstance } from '../impresora/impresora.class';
-import { trabajadoresInstance } from '../trabajadores/trabajadores.clase';
-import axios from "axios";
-import { parametrosInstance } from '../parametros/parametros.clase';
+import { clienteInstance } from 'src/clientes/clientes.clase';
+import { impresoraInstance } from 'src/impresora/impresora.class';
+import { trabajadoresInstance } from 'src/trabajadores/trabajadores.clase';
 
 /* Siempre cargar la cesta desde MongoDB */
 export class CestaClase {
@@ -28,15 +26,6 @@ export class CestaClase {
       }
     });
     this.udsAplicar = 1;
-  }
-
-  async updateIdCestaTrabajador(id: string) {
-    return schCestas.updateIdCestaTrabajador(id).then((res) => {
-      return res.acknowledged;
-    }).catch((err) => {
-      console.log(err);
-      return false;
-    })
   }
 
   getCesta(idCesta: number): Promise<CestasInterface> {
@@ -111,23 +100,16 @@ export class CestaClase {
   }
 
   borrarCesta(idCestaBorrar): Promise<boolean> {
-    /* SOLO PARA HACER ALGO */
     return schCestas.borrarCesta(idCestaBorrar).then((res) => {
-      return res.acknowledged;
+      if (res.acknowledged) {
+        return true;
+      } else {
+        return false;
+      }
     }).catch((err) => {
       console.log(err);
       return false;
     });
-  }
-
-  /* Eliminar cesta por nombre, versión de Santi */
-  eliminarCesta(nombreCesta): Promise<boolean> {
-    return schCestas.eliminarCesta(nombreCesta).then((res) => {
-      return res.acknowledged;
-    }).catch((err) => {
-      console.log(err);
-      return false;
-    })
   }
 
   /* Guarda la cesta en Mongo */
@@ -148,7 +130,6 @@ export class CestaClase {
   }
 
   async crearNuevaCesta(nombreCesta: string) {
-    if(!nombreCesta || nombreCesta === '' || nombreCesta === ' ') return false;
     const nuevaCesta = this.nuevaCestaVacia();
     nuevaCesta.nombreCesta = nombreCesta;
     return this.setCesta(nuevaCesta).then((res) => {
@@ -402,81 +383,6 @@ export class CestaClase {
         console.log(err);
         return false;
       });
-    }
-
-    async addSuplemento(idCesta, suplementos, idArticulo, posArticulo = -100) {
-      suplementos = suplementos.map(o => o.suplemento);
-      const cestaActual = await this.getCesta(idCesta);
-      cestaActual.lista = cestaActual.lista.reverse();
-      let indexArticulo = posArticulo;
-      if(posArticulo === -100) indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
-      console.log(indexArticulo);
-      cestaActual.lista[indexArticulo].suplementosId = suplementos;
-      for(let i in suplementos) {
-        const idSuplemento = suplementos[i];
-        const infoSuplemento = await articulosInstance.getInfoArticulo(idSuplemento);
-        cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioConIva;
-        cestaActual.lista[indexArticulo].nombre += ` + ${infoSuplemento.nombre}`;
-      }
-      cestaActual.lista = cestaActual.lista.reverse();
-      return this.setCesta(cestaActual).then((res) => {
-        if(res) return cestaActual;
-        return false;
-      }).catch((err) => {
-        console.log(err);
-        return false;
-      });
-    }
-
-    async modificarSuplementos(cestaId, idArticulo, posArticulo) {
-      const cestaActual = await this.getCesta(cestaId);
-      // const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
-      cestaActual.lista = cestaActual.lista.reverse();
-      const indexArticulo = posArticulo;
-      const suplementos = cestaActual.lista[indexArticulo].suplementosId;
-      const infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
-      const suplementosArticulo = await articulosInstance.getSuplementos(infoArticulo.suplementos);
-      cestaActual.lista[indexArticulo].nombre = cestaActual.lista[indexArticulo].nombre.split('+')[0];
-      cestaActual.lista[indexArticulo].suplementosId = [];
-      for(let i = 0; i < suplementos.length; i++) {
-        const dataArticulo = await articulosInstance.getInfoArticulo(suplementos[i]);
-        cestaActual.lista[indexArticulo].subtotal -= dataArticulo.precioConIva;
-      }
-      cestaActual.lista = cestaActual.lista.reverse();
-      this.setCesta(cestaActual);
-      const res = {
-        suplementos: suplementosArticulo.length > 0 ? true : false,
-        suplementosData: suplementosArticulo,
-        suplementosSeleccionados: suplementos,
-      };
-      return res;
-    }
-
-    async enviarACocina(idCesta) {
-      const cestaActual = await this.getCesta(idCesta);
-      const nombreMesa = cestaActual.idCestaSincro ? cestaActual.idCestaSincro.split(' ')[0] === 'Taula' ? cestaActual.idCestaSincro : 'Barra' : 'Barra';
-      let articulos = '';
-      const suplementos = cestaActual.lista.map(i => ({ [i._id]: i.suplementosId ? i.suplementosId.map( o => o ) : []}));
-      for(let i in suplementos) {
-        const key = Object.keys(suplementos[i])[0];
-        articulos += key;
-        if(suplementos[i][key].length) {
-          articulos += suplementos[i][key].map(i => `|${i}`).join('');
-        }
-        articulos += ',';
-      }
-      articulos = articulos.slice(0, -1);
-      return axios.get(`http://gestiondelatienda.com/printer/cocina.php?id_tienda=${parametrosInstance.getParametros().codigoTienda}&pedidos=${articulos}&empresa=${parametrosInstance.getParametros().database}&mesa=${nombreMesa}`).then((res: any) => {
-        return true;
-      }).catch((err) => {
-          return false;
-      });
-    }
-
-    async getCestaDiferente(id_cesta) {
-      return schCestas.getCestaDiferente(id_cesta).then((result) => {
-        return result ? result : false;
-      })
     }
 }
 

@@ -24,7 +24,7 @@ export declare class TrabajadoresClase {
     getCurrentIdTrabajador(): Promise<any>;
     getCurrentTrabajador(): Promise<TrabajadoresInterface>;
     setCurrentTrabajador(idTrabajador: number): Promise<boolean>;
-    setCurrentTrabajadorPorNombre(id: any): Promise<boolean>;
+    setCurrentTrabajadorPorNombre(nombre: string): Promise<boolean>;
     getTrabajadoresFichados(): Promise<import("bson").Document[]>;
     getTrabajador(idTrabajador: number): Promise<TrabajadoresInterface>;
     ficharTrabajador(idTrabajador: number, idPlan: string): Promise<boolean>;
@@ -39,16 +39,6 @@ export declare class TrabajadoresClase {
         inicioTime: number;
         finalTime: number;
     };
-    getTrabajaronAyer(): Promise<any>;
-    guardarHorasExtraCoordinacion(horasExtra: number, horasCoordinacion: number, idTrabajador: number, timestamp: number): Promise<{
-        error: boolean;
-        mensaje?: undefined;
-    } | {
-        error: boolean;
-        mensaje: any;
-    } | {
-        error: boolean;
-        mensaje: string;
-    }>;
+    getTrabajaronAyer(): Promise<TrabajadoresInterface[]>;
 }
 export declare const trabajadoresInstance: TrabajadoresClase;

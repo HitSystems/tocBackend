@@ -1,6 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import axios from 'axios';
-import { UtilesModule } from 'src/utiles/utiles.module';
 import { articulosInstance } from '../articulos/articulos.clase';
 import { parametrosInstance } from '../parametros/parametros.clase';
 import { clienteInstance } from './clientes.clase';
@@ -83,33 +82,5 @@ export class ClientesController {
             console.log(err);
             return { error: true, mensaje: 'Backend: Error en clientes/descargarClientesFinales CATCH' };
         });
-    }
-
-    @Post('crearNuevoCliente')
-    crearNuevoCliente(@Body() params) {
-        if (UtilesModule.checkVariable(params.idTarjetaCliente, params.nombreCliente)) {
-            if (params.idTarjetaCliente.toString().length > 5 && params.nombreCliente.length >= 3) {
-                const parametros = parametrosInstance.getParametros();
-                return axios.post('clientes/crearNuevoCliente', {
-                    idTarjetaCliente: params.idTarjetaCliente,
-                    nombreCliente: params.nombreCliente,
-                    idCliente: `CliBoti_${parametros.codigoTienda}_${Date.now()}`,
-                    parametros: parametros
-                }).then((res: any) => {
-                    if (res.data.error == false) {
-                        return { error: false };
-                    } else {
-                        return { error: true, mensaje: res.data.mensaje };
-                    }
-                }).catch((err) => {
-                    console.log(err);
-                    return { error: true, mensaje: 'Error backend: clientes/crearNuevoCliente CATCH' }
-                });
-            } else {
-                return { error: true, mensaje: 'Error, nombre o número de tarjeta incorrectos' };
-            }
-        } else {
-            return { error: true, mensaje: 'Error Backend: Faltan datos en clientes/crearNuevoCliente' };
-        }
     }
 }

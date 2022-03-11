@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientesController = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = require("axios");
-const utiles_module_1 = require("../utiles/utiles.module");
 const articulos_clase_1 = require("../articulos/articulos.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const clientes_clase_1 = require("./clientes.clase");
@@ -92,35 +91,6 @@ let ClientesController = class ClientesController {
             return { error: true, mensaje: 'Backend: Error en clientes/descargarClientesFinales CATCH' };
         });
     }
-    crearNuevoCliente(params) {
-        if (utiles_module_1.UtilesModule.checkVariable(params.idTarjetaCliente, params.nombreCliente)) {
-            if (params.idTarjetaCliente.toString().length > 5 && params.nombreCliente.length >= 3) {
-                const parametros = parametros_clase_1.parametrosInstance.getParametros();
-                return axios_1.default.post('clientes/crearNuevoCliente', {
-                    idTarjetaCliente: params.idTarjetaCliente,
-                    nombreCliente: params.nombreCliente,
-                    idCliente: `CliBoti_${parametros.codigoTienda}_${Date.now()}`,
-                    parametros: parametros
-                }).then((res) => {
-                    if (res.data.error == false) {
-                        return { error: false };
-                    }
-                    else {
-                        return { error: true, mensaje: res.data.mensaje };
-                    }
-                }).catch((err) => {
-                    console.log(err);
-                    return { error: true, mensaje: 'Error backend: clientes/crearNuevoCliente CATCH' };
-                });
-            }
-            else {
-                return { error: true, mensaje: 'Error, nombre o número de tarjeta incorrectos' };
-            }
-        }
-        else {
-            return { error: true, mensaje: 'Error Backend: Faltan datos en clientes/crearNuevoCliente' };
-        }
-    }
 };
 __decorate([
     (0, common_1.Post)('buscar'),
@@ -149,13 +119,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ClientesController.prototype, "descargarClientesFinales", null);
-__decorate([
-    (0, common_1.Post)('crearNuevoCliente'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], ClientesController.prototype, "crearNuevoCliente", null);
 ClientesController = __decorate([
     (0, common_1.Controller)('clientes')
 ], ClientesController);

@@ -37,18 +37,9 @@ export declare class CestasController {
         okey: boolean;
         error: string;
     }>;
-    getCestaDiferent(params: any): Promise<false | import("bson").Document | {
-        okey: boolean;
-        error: string;
-    }>;
     getCestaByID(params: any): Promise<{
         error: boolean;
         info: import("./cestas.interface").CestasInterface;
-        mensaje?: undefined;
-    } | {
-        error: boolean;
-        mensaje: string;
-        info?: undefined;
     } | {
         error: boolean;
         mensaje: string;
@@ -104,22 +95,4 @@ export declare class CestasController {
         error: boolean;
         mensaje: string;
     };
-    addSuplemento(params: any): Promise<{
-        error: boolean;
-        bloqueado: boolean;
-        cesta: boolean | import("./cestas.interface").CestasInterface;
-    } | {
-        error: boolean;
-        bloqueado: boolean;
-    }>;
-    modificarSuplementos(params: any): Promise<{
-        suplementos: boolean;
-        suplementosData: any[];
-        suplementosSeleccionados: number[];
-    } | {
-        suplementos: boolean;
-        suplementosData?: undefined;
-        suplementosSeleccionados?: undefined;
-    }>;
-    enviarACocina(params: any): Promise<boolean>;
 }

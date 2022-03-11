@@ -6,5 +6,4 @@ export interface ArticulosInterface {
     nombre: string;
     familia: string;
     esSumable: boolean;
-    suplementos?: [];
 }

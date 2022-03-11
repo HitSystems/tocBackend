@@ -30,20 +30,18 @@ export class TrabajadoresController {
 
     @Post('setActivo')
     setTrabajadorActivo(@Body() params) {
-        if(params.id) {
-            return trabajadoresInstance.setCurrentTrabajadorPorNombre(params.id).then((res) => {
-                if (res) {
-                    return {
-                        error: false,
-                    }
-                } else {
-                    return { error: true };
+        return trabajadoresInstance.setCurrentTrabajadorPorNombre(params.nombre).then((res) => {
+            if (res) {
+                return {
+                    error: false,
                 }
-            }).catch((err) => {
-                console.log(err);
+            } else {
                 return { error: true };
-            });
-        }
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true };
+        });
     }
 
     @Post('getCurrentTrabajador')
@@ -136,17 +134,5 @@ export class TrabajadoresController {
     @Get('getTrabajaronAyer')
     getTrabajaronAyer() {
         return trabajadoresInstance.getTrabajaronAyer();
-    }
-    @Post('guardarHorasExtraCoordinacion')
-    guardarHorasExtraCoordinacion(@Body() params) {
-        if (UtilesModule.checkVariable(params.horasExtra, params.horasCoordinacion, params.idTrabajador, params.timestamp)) {
-            return trabajadoresInstance.guardarHorasExtraCoordinacion(params.horasExtra, params.horasCoordinacion, params.idTrabajador, params.timestamp).then((res) => {
-                return res;
-            }).catch((err) => {
-                console.log(err);
-            });
-        } else {
-            return { error: true, mensaje: 'Backend: Error faltan datos en trabajadores/guardarHorasExtrCoordinacion'};
-        }
     }
 }

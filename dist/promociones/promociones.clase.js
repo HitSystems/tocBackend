@@ -18,22 +18,6 @@ class OfertasClase {
         });
     }
     deshacerOfertas(cesta) {
-        for (let i = 0; i < cesta.lista.length; i++) {
-            if (cesta.lista[i].promocion.esPromo) {
-                const auxItemLista = cesta.lista[i];
-                cesta.lista.splice(i, i);
-                if (cesta.lista[i].promocion.infoPromo.idPrincipal != 0) {
-                    const idPrincipal = cesta.lista[i].promocion.infoPromo.idPrincipal;
-                    const unidades = cesta.lista[i].unidades * cesta.lista[i].promocion.infoPromo.cantidadPrincipal;
-                    cestas_clase_1.cestas.addItem(idPrincipal, '', false, null, cesta._id, unidades);
-                }
-                if (cesta.lista[i].promocion.infoPromo.idSecundario != 0) {
-                    const idSecundario = cesta.lista[i].promocion.infoPromo.idSecundario;
-                    const unidades = cesta.lista[i].unidades * cesta.lista[i].promocion.infoPromo.cantidadSecundario;
-                    cestas_clase_1.cestas.addItem(idSecundario, '', false, null, cesta._id, unidades);
-                }
-            }
-        }
         return cesta;
     }
     existeArticuloParaOfertaEnCesta(cesta, idArticulo, unidadesNecesarias) {
@@ -91,6 +75,7 @@ class OfertasClase {
     }
     async buscarOfertas(unaCesta, viejoIva) {
         var hayOferta = false;
+        unaCesta = this.deshacerOfertas(unaCesta);
         if (clientes_clase_1.clienteInstance.getEstadoClienteVIP() == false) {
             for (let i = 0; i < this.promociones.length; i++) {
                 for (let j = 0; j < this.promociones[i].principal.length; j++) {

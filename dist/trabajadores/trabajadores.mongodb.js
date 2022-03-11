@@ -24,10 +24,10 @@ async function getTrabajador(idTrabajador) {
     return resultado;
 }
 exports.getTrabajador = getTrabajador;
-async function getTrabajadorPorNombre(id) {
+async function getTrabajadorPorNombre(nombre) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const trabajadores = database.collection('trabajadores');
-    const resultado = await trabajadores.findOne({ idTrabajador: id });
+    const resultado = await trabajadores.findOne({ nombre: nombre });
     return resultado;
 }
 exports.getTrabajadorPorNombre = getTrabajadorPorNombre;

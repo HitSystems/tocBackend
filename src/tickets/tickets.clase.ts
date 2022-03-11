@@ -38,34 +38,30 @@ export class TicketsClase {
         });
     }
 
-    async insertarTicket(ticket: TicketsInterface) {
-        if (ticket.lista.length > 0) {
-            return schTickets.nuevoTicket(ticket).then((res) => {
-                if (res.acknowledged) {
-                    if (ticket.regalo == true) {
-                        axios.post('clientes/resetPuntosCliente', { database: parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado: any) => {
-                            if (resultado.data.error == false) {
-                                console.log('Puntos reseteados');
-                            } else {
-                                console.log(resultado.data.mensaje);
-                            }
-                        }).catch((err) => {
-                            console.log(err);
-                        });
-                    }
-                    articulosInstance.setEstadoTarifaEspecial(false);
-                    clienteInstance.setEstadoClienteVIP(false);
-                    return true;
-                } else {
-                    return false;
+    insertarTicket(ticket: TicketsInterface) {
+        return schTickets.nuevoTicket(ticket).then((res) => {
+            if (res.acknowledged) {
+                if (ticket.regalo == true) {
+                    axios.post('clientes/resetPuntosCliente', { database: parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado: any) => {
+                        if (resultado.data.error == false) {
+                            console.log('Puntos reseteados');
+                        } else {
+                            console.log(resultado.data.mensaje);
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 }
-            }).catch((err) => {
-                console.log(err);
+                articulosInstance.setEstadoTarifaEspecial(false);
+                clienteInstance.setEstadoClienteVIP(false);
+                return true;
+            } else {
                 return false;
-            });
-        } else {
+            }
+        }).catch((err) => {
+            console.log(err);
             return false;
-        }
+        });
     }
 
     async crearTicketEfectivo(total: number, idCesta: number, idCliente: string) {

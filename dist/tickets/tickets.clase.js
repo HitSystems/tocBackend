@@ -36,37 +36,32 @@ class TicketsClase {
             }
         });
     }
-    async insertarTicket(ticket) {
-        if (ticket.lista.length > 0) {
-            return schTickets.nuevoTicket(ticket).then((res) => {
-                if (res.acknowledged) {
-                    if (ticket.regalo == true) {
-                        axios_1.default.post('clientes/resetPuntosCliente', { database: parametros_clase_1.parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado) => {
-                            if (resultado.data.error == false) {
-                                console.log('Puntos reseteados');
-                            }
-                            else {
-                                console.log(resultado.data.mensaje);
-                            }
-                        }).catch((err) => {
-                            console.log(err);
-                        });
-                    }
-                    articulos_clase_1.articulosInstance.setEstadoTarifaEspecial(false);
-                    clientes_clase_1.clienteInstance.setEstadoClienteVIP(false);
-                    return true;
+    insertarTicket(ticket) {
+        return schTickets.nuevoTicket(ticket).then((res) => {
+            if (res.acknowledged) {
+                if (ticket.regalo == true) {
+                    axios_1.default.post('clientes/resetPuntosCliente', { database: parametros_clase_1.parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado) => {
+                        if (resultado.data.error == false) {
+                            console.log('Puntos reseteados');
+                        }
+                        else {
+                            console.log(resultado.data.mensaje);
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 }
-                else {
-                    return false;
-                }
-            }).catch((err) => {
-                console.log(err);
+                articulos_clase_1.articulosInstance.setEstadoTarifaEspecial(false);
+                clientes_clase_1.clienteInstance.setEstadoClienteVIP(false);
+                return true;
+            }
+            else {
                 return false;
-            });
-        }
-        else {
+            }
+        }).catch((err) => {
+            console.log(err);
             return false;
-        }
+        });
     }
     async crearTicketEfectivo(total, idCesta, idCliente) {
         const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador();
