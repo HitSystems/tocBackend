@@ -128,6 +128,8 @@ class CestaClase {
         });
     }
     async crearNuevaCesta(nombreCesta) {
+        if (!nombreCesta || nombreCesta === '' || nombreCesta === ' ')
+            return false;
         const nuevaCesta = this.nuevaCestaVacia();
         nuevaCesta.nombreCesta = nombreCesta;
         return this.setCesta(nuevaCesta).then((res) => {
