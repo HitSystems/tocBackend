@@ -33,6 +33,10 @@ let ParametrosController = class ParametrosController {
         const parametros = parametros_clase_1.parametrosInstance.getParametros();
         return { error: false, parametros };
     }
+    getParametrosBonito() {
+        const parametros = parametros_clase_1.parametrosInstance.getParametros();
+        return { error: false, parametros };
+    }
     vidAndPid(params) {
         if (params != undefined || params != null) {
             if (params.vid != undefined || params.vid != null || params.pid != undefined || params.pid != null) {
@@ -123,6 +127,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ParametrosController.prototype, "getParametros", null);
+__decorate([
+    (0, common_1.Get)('getParametrosBonito'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], ParametrosController.prototype, "getParametrosBonito", null);
 __decorate([
     (0, common_1.Post)('vidAndPid'),
     __param(0, (0, common_1.Body)()),

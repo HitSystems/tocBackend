@@ -43,4 +43,17 @@ export declare class ClientesController {
         error: boolean;
         mensaje: string;
     }>;
+    crearNuevoCliente(params: any): Promise<{
+        error: boolean;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: any;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
 }

@@ -23,8 +23,28 @@ export class OfertasClase {
         });        
     }
 
-    /* Deshacer ofertas de la cesta. Actualmente no hace nada */
+    /* Deshacer ofertas de la cesta. Actualmente no hace nada 
+    Solo aplicar para DEVOLUCIONES (porque de momento no corrige el IVA de la cesta). 
+    No sirve para ofertas con productos a peso */
     deshacerOfertas(cesta: CestasInterface) {
+        for (let i = 0; i < cesta.lista.length; i++) {
+            if (cesta.lista[i].promocion.esPromo) {
+                const auxItemLista = cesta.lista[i];
+                cesta.lista.splice(i, i); // Elimina la posición concreta del array.
+                
+                if (cesta.lista[i].promocion.infoPromo.idPrincipal != 0) {
+                    const idPrincipal = cesta.lista[i].promocion.infoPromo.idPrincipal;
+                    const unidades = cesta.lista[i].unidades*cesta.lista[i].promocion.infoPromo.cantidadPrincipal;
+                    cestas.addItem(idPrincipal, '', false, null, cesta._id, unidades);
+                }
+
+                if (cesta.lista[i].promocion.infoPromo.idSecundario != 0) {
+                    const idSecundario = cesta.lista[i].promocion.infoPromo.idSecundario;
+                    const unidades = cesta.lista[i].unidades*cesta.lista[i].promocion.infoPromo.cantidadSecundario;
+                    cestas.addItem(idSecundario, '', false, null, cesta._id, unidades);
+                }
+            }
+        }
         return cesta;
     }
 
@@ -101,7 +121,10 @@ export class OfertasClase {
     /* Busca ofertas que se pueden aplicar en la cesta */
     async buscarOfertas(unaCesta: CestasInterface, viejoIva): Promise<CestasInterface> {
         var hayOferta = false;
-        unaCesta = this.deshacerOfertas(unaCesta); //ahora no hace nada
+        // if (!this.getEstadoPromociones()) {
+        //     unaCesta = this.deshacerOfertas(unaCesta);
+        // }
+        
         if (clienteInstance.getEstadoClienteVIP() == false) {
             for(let i = 0; i < this.promociones.length; i++)
             {

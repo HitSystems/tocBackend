@@ -22,6 +22,12 @@ export class ParametrosController {
         return { error: false, parametros };      
     }
 
+    @Get('getParametrosBonito')
+    getParametrosBonito() {
+        const parametros = parametrosInstance.getParametros();
+        return { error: false, parametros };      
+    }
+
     @Post('vidAndPid')
     vidAndPid(@Body() params) {
         if (params != undefined || params != null) {
