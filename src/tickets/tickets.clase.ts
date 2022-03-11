@@ -38,30 +38,34 @@ export class TicketsClase {
         });
     }
 
-    insertarTicket(ticket: TicketsInterface) {
-        return schTickets.nuevoTicket(ticket).then((res) => {
-            if (res.acknowledged) {
-                if (ticket.regalo == true) {
-                    axios.post('clientes/resetPuntosCliente', { database: parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado: any) => {
-                        if (resultado.data.error == false) {
-                            console.log('Puntos reseteados');
-                        } else {
-                            console.log(resultado.data.mensaje);
-                        }
-                    }).catch((err) => {
-                        console.log(err);
-                    });
+    async insertarTicket(ticket: TicketsInterface) {
+        if (ticket.lista.length > 0) {
+            return schTickets.nuevoTicket(ticket).then((res) => {
+                if (res.acknowledged) {
+                    if (ticket.regalo == true) {
+                        axios.post('clientes/resetPuntosCliente', { database: parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado: any) => {
+                            if (resultado.data.error == false) {
+                                console.log('Puntos reseteados');
+                            } else {
+                                console.log(resultado.data.mensaje);
+                            }
+                        }).catch((err) => {
+                            console.log(err);
+                        });
+                    }
+                    articulosInstance.setEstadoTarifaEspecial(false);
+                    clienteInstance.setEstadoClienteVIP(false);
+                    return true;
+                } else {
+                    return false;
                 }
-                articulosInstance.setEstadoTarifaEspecial(false);
-                clienteInstance.setEstadoClienteVIP(false);
-                return true;
-            } else {
+            }).catch((err) => {
+                console.log(err);
                 return false;
-            }
-        }).catch((err) => {
-            console.log(err);
+            });
+        } else {
             return false;
-        });
+        }
     }
 
     async crearTicketEfectivo(total: number, idCesta: number, idCliente: string) {
