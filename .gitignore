@@ -2,3 +2,7 @@ node_modules/
 *.map
 .vscode
 dist/tsconfig.build.tsbuildinfo
+dist/tsconfig.build.tsbuildinfo
+dist/tsconfig.build.tsbuildinfo~Stashed changes
+dist/tsconfig.build.tsbuildinfo
+*.tsbuildinfo
