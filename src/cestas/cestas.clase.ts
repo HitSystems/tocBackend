@@ -82,8 +82,6 @@ export class CestaClase {
         }
       });
     });
-
-
   }
 
   nuevaCestaVacia() {
@@ -101,7 +99,8 @@ export class CestaClase {
             importe3: 0
         },
         lista: [],
-        nombreCesta: 'PRINCIPAL'
+        nombreCesta: 'PRINCIPAL',
+        idTrabajador: parametrosInstance.getParametros().idCurrentTrabajador
     };
     return nuevaCesta;
   }
@@ -160,6 +159,26 @@ export class CestaClase {
       console.log(err);
       return false;
     });
+  }
+
+  async crearCestaParaTrabajador(idTrabajador: number) {
+    if(typeof idTrabajador == 'number') {
+      let nuevaCesta = this.nuevaCestaVacia();
+      nuevaCesta.idTrabajador = idTrabajador;
+
+      return this.setCesta(nuevaCesta).then((res) => {
+        if (res) {
+          return nuevaCesta;
+        } else {
+          return false;
+        }
+      }).catch((err) => {
+        console.log(err);
+        return false;
+      });
+    } else {
+      return false;
+    }
   }
 
   /* Obtiene la cesta, borra el  item y devuelve la cesta final */
@@ -476,6 +495,25 @@ export class CestaClase {
       return schCestas.getCestaDiferente(id_cesta).then((result) => {
         return result ? result : false;
       })
+    }
+
+    getCestaByTrabajadorID(idTrabajador: number) {
+      return schCestas.getCestaByTrabajadorID(idTrabajador).then((res) => {
+        if (res != null) {
+          return res;
+        } else { // Si la cesta no existe, crearla para este trabajador
+          return this.crearCestaParaTrabajador(idTrabajador).then((resCesta) => {
+            if (resCesta) {
+              console.log("ENTRO EN ESTE: ", resCesta);
+              return resCesta;
+            }
+            throw Error('Error, no se ha podido crear la cesta para el trabajador');
+          })
+        }
+      }).catch((err) => {
+        console.log(err);
+        return null;
+      });
     }
 }
 

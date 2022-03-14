@@ -26,5 +26,6 @@ export declare function crearCestaVacia(): {
         importe3: number;
     };
     lista: any[];
+    idTrabajador: any;
 };
 export {};

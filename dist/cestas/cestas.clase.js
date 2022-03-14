@@ -88,7 +88,8 @@ class CestaClase {
                 importe3: 0
             },
             lista: [],
-            nombreCesta: 'PRINCIPAL'
+            nombreCesta: 'PRINCIPAL',
+            idTrabajador: parametros_clase_1.parametrosInstance.getParametros().idCurrentTrabajador
         };
         return nuevaCesta;
     }
@@ -143,6 +144,26 @@ class CestaClase {
             console.log(err);
             return false;
         });
+    }
+    async crearCestaParaTrabajador(idTrabajador) {
+        if (typeof idTrabajador == 'number') {
+            let nuevaCesta = this.nuevaCestaVacia();
+            nuevaCesta.idTrabajador = idTrabajador;
+            return this.setCesta(nuevaCesta).then((res) => {
+                if (res) {
+                    return nuevaCesta;
+                }
+                else {
+                    return false;
+                }
+            }).catch((err) => {
+                console.log(err);
+                return false;
+            });
+        }
+        else {
+            return false;
+        }
     }
     borrarItemCesta(idCesta, idArticulo) {
         return this.getCesta(idCesta).then((cesta) => {
@@ -417,6 +438,25 @@ class CestaClase {
     async getCestaDiferente(id_cesta) {
         return schCestas.getCestaDiferente(id_cesta).then((result) => {
             return result ? result : false;
+        });
+    }
+    getCestaByTrabajadorID(idTrabajador) {
+        return schCestas.getCestaByTrabajadorID(idTrabajador).then((res) => {
+            if (res != null) {
+                return res;
+            }
+            else {
+                return this.crearCestaParaTrabajador(idTrabajador).then((resCesta) => {
+                    if (resCesta) {
+                        console.log("ENTRO EN ESTE: ", resCesta);
+                        return resCesta;
+                    }
+                    throw Error('Error, no se ha podido crear la cesta para el trabajador');
+                });
+            }
+        }).catch((err) => {
+            console.log(err);
+            return null;
         });
     }
 }

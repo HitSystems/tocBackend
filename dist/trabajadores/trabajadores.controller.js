@@ -60,10 +60,20 @@ let TrabajadoresController = class TrabajadoresController {
     getCurrentTrabajador() {
         return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
             if (res != null) {
-                return {
-                    error: false,
-                    trabajador: res
-                };
+                return { error: false, trabajador: res };
+            }
+            else {
+                return { error: true };
+            }
+        }).catch((err) => {
+            console.log(err);
+            return { error: true };
+        });
+    }
+    getCurrentTrabajadorr() {
+        return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
+            if (res != null) {
+                return { error: false, trabajador: res };
             }
             else {
                 return { error: true };
@@ -174,6 +184,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], TrabajadoresController.prototype, "getCurrentTrabajador", null);
+__decorate([
+    (0, common_1.Get)('getCurrentTrabajadorNueva'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TrabajadoresController.prototype, "getCurrentTrabajadorr", null);
 __decorate([
     (0, common_1.Post)('buscar'),
     __param(0, (0, common_1.Body)()),

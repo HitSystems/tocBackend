@@ -15,6 +15,12 @@ export async function getCestaConcreta(idCesta: number): Promise<any> {
     if(!resultado) resultado = await cesta.findOne({ _id: idCesta.toString() });
     return resultado;
 }
+export async function getCestaByTrabajadorID(idTrabajador: number) {
+    const database = (await conexion).db('tocgame');
+    const cesta = database.collection('cestas');
+    let resultado = await cesta.findOne({idTrabajador: idTrabajador});
+    return resultado;
+}
 
 export async function eliminarCesta(nombre: string) {
     const database = (await conexion).db('tocgame');
@@ -68,7 +74,8 @@ export async function setCesta(cesta: CestasInterface) {
         tiposIva: cesta.tiposIva,
         lista: cesta.lista,
         nombreCesta: (cesta.nombreCesta != undefined || cesta.nombreCesta != '') ? (cesta.nombreCesta) : ('PRINCIPAL'),
-        regalo: (cesta.regalo != undefined) ? (cesta.regalo): (false)
+        regalo: (cesta.regalo != undefined) ? (cesta.regalo): (false),
+        idTrabajador: cesta.idTrabajador
     }, {upsert: true});
     
     return resultado;
