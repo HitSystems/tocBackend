@@ -122,4 +122,13 @@ export declare class CestasController {
         suplementosSeleccionados?: undefined;
     }>;
     enviarACocina(params: any): Promise<boolean>;
+    getCestaByTrabajadorId(params: any): Promise<{
+        error: boolean;
+        info: any;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+        info?: undefined;
+    }>;
 }

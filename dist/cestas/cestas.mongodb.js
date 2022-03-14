@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCestaDiferente = exports.setCesta = exports.borrarCesta = exports.getAllCestas = exports.updateIdCestaTrabajador = exports.eliminarCesta = exports.getCestaConcreta = exports.getUnaCesta = void 0;
+exports.getCestaDiferente = exports.setCesta = exports.borrarCesta = exports.getAllCestas = exports.updateIdCestaTrabajador = exports.eliminarCesta = exports.getCestaByTrabajadorID = exports.getCestaConcreta = exports.getUnaCesta = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function getUnaCesta() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -18,6 +18,13 @@ async function getCestaConcreta(idCesta) {
     return resultado;
 }
 exports.getCestaConcreta = getCestaConcreta;
+async function getCestaByTrabajadorID(idTrabajador) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const cesta = database.collection('cestas');
+    let resultado = await cesta.findOne({ idTrabajador: idTrabajador });
+    return resultado;
+}
+exports.getCestaByTrabajadorID = getCestaByTrabajadorID;
 async function eliminarCesta(nombre) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const cesta = database.collection('cestas');
@@ -68,7 +75,8 @@ async function setCesta(cesta) {
         tiposIva: cesta.tiposIva,
         lista: cesta.lista,
         nombreCesta: (cesta.nombreCesta != undefined || cesta.nombreCesta != '') ? (cesta.nombreCesta) : ('PRINCIPAL'),
-        regalo: (cesta.regalo != undefined) ? (cesta.regalo) : (false)
+        regalo: (cesta.regalo != undefined) ? (cesta.regalo) : (false),
+        idTrabajador: cesta.idTrabajador
     }, { upsert: true });
     return resultado;
 }

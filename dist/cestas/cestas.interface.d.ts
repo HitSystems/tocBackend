@@ -35,4 +35,5 @@ export interface CestasInterface {
     }[];
     nombreCesta?: string;
     idCestaSincro?: string;
+    idTrabajador: number;
 }

@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CestasController = void 0;
 const common_1 = require("@nestjs/common");
+const utiles_module_1 = require("../utiles/utiles.module");
 const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
 const cestas_clase_1 = require("./cestas.clase");
 let CestasController = class CestasController {
@@ -114,7 +115,7 @@ let CestasController = class CestasController {
     }
     getCestaByID(params) {
         if (params.idCesta != undefined && params.idCesta != null) {
-            console.log(params);
+            console.log("OBSERVA EZE: ", params);
             if (params.idCesta == -1) {
                 return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
                     return cestas_clase_1.cestas.getCesta(res._id).then((res) => {
@@ -254,6 +255,14 @@ let CestasController = class CestasController {
             });
         }
     }
+    async getCestaByTrabajadorId(params) {
+        if (utiles_module_1.UtilesModule.checkVariable(params.idTrabajador)) {
+            return { error: false, info: await cestas_clase_1.cestas.getCestaByTrabajadorID(params.idTrabajador) };
+        }
+        else {
+            return { error: true, mensaje: 'Backend error, faltan datos en cestas/getCestaByTrabajadorId' };
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('borrarCesta'),
@@ -351,6 +360,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "enviarACocina", null);
+__decorate([
+    (0, common_1.Post)('getCestaByTrabajadorId'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], CestasController.prototype, "getCestaByTrabajadorId", null);
 CestasController = __decorate([
     (0, common_1.Controller)('cestas')
 ], CestasController);

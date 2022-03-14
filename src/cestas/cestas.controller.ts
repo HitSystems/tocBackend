@@ -1,4 +1,5 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
+import { UtilesModule } from 'src/utiles/utiles.module';
 import { trabajadoresInstance } from '../trabajadores/trabajadores.clase';
 import { cestas } from './cestas.clase';
 
@@ -115,7 +116,7 @@ export class CestasController {
     @Post('getCestaByID')
     getCestaByID(@Body() params) {
         if (params.idCesta != undefined && params.idCesta != null) {
-            console.log(params)
+            console.log("OBSERVA EZE: ", params)
             if (params.idCesta == -1) {
                 return trabajadoresInstance.getCurrentTrabajador().then((res) => {
                     return cestas.getCesta(res._id).then((res) => {
@@ -269,6 +270,15 @@ export class CestasController {
             return cestas.enviarACocina(params.idCesta).then((res) => {
                 return res;
             })
+        }
+    }
+
+    @Post('getCestaByTrabajadorId')
+    async getCestaByTrabajadorId(@Body() params) {
+        if (UtilesModule.checkVariable(params.idTrabajador)) {
+            return { error: false, info: await cestas.getCestaByTrabajadorID(params.idTrabajador) };
+        } else {
+            return { error: true, mensaje: 'Backend error, faltan datos en cestas/getCestaByTrabajadorId' };
         }
     }
 }

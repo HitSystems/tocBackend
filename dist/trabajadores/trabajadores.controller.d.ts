@@ -19,6 +19,15 @@ export declare class TrabajadoresController {
     } | {
         error: boolean;
     }>;
+    getCurrentTrabajadorr(): Promise<{
+        error: boolean;
+        trabajador: import("./trabajadores.interface").TrabajadoresInterface;
+    } | {
+        error: boolean;
+        trabajador?: undefined;
+    } | {
+        error: boolean;
+    }>;
     buscar(params: any): Promise<any[] | import("./trabajadores.interface").TrabajadoresInterface[]>;
     fichar(params: any): Promise<{
         error: boolean;
