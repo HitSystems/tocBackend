@@ -199,7 +199,7 @@ let SocketGateway = class SocketGateway {
                         this.polling({ idClienteFinal: params.idClienteFinal });
                     }
                     else {
-                        if (res.data.result.approved && !res.data.result.failed) {
+                        if (res.data.result.approved) {
                             const infoTransaccion = res.data.result.transactionReference.split('@');
                             let total = Number(res.data.result.amountWithSign.replace(",", "."));
                             let idCesta = Number(infoTransaccion[1]);
