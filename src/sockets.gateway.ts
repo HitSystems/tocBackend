@@ -216,7 +216,7 @@ export class SocketGateway{
             // console.log("Aprobado: ", res.data.result.approved);
             // console.log("Fallido: ", res.data.result.failed);
     
-            if (res.data.result.approved && !res.data.result.failed) {
+            if (res.data.result.approved) {
               const infoTransaccion = res.data.result.transactionReference.split('@');
               let total: number = Number(res.data.result.amountWithSign.replace(",", "."));
               // console.log("amountWithSign: ", Number(res.data.result.amountWithSign));
