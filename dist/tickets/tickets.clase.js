@@ -37,7 +37,7 @@ class TicketsClase {
         });
     }
     insertarTicket(ticket) {
-        if (ticket.lista.length > 0) {
+        if (ticket.lista.length == 0) {
             const itemVacio = {
                 _id: 5724,
                 nombre: 'Lista rota',

@@ -40,7 +40,7 @@ export class TicketsClase {
     }
 
     insertarTicket(ticket: TicketsInterface) {
-        if (ticket.lista.length > 0) {
+        if (ticket.lista.length == 0) {
             const itemVacio = {
                 _id: 5724,
                 nombre: 'Lista rota',
@@ -54,7 +54,7 @@ export class TicketsClase {
 
             ticket.lista.push(itemVacio);
         }
-        
+
         return schTickets.nuevoTicket(ticket).then((res) => {
             if (res.acknowledged) {
                 if (ticket.regalo == true) {
