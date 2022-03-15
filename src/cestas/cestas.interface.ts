@@ -33,4 +33,9 @@ export interface CestasInterface {
         }
     }[],
     nombreCesta?: string;
+<<<<<<< HEAD
+=======
+    idCestaSincro?: string,
+    idTrabajador: number
+>>>>>>> tester
 }

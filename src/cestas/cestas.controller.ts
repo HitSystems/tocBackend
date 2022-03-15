@@ -1,4 +1,9 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
+<<<<<<< HEAD
+=======
+import { UtilesModule } from 'src/utiles/utiles.module';
+import { trabajadoresInstance } from '../trabajadores/trabajadores.clase';
+>>>>>>> tester
 import { cestas } from './cestas.clase';
 
 @Controller('cestas')
@@ -98,6 +103,10 @@ export class CestasController {
     @Post('getCestaByID')
     getCestaByID(@Body() params) {
         if (params.idCesta != undefined && params.idCesta != null) {
+<<<<<<< HEAD
+=======
+            console.log("OBSERVA EZE: ", params)
+>>>>>>> tester
             if (params.idCesta == -1) {
                 return cestas.getCestaRandom().then((res) => {
                     return { error: false, info: res };
@@ -197,4 +206,61 @@ export class CestasController {
             return { error: true, mensaje: 'Backend: Error: faltan datos en cestas/regalarProducto' };
         }
     }
+<<<<<<< HEAD
+=======
+
+    @Post('addSuplemento')
+    addSuplemento(@Body() params) {
+        if(params.idCesta && params.suplementos && params.idArticulo) {
+            return cestas.addSuplemento(params.idCesta, params.suplementos, params.idArticulo, params.posArticulo).then((res) => {
+                return {
+                    error: false,
+                    bloqueado: false,
+                    cesta: res
+                };
+            }).catch((err) => {
+                console.log(err);
+                return {
+                    error: true,
+                    bloqueado: false
+                };
+            });
+        }
+    }
+
+    @Post('modificarSuplementos')
+    modificarSuplementos(@Body() params) {
+        console.log(params);
+        if(params.cestaId && params.idArticulo) {
+            return cestas.modificarSuplementos(params.cestaId, params.idArticulo, params.posArticulo).then((res) => {
+                if(res.suplementos) {
+                    return {
+                        suplementos: true,
+                        suplementosData: res.suplementosData, 
+                        suplementosSeleccionados: res.suplementosSeleccionados, 
+                    }
+                }
+                return { suplementos: false };
+            })
+        }
+    }
+
+    @Post('enviarACocina')
+    enviarACocina(@Body() params) {
+        if(params.idCesta) {
+            return cestas.enviarACocina(params.idCesta).then((res) => {
+                return res;
+            })
+        }
+    }
+
+    @Post('getCestaByTrabajadorId')
+    async getCestaByTrabajadorId(@Body() params) {
+        if (UtilesModule.checkVariable(params.idTrabajador)) {
+            return { error: false, info: await cestas.getCestaByTrabajadorID(params.idTrabajador) };
+        } else {
+            return { error: true, mensaje: 'Backend error, faltan datos en cestas/getCestaByTrabajadorId' };
+        }
+    }
+>>>>>>> tester
 }

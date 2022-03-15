@@ -80,7 +80,8 @@ function crearCestaVacia() {
             importe2: 0,
             importe3: 0
         },
-        lista: []
+        lista: [],
+        idTrabajador: null
     };
     return cestaVacia;
 }

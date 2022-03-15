@@ -7,6 +7,7 @@ import { movimientosInstance } from "../movimientos/movimientos.clase";
 import { articulosInstance } from "../articulos/articulos.clase";
 import axios from "axios";
 import { clienteInstance } from "../clientes/clientes.clase";
+import { totalmem } from "os";
 
 export class TicketsClase {
 
@@ -38,34 +39,45 @@ export class TicketsClase {
         });
     }
 
-    async insertarTicket(ticket: TicketsInterface) {
-        if (ticket.lista.length > 0) {
-            return schTickets.nuevoTicket(ticket).then((res) => {
-                if (res.acknowledged) {
-                    if (ticket.regalo == true) {
-                        axios.post('clientes/resetPuntosCliente', { database: parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado: any) => {
-                            if (resultado.data.error == false) {
-                                console.log('Puntos reseteados');
-                            } else {
-                                console.log(resultado.data.mensaje);
-                            }
-                        }).catch((err) => {
-                            console.log(err);
-                        });
-                    }
-                    articulosInstance.setEstadoTarifaEspecial(false);
-                    clienteInstance.setEstadoClienteVIP(false);
-                    return true;
-                } else {
-                    return false;
-                }
-            }).catch((err) => {
-                console.log(err);
-                return false;
-            });
-        } else {
-            return false;
+    insertarTicket(ticket: TicketsInterface) {
+        if (ticket.lista.length == 0) {
+            const itemVacio = {
+                _id: 5724,
+                nombre: 'Lista rota',
+                promocion: {
+                    _id: null,
+                    esPromo: false,                   
+                },
+                subtotal: ticket.total,
+                unidades: 1
+            };
+
+            ticket.lista.push(itemVacio);
         }
+
+        return schTickets.nuevoTicket(ticket).then((res) => {
+            if (res.acknowledged) {
+                if (ticket.regalo == true) {
+                    axios.post('clientes/resetPuntosCliente', { database: parametrosInstance.getParametros().database, idClienteFinal: ticket.cliente }).then((resultado: any) => {
+                        if (resultado.data.error == false) {
+                            console.log('Puntos reseteados');
+                        } else {
+                            console.log(resultado.data.mensaje);
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                }
+                articulosInstance.setEstadoTarifaEspecial(false);
+                clienteInstance.setEstadoClienteVIP(false);
+                return true;
+            } else {
+                return false;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
     }
 
     async crearTicketEfectivo(total: number, idCesta: number, idCliente: string) {

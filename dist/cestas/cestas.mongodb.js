@@ -37,7 +37,8 @@ async function setCesta(cesta) {
         tiposIva: cesta.tiposIva,
         lista: cesta.lista,
         nombreCesta: (cesta.nombreCesta != undefined || cesta.nombreCesta != '') ? (cesta.nombreCesta) : ('PRINCIPAL'),
-        regalo: (cesta.regalo != undefined) ? (cesta.regalo) : (false)
+        regalo: (cesta.regalo != undefined) ? (cesta.regalo) : (false),
+        idTrabajador: cesta.idTrabajador
     }, { upsert: true });
     return resultado;
 }

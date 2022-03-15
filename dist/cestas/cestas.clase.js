@@ -79,7 +79,8 @@ class CestaClase {
                 importe3: 0
             },
             lista: [],
-            nombreCesta: 'PRINCIPAL'
+            nombreCesta: 'PRINCIPAL',
+            idTrabajador: parametrosInstance.getParametros().idCurrentTrabajador
         };
         return nuevaCesta;
     }
@@ -129,6 +130,26 @@ class CestaClase {
             console.log(err);
             return false;
         });
+    }
+    async crearCestaParaTrabajador(idTrabajador) {
+        if (typeof idTrabajador == 'number') {
+            let nuevaCesta = this.nuevaCestaVacia();
+            nuevaCesta.idTrabajador = idTrabajador;
+            return this.setCesta(nuevaCesta).then((res) => {
+                if (res) {
+                    return nuevaCesta;
+                }
+                else {
+                    return false;
+                }
+            }).catch((err) => {
+                console.log(err);
+                return false;
+            });
+        }
+        else {
+            return false;
+        }
     }
     borrarItemCesta(idCesta, idArticulo) {
         return this.getCesta(idCesta).then((cesta) => {

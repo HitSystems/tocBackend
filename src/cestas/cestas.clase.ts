@@ -71,8 +71,6 @@ export class CestaClase {
         }
       });
     });
-
-
   }
 
   nuevaCestaVacia() {
@@ -90,7 +88,8 @@ export class CestaClase {
             importe3: 0
         },
         lista: [],
-        nombreCesta: 'PRINCIPAL'
+        nombreCesta: 'PRINCIPAL',
+        idTrabajador: parametrosInstance.getParametros().idCurrentTrabajador
     };
     return nuevaCesta;
   }
@@ -142,6 +141,26 @@ export class CestaClase {
       console.log(err);
       return false;
     });
+  }
+
+  async crearCestaParaTrabajador(idTrabajador: number) {
+    if(typeof idTrabajador == 'number') {
+      let nuevaCesta = this.nuevaCestaVacia();
+      nuevaCesta.idTrabajador = idTrabajador;
+
+      return this.setCesta(nuevaCesta).then((res) => {
+        if (res) {
+          return nuevaCesta;
+        } else {
+          return false;
+        }
+      }).catch((err) => {
+        console.log(err);
+        return false;
+      });
+    } else {
+      return false;
+    }
   }
 
   /* Obtiene la cesta, borra el  item y devuelve la cesta final */
@@ -384,6 +403,103 @@ export class CestaClase {
         return false;
       });
     }
+<<<<<<< HEAD
+=======
+
+    async addSuplemento(idCesta, suplementos, idArticulo, posArticulo = -100) {
+      suplementos = suplementos.map(o => o.suplemento);
+      const cestaActual = await this.getCesta(idCesta);
+      cestaActual.lista = cestaActual.lista.reverse();
+      let indexArticulo = posArticulo;
+      if(posArticulo === -100) indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
+      console.log(indexArticulo);
+      cestaActual.lista[indexArticulo].suplementosId = suplementos;
+      for(let i in suplementos) {
+        const idSuplemento = suplementos[i];
+        const infoSuplemento = await articulosInstance.getInfoArticulo(idSuplemento);
+        cestaActual.lista[indexArticulo].subtotal += infoSuplemento.precioConIva;
+        cestaActual.lista[indexArticulo].nombre += ` + ${infoSuplemento.nombre}`;
+      }
+      cestaActual.lista = cestaActual.lista.reverse();
+      return this.setCesta(cestaActual).then((res) => {
+        if(res) return cestaActual;
+        return false;
+      }).catch((err) => {
+        console.log(err);
+        return false;
+      });
+    }
+
+    async modificarSuplementos(cestaId, idArticulo, posArticulo) {
+      const cestaActual = await this.getCesta(cestaId);
+      // const indexArticulo = cestaActual.lista.findIndex(i => i._id === idArticulo);
+      cestaActual.lista = cestaActual.lista.reverse();
+      const indexArticulo = posArticulo;
+      const suplementos = cestaActual.lista[indexArticulo].suplementosId;
+      const infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
+      const suplementosArticulo = await articulosInstance.getSuplementos(infoArticulo.suplementos);
+      cestaActual.lista[indexArticulo].nombre = cestaActual.lista[indexArticulo].nombre.split('+')[0];
+      cestaActual.lista[indexArticulo].suplementosId = [];
+      for(let i = 0; i < suplementos.length; i++) {
+        const dataArticulo = await articulosInstance.getInfoArticulo(suplementos[i]);
+        cestaActual.lista[indexArticulo].subtotal -= dataArticulo.precioConIva;
+      }
+      cestaActual.lista = cestaActual.lista.reverse();
+      this.setCesta(cestaActual);
+      const res = {
+        suplementos: suplementosArticulo.length > 0 ? true : false,
+        suplementosData: suplementosArticulo,
+        suplementosSeleccionados: suplementos,
+      };
+      return res;
+    }
+
+    async enviarACocina(idCesta) {
+      const cestaActual = await this.getCesta(idCesta);
+      const nombreMesa = cestaActual.idCestaSincro ? cestaActual.idCestaSincro.split(' ')[0] === 'Taula' ? cestaActual.idCestaSincro : 'Barra' : 'Barra';
+      let articulos = '';
+      const suplementos = cestaActual.lista.map(i => ({ [i._id]: i.suplementosId ? i.suplementosId.map( o => o ) : []}));
+      for(let i in suplementos) {
+        const key = Object.keys(suplementos[i])[0];
+        articulos += key;
+        if(suplementos[i][key].length) {
+          articulos += suplementos[i][key].map(i => `|${i}`).join('');
+        }
+        articulos += ',';
+      }
+      articulos = articulos.slice(0, -1);
+      return axios.get(`http://gestiondelatienda.com/printer/cocina.php?id_tienda=${parametrosInstance.getParametros().codigoTienda}&pedidos=${articulos}&empresa=${parametrosInstance.getParametros().database}&mesa=${nombreMesa}`).then((res: any) => {
+        return true;
+      }).catch((err) => {
+          return false;
+      });
+    }
+
+    async getCestaDiferente(id_cesta) {
+      return schCestas.getCestaDiferente(id_cesta).then((result) => {
+        return result ? result : false;
+      })
+    }
+
+    getCestaByTrabajadorID(idTrabajador: number) {
+      return schCestas.getCestaByTrabajadorID(idTrabajador).then((res) => {
+        if (res != null) {
+          return res;
+        } else { // Si la cesta no existe, crearla para este trabajador
+          return this.crearCestaParaTrabajador(idTrabajador).then((resCesta) => {
+            if (resCesta) {
+              console.log("ENTRO EN ESTE: ", resCesta);
+              return resCesta;
+            }
+            throw Error('Error, no se ha podido crear la cesta para el trabajador');
+          })
+        }
+      }).catch((err) => {
+        console.log(err);
+        return null;
+      });
+    }
+>>>>>>> tester
 }
 
 const cestas = new CestaClase();
