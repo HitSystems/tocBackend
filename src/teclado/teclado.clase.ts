@@ -23,7 +23,7 @@ export class TecladoClase {
                         if (resMenus) {
                             return articulosInstance.insertarArticulos(res.data.info).then((res2) => {
                                 if (res2) {
-                                    return axios.post('/teclas/descargarTeclados', { database: parametrosInstance.getParametros().database, licencia: parametrosInstance.getParametros().licencia }).then((infoTeclados: any) => {
+                                    return axios.post('/teclas/descargarTeclados', { database: parametrosInstance.getParametros().database, licencia: parametrosInstance.getParametros().codigoTienda }).then((infoTeclados: any) => {
                                         if (infoTeclados.data.error == false) {
                                             return tecladoInstance.insertarTeclas(infoTeclados.data.info).then((resultado) => {
                                                 if (resultado) {

@@ -24,7 +24,7 @@ class TecladoClase {
                         if (resMenus) {
                             return articulos_clase_1.articulosInstance.insertarArticulos(res.data.info).then((res2) => {
                                 if (res2) {
-                                    return axios_1.default.post('/teclas/descargarTeclados', { database: parametros_clase_1.parametrosInstance.getParametros().database, licencia: parametros_clase_1.parametrosInstance.getParametros().licencia }).then((infoTeclados) => {
+                                    return axios_1.default.post('/teclas/descargarTeclados', { database: parametros_clase_1.parametrosInstance.getParametros().database, licencia: parametros_clase_1.parametrosInstance.getParametros().codigoTienda }).then((infoTeclados) => {
                                         if (infoTeclados.data.error == false) {
                                             return exports.tecladoInstance.insertarTeclas(infoTeclados.data.info).then((resultado) => {
                                                 if (resultado) {
