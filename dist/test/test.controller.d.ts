@@ -1,3 +1,3 @@
 export declare class TestController {
-    paraMarc(parms: any): string;
+    imprimirAlgo(parms: any): number;
 }

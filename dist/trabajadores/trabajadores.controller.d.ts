@@ -81,5 +81,18 @@ export declare class TrabajadoresController {
         error: boolean;
         mensaje: string;
     };
-    getTrabajaronAyer(): Promise<import("./trabajadores.interface").TrabajadoresInterface[]>;
+    getTrabajaronAyer(): Promise<any>;
+    guardarHorasExtraCoordinacion(params: any): Promise<void | {
+        error: boolean;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: any;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
 }

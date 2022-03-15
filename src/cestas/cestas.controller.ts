@@ -1,9 +1,6 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
-<<<<<<< HEAD
-=======
 import { UtilesModule } from 'src/utiles/utiles.module';
 import { trabajadoresInstance } from '../trabajadores/trabajadores.clase';
->>>>>>> tester
 import { cestas } from './cestas.clase';
 
 @Controller('cestas')
@@ -99,21 +96,45 @@ export class CestasController {
             };
         });
     }
+    
+    @Post('getCestaDiferente')
+    getCestaDiferent(@Body() params) {
+        // params.id = 1631781881687; // para postman
+        // params.idArticulo = 8571;
+        if(params.id_cesta) {
+            return cestas.getCestaDiferente(params.id_cesta).then((res) => {
+                return res;
+            }).catch((err) => {
+                return {
+                    okey: false,
+                    error: "Error en borrarItemCesta"
+                };
+            });
+        }
+    }
 
     @Post('getCestaByID')
     getCestaByID(@Body() params) {
         if (params.idCesta != undefined && params.idCesta != null) {
-<<<<<<< HEAD
-=======
             console.log("OBSERVA EZE: ", params)
->>>>>>> tester
             if (params.idCesta == -1) {
-                return cestas.getCestaRandom().then((res) => {
-                    return { error: false, info: res };
-                }).catch((err) => {
-                    console.log(err);
-                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
-                });
+                return trabajadoresInstance.getCurrentTrabajador().then((res) => {
+                    return cestas.getCesta(res._id).then((res) => {
+                        if (res) {
+                            return { error: false, info: res };
+                        }
+                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+                    }).catch((err) => {
+                        console.log(err);
+                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+                    });
+                })
+                // return cestas.getCestaRandom().then((res) => {
+                //     return { error: false, info: res };
+                // }).catch((err) => {
+                //     console.log(err);
+                //     return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID > getCestaRandom CATCH' };
+                // });
             } else {
                 return cestas.getCesta(params.idCesta).then((res) => {
                     if (res) {
@@ -206,8 +227,6 @@ export class CestasController {
             return { error: true, mensaje: 'Backend: Error: faltan datos en cestas/regalarProducto' };
         }
     }
-<<<<<<< HEAD
-=======
 
     @Post('addSuplemento')
     addSuplemento(@Body() params) {
@@ -262,5 +281,4 @@ export class CestasController {
             return { error: true, mensaje: 'Backend error, faltan datos en cestas/getCestaByTrabajadorId' };
         }
     }
->>>>>>> tester
 }

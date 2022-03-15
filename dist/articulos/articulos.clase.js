@@ -28,6 +28,12 @@ class Articulos {
             return false;
         });
     }
+    setSuplemento(suplemento) {
+        console.log(suplemento);
+    }
+    async getSuplementos(suplementos) {
+        return await schArticulos.getSuplementos(suplementos);
+    }
 }
 exports.Articulos = Articulos;
 const articulosInstance = new Articulos();

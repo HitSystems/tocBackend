@@ -16,9 +16,8 @@ exports.TestController = void 0;
 const common_1 = require("@nestjs/common");
 const impresora_class_1 = require("../impresora/impresora.class");
 let TestController = class TestController {
-    paraMarc(parms) {
-        const resultado = parms.numero + 1;
-        return "HE VUELTO :D LA SUMA ES: " + resultado;
+    imprimirAlgo(parms) {
+        return 69;
     }
 };
 __decorate([
@@ -27,7 +26,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], TestController.prototype, "paraMarc", null);
+], TestController.prototype, "imprimirAlgo", null);
 TestController = __decorate([
     (0, common_1.Controller)('test')
 ], TestController);

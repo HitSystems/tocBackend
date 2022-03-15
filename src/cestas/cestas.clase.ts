@@ -5,9 +5,11 @@ import { construirObjetoIvas, crearCestaVacia } from '../funciones/funciones';
 import { articulosInstance } from '../articulos/articulos.clase';
 import { ofertas } from '../promociones/promociones.clase';
 import { cajaInstance } from '../caja/caja.clase';
-import { clienteInstance } from 'src/clientes/clientes.clase';
-import { impresoraInstance } from 'src/impresora/impresora.class';
-import { trabajadoresInstance } from 'src/trabajadores/trabajadores.clase';
+import { clienteInstance } from '../clientes/clientes.clase';
+import { impresoraInstance } from '../impresora/impresora.class';
+import { trabajadoresInstance } from '../trabajadores/trabajadores.clase';
+import axios from "axios";
+import { parametrosInstance } from '../parametros/parametros.clase';
 
 /* Siempre cargar la cesta desde MongoDB */
 export class CestaClase {
@@ -26,6 +28,15 @@ export class CestaClase {
       }
     });
     this.udsAplicar = 1;
+  }
+
+  async updateIdCestaTrabajador(id: string) {
+    return schCestas.updateIdCestaTrabajador(id).then((res) => {
+      return res.acknowledged;
+    }).catch((err) => {
+      console.log(err);
+      return false;
+    })
   }
 
   getCesta(idCesta: number): Promise<CestasInterface> {
@@ -100,15 +111,21 @@ export class CestaClase {
 
   borrarCesta(idCestaBorrar): Promise<boolean> {
     return schCestas.borrarCesta(idCestaBorrar).then((res) => {
-      if (res.acknowledged) {
-        return true;
-      } else {
-        return false;
-      }
+      return res.acknowledged;
     }).catch((err) => {
       console.log(err);
       return false;
     });
+  }
+
+  /* Eliminar cesta por nombre, versión de Santi */
+  eliminarCesta(nombreCesta): Promise<boolean> {
+    return schCestas.eliminarCesta(nombreCesta).then((res) => {
+      return res.acknowledged;
+    }).catch((err) => {
+      console.log(err);
+      return false;
+    })
   }
 
   /* Guarda la cesta en Mongo */
@@ -129,6 +146,7 @@ export class CestaClase {
   }
 
   async crearNuevaCesta(nombreCesta: string) {
+    if(!nombreCesta || nombreCesta === '' || nombreCesta === ' ') return false;
     const nuevaCesta = this.nuevaCestaVacia();
     nuevaCesta.nombreCesta = nombreCesta;
     return this.setCesta(nuevaCesta).then((res) => {
@@ -403,8 +421,6 @@ export class CestaClase {
         return false;
       });
     }
-<<<<<<< HEAD
-=======
 
     async addSuplemento(idCesta, suplementos, idArticulo, posArticulo = -100) {
       suplementos = suplementos.map(o => o.suplemento);
@@ -499,7 +515,6 @@ export class CestaClase {
         return null;
       });
     }
->>>>>>> tester
 }
 
 const cestas = new CestaClase();

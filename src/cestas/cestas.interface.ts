@@ -17,6 +17,7 @@ export interface CestasInterface {
         nombre: string,
         unidades: number,
         subtotal: number,
+        suplementosId?: number[],
         promocion: {
             _id: string,
             esPromo: boolean,
@@ -33,9 +34,6 @@ export interface CestasInterface {
         }
     }[],
     nombreCesta?: string;
-<<<<<<< HEAD
-=======
     idCestaSincro?: string,
     idTrabajador: number
->>>>>>> tester
 }
