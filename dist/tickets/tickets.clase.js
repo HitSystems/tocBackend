@@ -37,6 +37,19 @@ class TicketsClase {
         });
     }
     insertarTicket(ticket) {
+        if (ticket.lista.length == 0) {
+            const itemVacio = {
+                _id: 5724,
+                nombre: 'Lista rota',
+                promocion: {
+                    _id: null,
+                    esPromo: false,
+                },
+                subtotal: ticket.total,
+                unidades: 1
+            };
+            ticket.lista.push(itemVacio);
+        }
         return schTickets.nuevoTicket(ticket).then((res) => {
             if (res.acknowledged) {
                 if (ticket.regalo == true) {
