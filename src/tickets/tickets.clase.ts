@@ -7,6 +7,7 @@ import { movimientosInstance } from "../movimientos/movimientos.clase";
 import { articulosInstance } from "../articulos/articulos.clase";
 import axios from "axios";
 import { clienteInstance } from "../clientes/clientes.clase";
+import { totalmem } from "os";
 
 export class TicketsClase {
 
@@ -39,6 +40,21 @@ export class TicketsClase {
     }
 
     insertarTicket(ticket: TicketsInterface) {
+        if (ticket.lista.length > 0) {
+            const itemVacio = {
+                _id: 5724,
+                nombre: 'Lista rota',
+                promocion: {
+                    _id: null,
+                    esPromo: false,                   
+                },
+                subtotal: ticket.total,
+                unidades: 1
+            };
+
+            ticket.lista.push(itemVacio);
+        }
+        
         return schTickets.nuevoTicket(ticket).then((res) => {
             if (res.acknowledged) {
                 if (ticket.regalo == true) {
