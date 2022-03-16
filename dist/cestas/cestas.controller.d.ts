@@ -81,7 +81,10 @@ export declare class CestasController {
     clickTeclaArticulo(params: any): Promise<{
         error: boolean;
         bloqueado: boolean;
-        cesta: import("./cestas.interface").CestasInterface;
+        cesta: import("./cestas.interface").CestasInterface | {
+            suplementos: boolean;
+            data: any[];
+        };
     } | {
         error: boolean;
         bloqueado: boolean;
