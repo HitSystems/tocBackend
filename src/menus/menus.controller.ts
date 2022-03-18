@@ -39,4 +39,12 @@ export class MenusController {
             }        
         });
     }
+
+    @Post('getSubmenus')
+    getSubmenus(@Body() params) {
+        return menusInstance.getSubmenus(params.tag).then((res) => {
+            if(!menusInstance.getBloqueado()) return { bloqueado: false, resultado: res };
+            return { bloqueado: true };
+        })
+    }
 }

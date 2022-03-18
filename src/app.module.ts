@@ -25,6 +25,7 @@ import { TestController } from './test/test.controller';
 import { TurnosController } from './turnos/turnos.controller';
 import { UtilesModule } from './utiles/utiles.module';
 import { PromocionesController } from './promociones/promociones.controller';
+import { DobleMenusController } from './doble-menus/doble-menus.controller';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { PromocionesController } from './promociones/promociones.controller';
     CestasController, 
     ParametrosController, 
     TicketsController, 
-    TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController, FamiliasController, ParamsTicketController, PaytefController, VersionController, TestController, TurnosController, PromocionesController],
+    TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController, FamiliasController, ParamsTicketController, PaytefController, VersionController, TestController, TurnosController, PromocionesController, DobleMenusController],
   providers: [SocketGateway]  
 })
 export class AppModule {}

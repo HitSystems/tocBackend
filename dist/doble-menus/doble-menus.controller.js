@@ -12,48 +12,42 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MenusController = void 0;
+exports.DobleMenusController = void 0;
 const common_1 = require("@nestjs/common");
-const menus_clase_1 = require("./menus.clase");
-let MenusController = class MenusController {
+const menus_clase_1 = require("../menus/menus.clase");
+const doble_menus_clase_1 = require("./doble-menus.clase");
+let DobleMenusController = class DobleMenusController {
     clickMenu(params) {
-        if (menus_clase_1.menusInstance.getBloqueado() == false) {
-            menus_clase_1.menusInstance.setBloqueado(true);
-            return menus_clase_1.menusInstance.clickMenu(params.nombreMenu).then((res) => {
-                menus_clase_1.menusInstance.setBloqueado(false);
+        if (!doble_menus_clase_1.dobleMenusInstance.getBloqueado()) {
+            doble_menus_clase_1.dobleMenusInstance.setBloqueado(true);
+            return menus_clase_1.menusInstance.getSubmenus(params.tag).then((res) => {
+                doble_menus_clase_1.dobleMenusInstance.setBloqueado(false);
                 return {
                     bloqueado: false,
-                    resultado: res
+                    resultado: res,
                 };
             }).catch((err) => {
                 menus_clase_1.menusInstance.setBloqueado(false);
                 return {
                     bloqueado: false,
-                    error: err
+                    error: err,
                 };
             });
         }
         else {
             return {
-                bloqueado: true
+                bloqueado: true,
             };
         }
     }
     getMenus() {
-        return menus_clase_1.menusInstance.getMenus().then((resultado) => {
-            if (menus_clase_1.menusInstance.getBloqueado() == false) {
+        return doble_menus_clase_1.dobleMenusInstance.getMenus().then((resultado) => {
+            if (!doble_menus_clase_1.dobleMenusInstance.getBloqueado()) {
                 return { bloqueado: false, resultado: resultado };
             }
             else {
                 return { bloqueado: true };
             }
-        });
-    }
-    getSubmenus(params) {
-        return menus_clase_1.menusInstance.getSubmenus(params.tag).then((res) => {
-            if (!menus_clase_1.menusInstance.getBloqueado())
-                return { bloqueado: false, resultado: res };
-            return { bloqueado: true };
         });
     }
 };
@@ -63,22 +57,15 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], MenusController.prototype, "clickMenu", null);
+], DobleMenusController.prototype, "clickMenu", null);
 __decorate([
     (0, common_1.Post)('getMenus'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], MenusController.prototype, "getMenus", null);
-__decorate([
-    (0, common_1.Post)('getSubmenus'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], MenusController.prototype, "getSubmenus", null);
-MenusController = __decorate([
-    (0, common_1.Controller)('menus')
-], MenusController);
-exports.MenusController = MenusController;
-//# sourceMappingURL=menus.controller.js.map
+], DobleMenusController.prototype, "getMenus", null);
+DobleMenusController = __decorate([
+    (0, common_1.Controller)('doble-menus')
+], DobleMenusController);
+exports.DobleMenusController = DobleMenusController;
+//# sourceMappingURL=doble-menus.controller.js.map

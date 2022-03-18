@@ -1,6 +1,6 @@
-import * as schMenus from "./menus.mongodb";
+import * as schDobleMenus from "./doble-menus.mongodb";
 
-export class MenusClase {
+export class DobleMenusClase {
     private bloqueado: boolean;
 
     constructor() {
@@ -8,7 +8,6 @@ export class MenusClase {
     }
 
     clickMenu(nombreMenu: string) {
-        return schMenus.getTecladoMain(nombreMenu);
     }
 
     getBloqueado() {
@@ -16,7 +15,7 @@ export class MenusClase {
     }
 
     getMenus() {
-        return schMenus.getMenus();
+        return schDobleMenus.getMenus();
     }
     
     setBloqueado(x: boolean) {
@@ -24,17 +23,14 @@ export class MenusClase {
     }
 
     insertarMenus(arrayMenus) {
-        return schMenus.insertarMenus(arrayMenus).then((res) => {
+        if(arrayMenus.length <= 0) return [];
+        return schDobleMenus.insertarMenus(arrayMenus).then((res) => {
             return res.acknowledged;
         }).catch((err) => {
             console.log(err);
             return false;
         });
     }
-
-    getSubmenus(tag) {
-        return schMenus.getSubmenus(tag);
-    }
 }
 
-export const menusInstance = new MenusClase();
+export const dobleMenusInstance = new DobleMenusClase();
