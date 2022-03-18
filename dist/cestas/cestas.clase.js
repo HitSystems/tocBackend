@@ -459,7 +459,6 @@ class CestaClase {
             else {
                 return this.crearCestaParaTrabajador(idTrabajador).then((resCesta) => {
                     if (resCesta) {
-                        console.log("ENTRO EN ESTE: ", resCesta);
                         return resCesta;
                     }
                     throw Error('Error, no se ha podido crear la cesta para el trabajador');

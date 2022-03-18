@@ -114,37 +114,30 @@ let CestasController = class CestasController {
         }
     }
     getCestaByID(params) {
-        if (params.idCesta != undefined && params.idCesta != null) {
-            console.log("OBSERVA EZE: ", params);
-            if (params.idCesta == -1) {
-                return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
-                    return cestas_clase_1.cestas.getCesta(res._id).then((res) => {
-                        if (res) {
-                            return { error: false, info: res };
-                        }
-                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
-                    }).catch((err) => {
-                        console.log(err);
-                        return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
-                    });
-                });
-            }
-            else {
-                return cestas_clase_1.cestas.getCesta(params.idCesta).then((res) => {
-                    if (res) {
-                        return { error: false, info: res };
-                    }
-                    console.log(res);
-                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
-                }).catch((err) => {
-                    console.log(err);
-                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
-                });
-            }
-        }
-        else {
-            return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID FALTAN DATOS' };
-        }
+        return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
+            return cestas_clase_1.cestas.getCesta(res._id).then((res) => {
+                if (res) {
+                    return { error: false, info: res };
+                }
+                return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+            }).catch((err) => {
+                console.log(err);
+                return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+            });
+        });
+    }
+    getCestaCurrentTrabajador(params) {
+        return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
+            return cestas_clase_1.cestas.getCestaByTrabajadorID(res._id).then((res) => {
+                if (res) {
+                    return { error: false, info: res };
+                }
+                return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+            }).catch((err) => {
+                console.log(err);
+                return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+            });
+        });
     }
     crearCesta(params) {
         if (params.nombreCesta != undefined && params.nombreCesta != null) {
@@ -193,7 +186,6 @@ let CestasController = class CestasController {
                 if (cesta != null) {
                     cesta.lista[params.index].subtotal = 0;
                     cesta['regalo'] = true;
-                    console.log(cesta);
                     return cestas_clase_1.cestas.setCesta(cesta).then((res) => {
                         if (res) {
                             return { error: false, cesta: cesta };
@@ -234,7 +226,6 @@ let CestasController = class CestasController {
         }
     }
     modificarSuplementos(params) {
-        console.log(params);
         if (params.cestaId && params.idArticulo) {
             return cestas_clase_1.cestas.modificarSuplementos(params.cestaId, params.idArticulo, params.posArticulo).then((res) => {
                 if (res.suplementos) {
@@ -305,6 +296,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "getCestaByID", null);
+__decorate([
+    (0, common_1.Get)('getCestaCurrentTrabajador'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CestasController.prototype, "getCestaCurrentTrabajador", null);
 __decorate([
     (0, common_1.Post)('crearCesta'),
     __param(0, (0, common_1.Body)()),
