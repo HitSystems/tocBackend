@@ -56,15 +56,15 @@ class PaytefClass {
       if (resPaytef.result.approved) {
         const infoTransaccion = resPaytef.result.transactionReference.split('@');
         let total: number = Number(resPaytef.result.amountWithSign.replace(",", "."));
-        // console.log("amountWithSign: ", Number(resPaytef.result.amountWithSign));
+
         let idCesta: number = Number(infoTransaccion[1]);
         const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
         const nuevoIdTicket = (await ticketsInstance.getUltimoTicket()) + 1;
         const cesta = await cestas.getCesta(idCesta);
-        // console.log("infoTransaccion: ", infoTransaccion);
-        // console.log("idCesta: ", idCesta);
+
         /* Comprobación cesta correcta */
         if (cesta == null || cesta.lista.length == 0) {
+
           return { error: true, mensaje: 'Error, la cesta es null o está vacía' };
         }
   
