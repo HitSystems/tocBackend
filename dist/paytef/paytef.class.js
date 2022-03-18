@@ -61,7 +61,7 @@ class PaytefClass {
                 let idCesta = Number(infoTransaccion[1]);
                 const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador();
                 const nuevoIdTicket = (await tickets_clase_1.ticketsInstance.getUltimoTicket()) + 1;
-                const cesta = await cestas_clase_1.cestas.getCesta(idCesta);
+                const cesta = await cestas_clase_1.cestas.getCestaByTrabajadorID(infoTrabajador.idTrabajador);
                 if (cesta == null || cesta.lista.length == 0) {
                     return { error: true, mensaje: 'Error, la cesta es null o está vacía' };
                 }
