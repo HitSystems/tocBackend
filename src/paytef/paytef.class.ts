@@ -60,7 +60,7 @@ class PaytefClass {
         let idCesta: number = Number(infoTransaccion[1]);
         const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
         const nuevoIdTicket = (await ticketsInstance.getUltimoTicket()) + 1;
-        const cesta = await cestas.getCesta(idCesta);
+        const cesta = await cestas.getCestaByTrabajadorID(infoTrabajador.idTrabajador);
 
         /* Comprobación cesta correcta */
         if (cesta == null || cesta.lista.length == 0) {
