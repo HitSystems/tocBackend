@@ -1,3 +1,4 @@
 export interface TeclasMenus {
-    nomMenu: string
+    nomMenu: string,
+    tag?: string,
 }
