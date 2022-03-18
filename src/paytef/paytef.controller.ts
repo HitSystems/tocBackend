@@ -1,4 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import axios from 'axios';
+import { UtilesModule } from 'src/utiles/utiles.module';
+import { parametrosInstance } from '../parametros/parametros.clase';
 import { ticketsInstance } from '../tickets/tickets.clase';
 import { paytefInstance } from './paytef.class';
 
@@ -23,14 +26,44 @@ export class PaytefController {
                 });
             } else {
                 return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan datos' };
-            }
+            } 
         } else {
             return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
         }
     }
 
-    @Post('polling')
+    @Get('polling')
     comprobarEstado() {
+        const ipDatafono = parametrosInstance.getParametros().ipTefpay;
+        return axios.post(`http://${ipDatafono}:8887/transaction/poll`, {
+          pinpad: "*"
+        }).then((res: any) => {
+            if (res.data.info.transactionStatus === 'finished') {
+                return { error: false, info: false };
+            } else {
+                return { error: false, info: true };
+            }
+        }).catch((err) => {
+            console.log(err.message);
+            return { error: true, mensaje: err.message };
+        });
+    }
 
+    @Post('resultadoFinal')
+    async resultadoFinal(@Body() params) {
+        if (UtilesModule.checkVariable(params.idClienteFinal)) {
+            try {
+                const ipDatafono = parametrosInstance.getParametros().ipTefpay;
+                const resPaytef = await axios.post(`http://${ipDatafono}:8887/transaction/poll`, {
+                    pinpad: "*"
+                });
+                return paytefInstance.checkPagado(resPaytef.data, params.idClienteFinal);
+            } catch(err) {
+                console.log(err);
+                return { error: true, mensaje: 'Backend: Error en paytef/resultadoFinal CATCH' };
+            }
+        } else {
+            return { error: true, mensaje: 'Backend: Error, faltan datos en paytef/resultadoFinal' };
+        }
     }
 }
