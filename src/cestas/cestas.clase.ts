@@ -254,25 +254,27 @@ export class CestaClase {
         if(miCesta.lista.length > 0)
         {
             let encontrado = false;
-            for(let i = 0; i < miCesta.lista.length; i++) {
-                if(miCesta.lista[i]._id === infoArticulo._id) {
-                    var viejoIva = miCesta.tiposIva;
-                    
-                    if(infoAPeso == null)
-                    {
-                        miCesta.lista[i].unidades += unidades;
-                        miCesta.lista[i].subtotal += unidades*infoArticulo.precioConIva;
-                        miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva);
-                    }
-                    else
-                    {
-                      miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
-                      miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
-                    }  
-                   
-                    encontrado = true;
-                    break;
-                }
+            if(!infoArticulo.suplementos) {
+              for(let i = 0; i < miCesta.lista.length; i++) {
+                  if(miCesta.lista[i]._id === infoArticulo._id) {
+                      var viejoIva = miCesta.tiposIva;
+                      
+                      if(infoAPeso == null)
+                      {
+                          miCesta.lista[i].unidades += unidades;
+                          miCesta.lista[i].subtotal += unidades*infoArticulo.precioConIva;
+                          miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva);
+                      }
+                      else
+                      {
+                        miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
+                        miCesta.tiposIva = construirObjetoIvas(infoArticulo, unidades, viejoIva, infoAPeso);
+                      }  
+                     
+                      encontrado = true;
+                      break;
+                  }
+              }
             }
             if(!encontrado)
             {
@@ -315,9 +317,15 @@ export class CestaClase {
               
               infoArticulo = await articulosInstance.getInfoArticulo(idArticulo);
               if(infoArticulo) { // AQUI PENSAR ALGUNA COMPROBACIÓN CUANDO NO EXISTA O FALLE ESTE GET
-                
-                cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
-                
+                if(infoArticulo.suplementos){
+                  await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                  return {
+                    suplementos: true,
+                    data: await articulosInstance.getSuplementos(infoArticulo.suplementos),
+                  }
+                } else {
+                  cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                }
               } else {
                 
                 // vueToast.abrir('error', 'Este artículo tiene errores');
