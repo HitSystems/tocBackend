@@ -57,3 +57,9 @@ export async function insertarMenus(arrayMenus) {
     }
 }
 
+export async function getSubmenus(tag: string) {
+    const database = (await conexion).db('tocgame');
+    const menus = database.collection('menus');
+    const resultado = await (await menus.find({tag: tag})).toArray();
+    return resultado;
+}

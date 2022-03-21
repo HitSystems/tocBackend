@@ -226,20 +226,22 @@ class CestaClase {
         var miCesta = await this.getCesta(idCesta);
         if (miCesta.lista.length > 0) {
             let encontrado = false;
-            for (let i = 0; i < miCesta.lista.length; i++) {
-                if (miCesta.lista[i]._id === infoArticulo._id) {
-                    var viejoIva = miCesta.tiposIva;
-                    if (infoAPeso == null) {
-                        miCesta.lista[i].unidades += unidades;
-                        miCesta.lista[i].subtotal += unidades * infoArticulo.precioConIva;
-                        miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva);
+            if (!infoArticulo.suplementos) {
+                for (let i = 0; i < miCesta.lista.length; i++) {
+                    if (miCesta.lista[i]._id === infoArticulo._id) {
+                        var viejoIva = miCesta.tiposIva;
+                        if (infoAPeso == null) {
+                            miCesta.lista[i].unidades += unidades;
+                            miCesta.lista[i].subtotal += unidades * infoArticulo.precioConIva;
+                            miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva);
+                        }
+                        else {
+                            miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
+                            miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva, infoAPeso);
+                        }
+                        encontrado = true;
+                        break;
                     }
-                    else {
-                        miCesta.lista[i].subtotal += infoAPeso.precioAplicado;
-                        miCesta.tiposIva = (0, funciones_1.construirObjetoIvas)(infoArticulo, unidades, viejoIva, infoAPeso);
-                    }
-                    encontrado = true;
-                    break;
                 }
             }
             if (!encontrado) {
@@ -274,7 +276,16 @@ class CestaClase {
                 if (!aPeso) {
                     infoArticulo = await articulos_clase_1.articulosInstance.getInfoArticulo(idArticulo);
                     if (infoArticulo) {
-                        cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                        if (infoArticulo.suplementos) {
+                            await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                            return {
+                                suplementos: true,
+                                data: await articulos_clase_1.articulosInstance.getSuplementos(infoArticulo.suplementos),
+                            };
+                        }
+                        else {
+                            cestaRetornar = await this.insertarArticuloCesta(infoArticulo, unidades, idCesta);
+                        }
                     }
                     else {
                     }
@@ -448,7 +459,6 @@ class CestaClase {
             else {
                 return this.crearCestaParaTrabajador(idTrabajador).then((resCesta) => {
                     if (resCesta) {
-                        console.log("ENTRO EN ESTE: ", resCesta);
                         return resCesta;
                     }
                     throw Error('Error, no se ha podido crear la cesta para el trabajador');

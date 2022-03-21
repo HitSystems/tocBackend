@@ -52,10 +52,19 @@ export declare class CestasController {
     } | {
         error: boolean;
         mensaje: string;
-    }> | {
+    }>;
+    getCestaCurrentTrabajador(params: any): Promise<{
+        error: boolean;
+        info: any;
+        mensaje?: undefined;
+    } | {
         error: boolean;
         mensaje: string;
-    };
+        info?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+    }>;
     crearCesta(params: any): Promise<{
         error: boolean;
         info: true | import("./cestas.interface").CestasInterface;
@@ -81,7 +90,10 @@ export declare class CestasController {
     clickTeclaArticulo(params: any): Promise<{
         error: boolean;
         bloqueado: boolean;
-        cesta: import("./cestas.interface").CestasInterface;
+        cesta: import("./cestas.interface").CestasInterface | {
+            suplementos: boolean;
+            data: any[];
+        };
     } | {
         error: boolean;
         bloqueado: boolean;

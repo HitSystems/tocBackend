@@ -6,5 +6,18 @@ export declare class PaytefController {
         error: boolean;
         mensaje: string;
     }>;
-    comprobarEstado(): void;
+    comprobarEstado(): Promise<{
+        error: boolean;
+        info: boolean;
+    } | {
+        error: boolean;
+        mensaje: any;
+    }>;
+    resultadoFinal(params: any): Promise<{
+        error: boolean;
+        mensaje: string;
+    } | {
+        error: boolean;
+        mensaje?: undefined;
+    }>;
 }
