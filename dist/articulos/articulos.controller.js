@@ -40,6 +40,20 @@ let ArticulosController = class ArticulosController {
             return { error: true, mensaje: 'Backend: Faltan datos en articulos/setEstadoTarifaVIP' };
         }
     }
+    editarArticulo(params) {
+        if (params.idArticulo && params.nombre && params.precioBase && params.precioConIva) {
+            console.log('Hola', params.idArticulo, params.nombre, params.precioBase, params.precioConIva);
+            return articulos_clase_1.articulosInstance.editarArticulo(params.idArticulo, params.nombre, params.precioBase, params.precioConIva).then((res) => {
+                if (res) {
+                    return { error: false, info: res };
+                }
+                return { error: true, mensaje: 'Backend: Error, faltan datos' };
+            });
+        }
+        else {
+            return { error: true, mensaje: 'Backend: Faltan datos en articulos/editarArticulo' };
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('getArticulo'),
@@ -55,6 +69,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ArticulosController.prototype, "setEstadoTarifaEspecial", null);
+__decorate([
+    (0, common_1.Post)('editarArticulo'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ArticulosController.prototype, "editarArticulo", null);
 ArticulosController = __decorate([
     (0, common_1.Controller)('articulos')
 ], ArticulosController);

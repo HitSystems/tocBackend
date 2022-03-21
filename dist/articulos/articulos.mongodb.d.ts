@@ -4,3 +4,4 @@ export declare function insertarArticulos(arrayArticulos: any, esTarifaEspecial?
 export declare function borrarArticulos(esTarifaEspecial: boolean): Promise<boolean>;
 export declare function getInfoArticuloTarifaEspecial(idArticulo: number): Promise<any>;
 export declare function getSuplementos(suplementos: any): Promise<any[]>;
+export declare function editarArticulo(id: any, nombre: any, precioBase: any, precioConIva: any): Promise<import("mongodb").UpdateResult>;
