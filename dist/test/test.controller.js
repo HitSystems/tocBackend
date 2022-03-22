@@ -15,9 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestController = void 0;
 const common_1 = require("@nestjs/common");
 const impresora_class_1 = require("../impresora/impresora.class");
+const uuid_1 = require("uuid");
 let TestController = class TestController {
     imprimirAlgo(parms) {
-        return 69;
+        return (0, uuid_1.v4)();
     }
 };
 __decorate([

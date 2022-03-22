@@ -18,6 +18,11 @@ function limpiarNombreTienda(cadena: string) {
 
 class PaytefClass {
   iniciarTransaccion(cantidad: number, idTicket: number, idCesta: number) {
+    /*
+      0. Obtener la cesta desde el idCesta del parámetro.
+      1. Crear uuid.
+      2. Crear transacción con todo lo necesario para crear un ticket.
+    */
     const params = parametrosInstance.getParametros();
     if (params.ipTefpay != undefined && params.ipTefpay != null) {
       return axios.post(`http://${params.ipTefpay}:8887/transaction/start`, {

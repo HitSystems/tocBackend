@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UtilesModule = void 0;
 const common_1 = require("@nestjs/common");
+const uuid_1 = require("uuid");
 let UtilesModule = class UtilesModule {
     static checkVariable(...args) {
         for (let i = 0; i < args.length; i++) {
@@ -16,6 +17,9 @@ let UtilesModule = class UtilesModule {
             }
         }
         return true;
+    }
+    static getNewUuid() {
+        return (0, uuid_1.v4)();
     }
 };
 UtilesModule = __decorate([
