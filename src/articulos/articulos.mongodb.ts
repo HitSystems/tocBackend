@@ -61,3 +61,12 @@ export async function getSuplementos(suplementos) {
     }
     return suplementosData;
 }
+
+export async function editarArticulo(id, nombre, precioBase, precioConIva) {
+    const database = (await conexion).db('tocgame');
+    const articulos = database.collection('articulos');
+    const teclas = database.collection('teclas');
+    await teclas.updateMany({ idArticle: id }, { $set: { 'nombreArticulo': nombre } }, { upsert: true });
+    console.log(id, nombre, precioBase, precioConIva)
+    return await articulos.updateOne({ _id: id }, { $set: { 'nombre': nombre, 'precioBase': precioBase, 'precioConIva': precioConIva } }, { upsert: true });
+}
