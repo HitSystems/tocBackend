@@ -29,6 +29,13 @@ export async function eliminarCesta(nombre: string) {
     return resultado;
 }
 
+export async function eliminarCestaByIdTrabajador(idTrabajador: number) {
+    const database = (await conexion).db('tocgame');
+    const cesta = database.collection('cestas');
+    const resultado = await cesta.deleteMany({ idTrabajador: idTrabajador });
+    return resultado;
+}
+
 export async function updateIdCestaTrabajador(id: string) {
     const database = (await conexion).db('tocgame');
     const cesta = database.collection('cestas');
@@ -48,6 +55,7 @@ export async function getAllCestas(): Promise<any> {
     return resultado;
 }
 
+/* Esto es mentira, no borra la cesta. */
 export async function borrarCesta(idCesta: number) {
     const database = (await conexion).db('tocgame');
     const cesta = database.collection('cestas');

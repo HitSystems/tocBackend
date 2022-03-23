@@ -84,6 +84,18 @@ export class CestaClase {
     });
   }
 
+  /* La cesta activa es la del trabajador activo */
+  borrarCestaActiva() {
+    return parametrosInstance.getEspecialParametros().then((parametros) => {
+      return schCestas.eliminarCestaByIdTrabajador(parametros.idCurrentTrabajador).then((res) => {
+        return res.acknowledged;
+      }).catch((err) => {
+        console.log(err.message);
+        return false;
+      });
+    });
+  }
+
   nuevaCestaVacia() {
     const nuevaCesta: CestasInterface = {
         _id: Date.now(),
@@ -505,7 +517,7 @@ export class CestaClase {
       })
     }
 
-    getCestaByTrabajadorID(idTrabajador: number) {
+    getCestaByTrabajadorID(idTrabajador: number): Promise<CestasInterface> {
       return schCestas.getCestaByTrabajadorID(idTrabajador).then((res) => {
         if (res != null) {
           return res;
@@ -514,7 +526,7 @@ export class CestaClase {
             if (resCesta) {
               return resCesta;
             }
-            throw Error('Error, no se ha podido crear la cesta para el trabajador');
+            return null;
           })
         }
       }).catch((err) => {

@@ -1,23 +1,18 @@
 export declare class PaytefController {
-    iniciarTransaccion(params: any): Promise<{
-        error: boolean;
-        mensaje?: undefined;
-    } | {
+    iniciarTransaccion(params: any): Promise<boolean | {
         error: boolean;
         mensaje: string;
     }>;
     comprobarEstado(): Promise<{
         error: boolean;
-        info: boolean;
+        mensaje: string;
+        continuo?: undefined;
     } | {
         error: boolean;
-        mensaje: any;
-    }>;
-    resultadoFinal(params: any): Promise<{
+        continuo: boolean;
+        mensaje?: undefined;
+    } | {
         error: boolean;
         mensaje: string;
-    } | {
-        error: boolean;
-        mensaje?: undefined;
     }>;
 }

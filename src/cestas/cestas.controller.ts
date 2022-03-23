@@ -130,15 +130,19 @@ export class CestasController {
     @Get('getCestaCurrentTrabajador')
     getCestaCurrentTrabajador(@Body() params) {
         return trabajadoresInstance.getCurrentTrabajador().then((res) => {
-            return cestas.getCestaByTrabajadorID(res._id).then((res) => {
-                if (res) {
-                    return { error: false, info: res };
-                }
-                return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
-            }).catch((err) => {
-                console.log(err);
-                return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
-            });
+            if (res != null) {
+                return cestas.getCestaByTrabajadorID(res._id).then((res) => {
+                    if (res) {
+                        return { error: false, info: res };
+                    }
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+                });
+            } else {
+                return { error: true, mensaje: 'Backend: Error, no hay ningún trabajador activo' };
+            }
         });            
     }
 

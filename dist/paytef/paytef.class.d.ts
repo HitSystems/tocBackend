@@ -1,6 +1,6 @@
 declare class PaytefClass {
-    iniciarTransaccion(cantidad: number, idTicket: number, idCesta: number): Promise<boolean>;
-    checkPagado(resPaytef: any, idClienteFinal: string): Promise<{
+    iniciarTransaccion(idCliente: string): Promise<boolean>;
+    cerrarTicket(idTransaccion: string): Promise<{
         error: boolean;
         mensaje: string;
     } | {

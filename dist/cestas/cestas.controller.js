@@ -128,15 +128,20 @@ let CestasController = class CestasController {
     }
     getCestaCurrentTrabajador(params) {
         return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
-            return cestas_clase_1.cestas.getCestaByTrabajadorID(res._id).then((res) => {
-                if (res) {
-                    return { error: false, info: res };
-                }
-                return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
-            }).catch((err) => {
-                console.log(err);
-                return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
-            });
+            if (res != null) {
+                return cestas_clase_1.cestas.getCestaByTrabajadorID(res._id).then((res) => {
+                    if (res) {
+                        return { error: false, info: res };
+                    }
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID' };
+                }).catch((err) => {
+                    console.log(err);
+                    return { error: true, mensaje: 'Backend: Error en cestas/getCestaByID CATCH' };
+                });
+            }
+            else {
+                return { error: true, mensaje: 'Backend: Error, no hay ningún trabajador activo' };
+            }
         });
     }
     crearCesta(params) {

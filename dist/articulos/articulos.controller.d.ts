@@ -18,4 +18,16 @@ export declare class ArticulosController {
         error: boolean;
         mensaje: string;
     };
+    editarArticulo(params: any): Promise<{
+        error: boolean;
+        info: import("mongodb").UpdateResult;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
+        mensaje: string;
+        info?: undefined;
+    }> | {
+        error: boolean;
+        mensaje: string;
+    };
 }

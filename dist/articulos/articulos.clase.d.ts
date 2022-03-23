@@ -8,6 +8,7 @@ export declare class Articulos {
     insertarArticulos(arrayArticulos: any, esTarifaEspecial?: boolean): Promise<boolean>;
     setSuplemento(suplemento: any): void;
     getSuplementos(suplementos: any): Promise<any[]>;
+    editarArticulo(id: any, nombre: any, precioBase: any, precioConIva: any): Promise<import("mongodb").UpdateResult>;
 }
 declare const articulosInstance: Articulos;
 export { articulosInstance };
