@@ -29,7 +29,15 @@ class TicketsClase {
     getUltimoTicket() {
         return schTickets.getUltimoTicket().then((ultimoTicket) => {
             if (ultimoTicket != null) {
-                return ultimoTicket;
+                return parametros_clase_1.parametrosInstance.getEspecialParametros().then((res) => {
+                    if (res.ultimoTicket > ultimoTicket) {
+                        return res.ultimoTicket;
+                    }
+                    return ultimoTicket;
+                }).catch((err) => {
+                    console.log(err.message);
+                    return 0;
+                });
             }
             else {
                 return 0;

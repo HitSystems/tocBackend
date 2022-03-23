@@ -34,6 +34,7 @@ const turnos_controller_1 = require("./turnos/turnos.controller");
 const utiles_module_1 = require("./utiles/utiles.module");
 const promociones_controller_1 = require("./promociones/promociones.controller");
 const doble_menus_controller_1 = require("./doble-menus/doble-menus.controller");
+const transacciones_controller_1 = require("./transacciones/transacciones.controller");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -51,7 +52,7 @@ AppModule = __decorate([
             cestas_controller_1.CestasController,
             parametros_controller_1.ParametrosController,
             tickets_controller_1.TicketsController,
-            trabajadores_controller_1.TrabajadoresController, caja_controller_1.CajaController, clientes_controller_1.ClientesController, impresora_controller_1.ImpresoraController, devoluciones_controller_1.DevolucionesController, movimientos_controller_1.MovimientosController, pruebas_controller_1.PruebasController, instalador_controller_1.InstaladorController, familias_controller_1.FamiliasController, params_ticket_controller_1.ParamsTicketController, paytef_controller_1.PaytefController, version_controller_1.VersionController, test_controller_1.TestController, turnos_controller_1.TurnosController, promociones_controller_1.PromocionesController, doble_menus_controller_1.DobleMenusController
+            trabajadores_controller_1.TrabajadoresController, caja_controller_1.CajaController, clientes_controller_1.ClientesController, impresora_controller_1.ImpresoraController, devoluciones_controller_1.DevolucionesController, movimientos_controller_1.MovimientosController, pruebas_controller_1.PruebasController, instalador_controller_1.InstaladorController, familias_controller_1.FamiliasController, params_ticket_controller_1.ParamsTicketController, paytef_controller_1.PaytefController, version_controller_1.VersionController, test_controller_1.TestController, turnos_controller_1.TurnosController, promociones_controller_1.PromocionesController, doble_menus_controller_1.DobleMenusController, transacciones_controller_1.TransaccionesController
         ],
         providers: [sockets_gateway_1.SocketGateway]
     })

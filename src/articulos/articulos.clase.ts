@@ -42,6 +42,12 @@ export class Articulos {
     async getSuplementos(suplementos) {
         return await schArticulos.getSuplementos(suplementos);
     }
+
+    async editarArticulo(id, nombre, precioBase, precioConIva) {
+        const resultado = await schArticulos.editarArticulo(id, nombre, precioBase, precioConIva);
+        console.log(resultado)
+        return resultado;
+    }
 }
 const articulosInstance = new Articulos();
 export { articulosInstance };

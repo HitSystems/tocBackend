@@ -74,7 +74,7 @@ export class TrabajadoresClase {
         });
     }
 
-    getCurrentIdTrabajador() {
+    getCurrentIdTrabajador(): Promise<number> {
         return schTrabajadores.getCurrentIdTrabajador().then((resultado) => {
             if (resultado != null) {
                 return resultado.idCurrentTrabajador;

@@ -55,7 +55,7 @@ export declare class CestasController {
     }>;
     getCestaCurrentTrabajador(params: any): Promise<{
         error: boolean;
-        info: any;
+        info: import("./cestas.interface").CestasInterface;
         mensaje?: undefined;
     } | {
         error: boolean;
@@ -136,7 +136,7 @@ export declare class CestasController {
     enviarACocina(params: any): Promise<boolean>;
     getCestaByTrabajadorId(params: any): Promise<{
         error: boolean;
-        info: any;
+        info: import("./cestas.interface").CestasInterface;
         mensaje?: undefined;
     } | {
         error: boolean;

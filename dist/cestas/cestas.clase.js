@@ -73,6 +73,16 @@ class CestaClase {
             });
         });
     }
+    borrarCestaActiva() {
+        return parametros_clase_1.parametrosInstance.getEspecialParametros().then((parametros) => {
+            return schCestas.eliminarCestaByIdTrabajador(parametros.idCurrentTrabajador).then((res) => {
+                return res.acknowledged;
+            }).catch((err) => {
+                console.log(err.message);
+                return false;
+            });
+        });
+    }
     nuevaCestaVacia() {
         const nuevaCesta = {
             _id: Date.now(),
@@ -461,7 +471,7 @@ class CestaClase {
                     if (resCesta) {
                         return resCesta;
                     }
-                    throw Error('Error, no se ha podido crear la cesta para el trabajador');
+                    return null;
                 });
             }
         }).catch((err) => {
