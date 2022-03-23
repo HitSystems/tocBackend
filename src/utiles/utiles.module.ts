@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 
 @Module({})
 export class UtilesModule {
@@ -11,9 +10,5 @@ export class UtilesModule {
             }
         }
         return true;
-    }
-
-    static getNewUuid() {
-        return uuidv4();
     }
 }

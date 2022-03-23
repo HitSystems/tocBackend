@@ -48,8 +48,7 @@
     "rxjs": "^7.2.0",
     "socket.io-client": "^2.3.0",
     "socket.io-redis": "^6.1.1",
-    "standard-version": "^9.3.2",
-    "uuidv4": "^6.2.12"
+    "standard-version": "^9.3.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
