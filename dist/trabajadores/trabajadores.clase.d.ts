@@ -21,7 +21,7 @@ export declare class TrabajadoresClase {
         error: boolean;
         mensaje: string;
     }>;
-    getCurrentIdTrabajador(): Promise<any>;
+    getCurrentIdTrabajador(): Promise<number>;
     getCurrentTrabajador(): Promise<TrabajadoresInterface>;
     setCurrentTrabajador(idTrabajador: number): Promise<boolean>;
     setCurrentTrabajadorPorNombre(id: any): Promise<boolean>;

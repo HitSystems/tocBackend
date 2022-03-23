@@ -15,28 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaytefController = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = require("axios");
+const transacciones_class_1 = require("../transacciones/transacciones.class");
+const transacciones_interface_1 = require("../transacciones/transacciones.interface");
 const utiles_module_1 = require("../utiles/utiles.module");
 const parametros_clase_1 = require("../parametros/parametros.clase");
-const tickets_clase_1 = require("../tickets/tickets.clase");
 const paytef_class_1 = require("./paytef.class");
 let PaytefController = class PaytefController {
     async iniciarTransaccion(params) {
-        if (params != undefined || params != null) {
-            if (params.cantidad != null || params.cantidad != undefined && params.idCesta != null || params.idCesta != undefined) {
-                try {
-                    var nuevoIdTicket = (await tickets_clase_1.ticketsInstance.getUltimoTicket()) + 1;
-                }
-                catch (err) {
-                    console.log(err);
-                    return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion iniciarTransaccion() CATCH 2' };
-                }
-                return paytef_class_1.paytefInstance.iniciarTransaccion(params.cantidad, nuevoIdTicket, params.idCesta).then((res) => {
-                    if (res) {
-                        return { error: false };
-                    }
-                    else {
-                        return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion iniciarTransaccion() ERROR' };
-                    }
+        if (utiles_module_1.UtilesModule.checkVariable(params)) {
+            if (utiles_module_1.UtilesModule.checkVariable(params.idClienteFinal)) {
+                return paytef_class_1.paytefInstance.iniciarTransaccion(params.idClienteFinal).then((res) => {
+                    return res;
+                }).catch((err) => {
+                    console.log(err.message);
+                    return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion CATCH' };
                 });
             }
             else {
@@ -47,39 +39,42 @@ let PaytefController = class PaytefController {
             return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
         }
     }
-    comprobarEstado() {
+    async comprobarEstado() {
         const ipDatafono = parametros_clase_1.parametrosInstance.getParametros().ipTefpay;
+        const ultimaTransaccion = await transacciones_class_1.transaccionesInstance.getUltimaTransaccion();
         return axios_1.default.post(`http://${ipDatafono}:8887/transaction/poll`, {
             pinpad: "*"
         }).then((res) => {
-            if (res.data.info.transactionStatus === 'finished') {
-                return { error: false, info: false };
+            if (res.data.result != null && res.data.result != undefined) {
+                if (res.data.result.transactionReference === ultimaTransaccion._id.toString()) {
+                    if (res.data.result.approved && !res.data.result.failed) {
+                        return paytef_class_1.paytefInstance.cerrarTicket(res.data.result.transactionReference).then((resCierreTicket) => {
+                            if (resCierreTicket.error) {
+                                return { error: true, mensaje: resCierreTicket.mensaje };
+                            }
+                            return { error: false, continuo: false };
+                        });
+                    }
+                    else {
+                        return { error: true, mensaje: 'Operación denegada' };
+                    }
+                }
+                else {
+                    return { error: false, continuo: true };
+                }
             }
             else {
-                return { error: false, info: true };
+                if (res.data.info.transactionStatus === 'cancelling') {
+                    return { error: true, mensaje: 'Operación cancelada' };
+                }
+                else {
+                    return { error: false, continuo: true };
+                }
             }
         }).catch((err) => {
             console.log(err.message);
-            return { error: true, mensaje: err.message };
+            return { error: true, mensaje: "Error catch cobro paytef controller" };
         });
-    }
-    async resultadoFinal(params) {
-        if (utiles_module_1.UtilesModule.checkVariable(params.idClienteFinal)) {
-            try {
-                const ipDatafono = parametros_clase_1.parametrosInstance.getParametros().ipTefpay;
-                const resPaytef = await axios_1.default.post(`http://${ipDatafono}:8887/transaction/poll`, {
-                    pinpad: "*"
-                });
-                return paytef_class_1.paytefInstance.checkPagado(resPaytef.data, params.idClienteFinal);
-            }
-            catch (err) {
-                console.log(err);
-                return { error: true, mensaje: 'Backend: Error en paytef/resultadoFinal CATCH' };
-            }
-        }
-        else {
-            return { error: true, mensaje: 'Backend: Error, faltan datos en paytef/resultadoFinal' };
-        }
     }
 };
 __decorate([
@@ -93,15 +88,8 @@ __decorate([
     (0, common_1.Get)('polling'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], PaytefController.prototype, "comprobarEstado", null);
-__decorate([
-    (0, common_1.Post)('resultadoFinal'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], PaytefController.prototype, "resultadoFinal", null);
+], PaytefController.prototype, "comprobarEstado", null);
 PaytefController = __decorate([
     (0, common_1.Controller)('paytef')
 ], PaytefController);
