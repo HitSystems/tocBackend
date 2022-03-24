@@ -97,6 +97,9 @@ class TecladoClase {
             };
         });
     }
+    async cambiarPosTecla(idArticle, nuevaPos, nombreMenu) {
+        return await schTeclas.cambiarPosTecla(idArticle, nuevaPos, nombreMenu);
+    }
 }
 exports.TecladoClase = TecladoClase;
 exports.tecladoInstance = new TecladoClase();

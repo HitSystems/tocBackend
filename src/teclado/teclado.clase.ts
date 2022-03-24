@@ -93,5 +93,9 @@ export class TecladoClase {
             }
         });
     }
+
+    async cambiarPosTecla(idArticle, nuevaPos, nombreMenu) {
+        return await schTeclas.cambiarPosTecla(idArticle, nuevaPos, nombreMenu);
+    }
 }
 export const tecladoInstance = new TecladoClase();
