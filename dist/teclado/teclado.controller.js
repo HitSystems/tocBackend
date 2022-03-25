@@ -36,6 +36,19 @@ let TecladoController = class TecladoController {
     actualizarArticulos() {
         return teclado_clase_1.tecladoInstance.actualizarTeclado();
     }
+    cambiarPosTecla(params) {
+        if (params.idArticle && params.nuevaPos && params.nombreMenu) {
+            return teclado_clase_1.tecladoInstance.cambiarPosTecla(params.idArticle, params.nuevaPos, params.nombreMenu).then((res) => {
+                if (res) {
+                    return { error: false, info: res };
+                }
+                return { error: true, mensaje: 'Error en teclado/cambiarPosTecla' };
+            });
+        }
+        else {
+            return { error: true, mensaje: 'Faltan datos en teclado/cambiarPosTecla' };
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('clickTeclaArticulo'),
@@ -50,6 +63,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], TecladoController.prototype, "actualizarArticulos", null);
+__decorate([
+    (0, common_1.Post)('cambiarPosTecla'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TecladoController.prototype, "cambiarPosTecla", null);
 TecladoController = __decorate([
     (0, common_1.Controller)('teclado')
 ], TecladoController);

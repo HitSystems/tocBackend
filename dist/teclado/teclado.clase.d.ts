@@ -31,5 +31,6 @@ export declare class TecladoClase {
         error: boolean;
         mensaje: string;
     }>;
+    cambiarPosTecla(idArticle: any, nuevaPos: any, nombreMenu: any): Promise<import("mongodb").UpdateResult>;
 }
 export declare const tecladoInstance: TecladoClase;

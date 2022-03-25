@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.borrarArticulos = exports.insertarTeclas = void 0;
+exports.cambiarPosTecla = exports.borrarArticulos = exports.insertarTeclas = void 0;
 const mongodb_1 = require("../conexion/mongodb");
 async function insertarTeclas(arrayTeclas) {
     if (await borrarArticulos()) {
@@ -36,4 +36,11 @@ async function borrarArticulos() {
     }
 }
 exports.borrarArticulos = borrarArticulos;
+async function cambiarPosTecla(idArticle, nuevaPos, nombreMenu) {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const articulos = database.collection('teclas');
+    const resultado = await articulos.updateOne({ idArticle: idArticle }, { $set: { pos: nuevaPos, nomMenu: nombreMenu } });
+    return resultado;
+}
+exports.cambiarPosTecla = cambiarPosTecla;
 //# sourceMappingURL=teclado.mongodb.js.map
