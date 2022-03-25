@@ -65,4 +65,5 @@ export declare class TicketsController {
         error: boolean;
         mensaje: string;
     };
+    getListadoVentas(params: any): Promise<import("./tickets.interface").TicketsInterface[]>;
 }
