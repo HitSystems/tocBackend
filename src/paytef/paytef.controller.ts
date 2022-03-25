@@ -75,9 +75,14 @@ export class PaytefController {
                     return { error: false, continuo: true };
                 }
             } else {
-                if (res.data.info.transactionStatus === 'cancelling') {
-                    return { error: true, mensaje: 'Operación cancelada' };
+                if (res.data.info != null && res.data.info != undefined) {
+                    if (res.data.info.transactionStatus === 'cancelling') {
+                        return { error: true, mensaje: 'Operación cancelada' };
+                    } else {
+                        return { error: false, continuo: true };
+                    }
                 } else {
+                    console.log("Entro en el if else CORRECTO");
                     return { error: false, continuo: true };
                 }
             }
@@ -92,8 +97,12 @@ export class PaytefController {
             //     return { error: false, info: true };
             // }
         }).catch((err) => {
-            console.log(err.message);
-            return { error: true, mensaje: "Error catch cobro paytef controller" };
+            if (err.message == 'Request failed with status code 500') {
+                return { error: false, continuo: true };
+            } else {
+                console.log(err.message);
+                return { error: true, mensaje: "Error catch cobro paytef controller" };
+            }            
         });
     }
 
