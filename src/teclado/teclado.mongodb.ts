@@ -36,3 +36,11 @@ export async function borrarArticulos() {
         }
     }
 }
+
+export async function cambiarPosTecla(idArticle, nuevaPos, nombreMenu) {
+    const database = (await conexion).db('tocgame');
+    const articulos = database.collection('teclas');
+    const resultado = await articulos.updateOne({ idArticle: idArticle}, { $set: { pos: nuevaPos, nomMenu: nombreMenu }});
+    
+    return resultado;
+}

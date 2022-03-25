@@ -13,6 +13,11 @@ export declare class PaytefController {
         mensaje?: undefined;
     } | {
         error: boolean;
+        continuo: boolean;
+        mensaje?: undefined;
+    } | {
+        error: boolean;
         mensaje: string;
+        continuo?: undefined;
     }>;
 }

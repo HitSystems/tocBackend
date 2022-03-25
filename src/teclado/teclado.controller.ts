@@ -29,4 +29,17 @@ export class TecladoController {
     actualizarArticulos() {
         return tecladoInstance.actualizarTeclado();
     }
+    @Post('cambiarPosTecla')
+    cambiarPosTecla(@Body() params) {
+        if(params.idArticle && params.nuevaPos && params.nombreMenu) {
+            return tecladoInstance.cambiarPosTecla(params.idArticle, params.nuevaPos, params.nombreMenu).then((res) => {
+                if(res) {
+                    return { error: false, info: res };
+                }
+                return { error: true, mensaje: 'Error en teclado/cambiarPosTecla' };
+            })
+        } else {
+            return { error: true, mensaje: 'Faltan datos en teclado/cambiarPosTecla' };
+        }
+    }
 }
