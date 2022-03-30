@@ -16,6 +16,7 @@ export class Devoluciones {
     
             if (cesta == null || cesta.lista.length == 0) {
                 console.log("Error, la cesta es null o está vacía");
+                this.bloqueado = false;
                 return false;
             }
             const objDevolucion: DevolucionesInterface = {

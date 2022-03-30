@@ -46,7 +46,7 @@ let SocketGateway = class SocketGateway {
                 const idClienteFinal = (params.idClienteFinal != undefined) ? (params.idClienteFinal) : ('');
                 const infoTrabajador = await trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador();
                 const nuevoIdTicket = (await tickets_clase_1.ticketsInstance.getUltimoTicket()) + 1;
-                const cesta = await cestas_clase_1.cestas.getCesta(idCesta);
+                const cesta = await cestas_clase_1.cestas.getCestaByTrabajadorID(infoTrabajador.idTrabajador);
                 if (cesta == null || cesta.lista.length == 0) {
                     console.log("Error, la cesta es null o está vacía");
                     this.server.emit('resDatafono', {
