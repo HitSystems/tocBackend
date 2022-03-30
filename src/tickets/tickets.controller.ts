@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Query } from '@nestjs/common';
+import { Controller, Post, Get, Body, Query } from '@nestjs/common';
 import { ticketsInstance } from './tickets.clase';
 import { cajaInstance } from '../caja/caja.clase';
 
@@ -141,4 +141,11 @@ export class TicketsController {
             return { error: true, mensaje: 'Faltan datos en tickets/crearTicketTKRS' };
         }
     }
+
+    @Get('getListadoVentas')
+    getListadoVentas(@Query() params) {{
+        if(params.start && params.end) {
+            return ticketsInstance.getTicketsIntervalo(params.start, params.end);
+        }
+    }}
 }

@@ -12,8 +12,8 @@ exports.getTicketByID = getTicketByID;
 async function getTicketsIntervalo(inicioTime, finalTime) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const tickets = database.collection('tickets');
-    const resultado = await (await tickets.find({ timestamp: { $lte: finalTime, $gte: inicioTime } })).toArray();
-    return resultado;
+    const resultado = await tickets.find({});
+    return await resultado.toArray();
 }
 exports.getTicketsIntervalo = getTicketsIntervalo;
 async function getTickets() {

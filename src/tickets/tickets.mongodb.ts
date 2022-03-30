@@ -11,9 +11,9 @@ export async function getTicketByID(idTicket: number): Promise <any> {
 export async function getTicketsIntervalo(inicioTime: number, finalTime: number): Promise<any> {
     const database = (await conexion).db('tocgame');
     const tickets = database.collection('tickets');
-    const resultado = await (await tickets.find({timestamp: {$lte: finalTime, $gte: inicioTime}})).toArray();
+    const resultado = await tickets.find({})
     
-    return resultado;
+    return await resultado.toArray();
 }
 
 export async function getTickets(): Promise<any> {

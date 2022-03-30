@@ -130,6 +130,13 @@ let TicketsController = class TicketsController {
             return { error: true, mensaje: 'Faltan datos en tickets/crearTicketTKRS' };
         }
     }
+    getListadoVentas(params) {
+        {
+            if (params.start && params.end) {
+                return tickets_clase_1.ticketsInstance.getTicketsIntervalo(params.start, params.end);
+            }
+        }
+    }
 };
 __decorate([
     (0, common_1.Post)('getTicketsIntervalo'),
@@ -173,6 +180,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TicketsController.prototype, "crearTicketTKRS", null);
+__decorate([
+    (0, common_1.Get)('getListadoVentas'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TicketsController.prototype, "getListadoVentas", null);
 TicketsController = __decorate([
     (0, common_1.Controller)('tickets')
 ], TicketsController);

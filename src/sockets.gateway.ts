@@ -48,7 +48,8 @@ export class SocketGateway{
         const idClienteFinal: string = (params.idClienteFinal != undefined) ? (params.idClienteFinal) : ('');
         const infoTrabajador = await trabajadoresInstance.getCurrentTrabajador();
         const nuevoIdTicket = (await ticketsInstance.getUltimoTicket()) + 1;
-        const cesta = await cestas.getCesta(idCesta);
+        const cesta = await cestas.getCestaByTrabajadorID(infoTrabajador.idTrabajador);
+        // const cesta = await cestas.getCesta(idCesta);
   
         /* Comprobación cesta correcta */
         if (cesta == null || cesta.lista.length == 0) {
