@@ -9,7 +9,7 @@ class Apagar {
             exec("sudo -s shutdown now");
         }
         else {
-            exec("shutdown /s");
+            exec("shutdown /p");
         }
     }
 }

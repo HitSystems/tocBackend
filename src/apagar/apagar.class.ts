@@ -7,7 +7,7 @@ export class Apagar {
       if(os.platform() === 'linux') {
        exec("sudo -s shutdown now")
       }else {
-        exec("shutdown /s")
+        exec("shutdown /p")
       }
     }
      
