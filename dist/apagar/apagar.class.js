@@ -6,6 +6,7 @@ const os = require('os');
 class Apagar {
     apagarEquipo() {
         if (os.platform() === 'linux') {
+            console.log(os.platform());
             exec("sudo -s shutdown now");
         }
         else {
