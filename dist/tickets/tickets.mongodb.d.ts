@@ -1,4 +1,5 @@
 import { TicketsInterface } from "./tickets.interface";
+export declare function limpiezaTickets(): Promise<void>;
 export declare function getTicketByID(idTicket: number): Promise<any>;
 export declare function getTicketsIntervalo(inicioTime: number, finalTime: number): Promise<any>;
 export declare function getTickets(): Promise<any>;

@@ -1,6 +1,12 @@
 import { conexion } from "../conexion/mongodb";
 import { TicketsInterface } from "./tickets.interface";
+import { UtilesModule } from "../utiles/utiles.module";
 
+export async function limpiezaTickets() {
+    const database = (await conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    tickets.deleteMany({ enviado: true, timestamp: { $lte: UtilesModule.restarDiasTimestamp(Date.now()) } });
+}
 export async function getTicketByID(idTicket: number): Promise <any> {
     const database = (await conexion).db('tocgame');
     const tickets = database.collection('tickets');

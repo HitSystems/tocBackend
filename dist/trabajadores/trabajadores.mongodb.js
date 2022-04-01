@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.existePlan = exports.actualizarEstadoFichaje = exports.getTrabajaronAyer = exports.getFichajeMasAntiguo = exports.insertarTrabajadores = exports.borrarTrabajadores = exports.buscarTrabajadoresFichados = exports.insertNuevoFichaje = exports.desficharTrabajador = exports.ficharTrabajador = exports.getTrabajadoresFichados = exports.setCurrentIdTrabajador = exports.getTrabajadorPorNombre = exports.getTrabajador = exports.buscar = exports.getCurrentIdTrabajador = void 0;
+exports.existePlan = exports.actualizarEstadoFichaje = exports.getTrabajaronAyer = exports.getFichajeMasAntiguo = exports.insertarTrabajadores = exports.borrarTrabajadores = exports.buscarTrabajadoresFichados = exports.insertNuevoFichaje = exports.desficharTrabajador = exports.ficharTrabajador = exports.getTrabajadoresFichados = exports.setCurrentIdTrabajador = exports.getTrabajadorPorNombre = exports.getTrabajador = exports.buscar = exports.limpiezaFichajes = exports.getCurrentIdTrabajador = void 0;
+const utiles_module_1 = require("../utiles/utiles.module");
 const mongodb_1 = require("../conexion/mongodb");
 async function getCurrentIdTrabajador() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -9,6 +10,12 @@ async function getCurrentIdTrabajador() {
     return resultado;
 }
 exports.getCurrentIdTrabajador = getCurrentIdTrabajador;
+async function limpiezaFichajes() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const fichajes = database.collection('sincro-fichajes');
+    fichajes.deleteMany({ enviado: true, _id: { $lte: utiles_module_1.UtilesModule.restarDiasTimestamp(Date.now()) } });
+}
+exports.limpiezaFichajes = limpiezaFichajes;
 async function buscar(busqueda) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const trabajadores = database.collection('trabajadores');

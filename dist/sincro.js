@@ -9,6 +9,10 @@ const movimientos_clase_1 = require("./movimientos/movimientos.clase");
 const trabajadores_clase_1 = require("./trabajadores/trabajadores.clase");
 const devoluciones_clase_1 = require("./devoluciones/devoluciones.clase");
 const teclado_clase_1 = require("./teclado/teclado.clase");
+const tickets_mongodb_1 = require("./tickets/tickets.mongodb");
+const trabajadores_mongodb_1 = require("./trabajadores/trabajadores.mongodb");
+const caja_mongodb_1 = require("./caja/caja.mongodb");
+const movimientos_mongodb_1 = require("./movimientos/movimientos.mongodb");
 function sincronizarTickets() {
     parametros_clase_1.parametrosInstance.getEspecialParametros().then((parametros) => {
         if (parametros != null) {
@@ -124,10 +128,17 @@ function actualizarTeclados() {
         console.log(err);
     });
 }
+function limpiezaProfunda() {
+    (0, tickets_mongodb_1.limpiezaTickets)();
+    (0, trabajadores_mongodb_1.limpiezaFichajes)();
+    (0, caja_mongodb_1.limpiezaCajas)();
+    (0, movimientos_mongodb_1.limpiezaMovimientos)();
+}
 setInterval(sincronizarTickets, 30000);
 setInterval(sincronizarCajas, 40000);
 setInterval(sincronizarMovimientos, 50000);
 setInterval(sincronizarFichajes, 20000);
 setInterval(sincronizarDevoluciones, 60000);
 setInterval(actualizarTeclados, 3600000);
+setInterval(limpiezaProfunda, 60000);
 //# sourceMappingURL=sincro.js.map

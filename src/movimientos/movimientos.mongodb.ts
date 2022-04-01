@@ -1,3 +1,4 @@
+import { UtilesModule } from "../utiles/utiles.module";
 import { conexion } from "../conexion/mongodb";
 import { MovimientosInterface } from "./movimientos.interface";
 
@@ -44,6 +45,12 @@ export async function getMovimientoMasAntiguo() {
     const movimientos = database.collection('movimientos');
     const resultado = await movimientos.findOne({ enviado: false }, { sort: {_id: 1} });
     return resultado;
+}
+
+export async function limpiezaMovimientos() {
+    const database = (await conexion).db('tocgame');
+    const movimientos = database.collection('movimientos');
+    movimientos.deleteMany({ enviado: true, _id: { $lte: UtilesModule.restarDiasTimestamp(Date.now()) } });
 }
 
 export async function actualizarEstadoMovimiento(movimiento: MovimientosInterface) {

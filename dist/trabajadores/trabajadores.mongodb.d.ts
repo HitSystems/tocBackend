@@ -1,6 +1,7 @@
 import { InsertManyResult } from "mongodb";
 import { SincroFichajesInterface } from "./trabajadores.interface";
 export declare function getCurrentIdTrabajador(): Promise<import("bson").Document>;
+export declare function limpiezaFichajes(): Promise<void>;
 export declare function buscar(busqueda: string): Promise<import("bson").Document[]>;
 export declare function getTrabajador(idTrabajador: number): Promise<any>;
 export declare function getTrabajadorPorNombre(id: number): Promise<import("bson").Document>;
