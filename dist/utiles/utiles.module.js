@@ -21,6 +21,9 @@ let UtilesModule = class UtilesModule {
     static generateUuid() {
         return (0, uuid_1.v4)();
     }
+    static restarDiasTimestamp(fechaMilisegundos) {
+        return fechaMilisegundos - (15 * 24 * 60 * 60 * 1000);
+    }
 };
 UtilesModule = __decorate([
     (0, common_1.Module)({})

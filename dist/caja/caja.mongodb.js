@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCajaMasAntigua = exports.confirmarCajaHabiaLlegado = exports.confirmarCajaEnviada = exports.nuevoItemSincroCajas = exports.borrarCaja = exports.setInfoCaja = exports.getMonedas = exports.guardarMonedas = exports.getInfoCaja = void 0;
+exports.getCajaMasAntigua = exports.confirmarCajaHabiaLlegado = exports.confirmarCajaEnviada = exports.nuevoItemSincroCajas = exports.borrarCaja = exports.setInfoCaja = exports.getMonedas = exports.guardarMonedas = exports.limpiezaCajas = exports.getInfoCaja = void 0;
+const utiles_module_1 = require("../utiles/utiles.module");
 const mongodb_1 = require("../conexion/mongodb");
 async function getInfoCaja() {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -9,6 +10,12 @@ async function getInfoCaja() {
     return resultado;
 }
 exports.getInfoCaja = getInfoCaja;
+async function limpiezaCajas() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const sincroCajas = database.collection('sincro-cajas');
+    sincroCajas.deleteMany({ enviado: true, _id: { $lte: utiles_module_1.UtilesModule.restarDiasTimestamp(Date.now()) } });
+}
+exports.limpiezaCajas = limpiezaCajas;
 async function guardarMonedas(arrayMonedas, tipo) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const caja = database.collection('infoMonedas');

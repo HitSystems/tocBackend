@@ -1,7 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actualizarComentario = exports.actualizarEstadoTicket = exports.nuevoTicket = exports.getTicketMasAntiguo = exports.getUltimoTicket = exports.getTotalTkrs = exports.getDedudaGlovo = exports.getDedudaDeliveroo = exports.getTickets = exports.getTicketsIntervalo = exports.getTicketByID = void 0;
+exports.actualizarComentario = exports.actualizarEstadoTicket = exports.nuevoTicket = exports.getTicketMasAntiguo = exports.getUltimoTicket = exports.getTotalTkrs = exports.getDedudaGlovo = exports.getDedudaDeliveroo = exports.getTickets = exports.getTicketsIntervalo = exports.getTicketByID = exports.limpiezaTickets = void 0;
 const mongodb_1 = require("../conexion/mongodb");
+const utiles_module_1 = require("../utiles/utiles.module");
+async function limpiezaTickets() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const tickets = database.collection('tickets');
+    tickets.deleteMany({ enviado: true, timestamp: { $lte: utiles_module_1.UtilesModule.restarDiasTimestamp(Date.now()) } });
+}
+exports.limpiezaTickets = limpiezaTickets;
 async function getTicketByID(idTicket) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const tickets = database.collection('tickets');

@@ -1,4 +1,5 @@
 import { InsertManyResult } from "mongodb";
+import { UtilesModule } from "../utiles/utiles.module";
 import { conexion } from "../conexion/mongodb";
 import { SincroFichajesInterface } from "./trabajadores.interface";
 
@@ -8,6 +9,12 @@ export async function getCurrentIdTrabajador() {
     const resultado = await parametros.findOne({_id: "PARAMETROS"});
     
     return resultado;
+}
+
+export async function limpiezaFichajes() {
+    const database = (await conexion).db('tocgame');
+    const fichajes = database.collection('sincro-fichajes');
+    fichajes.deleteMany({ enviado: true, _id: { $lte: UtilesModule.restarDiasTimestamp(Date.now()) } });
 }
 
 export async function buscar(busqueda: string) {

@@ -1,3 +1,4 @@
+import { UtilesModule } from "../utiles/utiles.module";
 import { conexion } from "../conexion/mongodb";
 import { CajaForSincroInterface, CajaInterface } from "./caja.interface";
 
@@ -7,6 +8,12 @@ export async function getInfoCaja(): Promise<any> {
     const caja = database.collection('cajas');
     const resultado = await caja.findOne({_id: "CAJA"});
     return resultado;
+}
+
+export async function limpiezaCajas() {
+    const database = (await conexion).db('tocgame');
+    const sincroCajas = database.collection('sincro-cajas');
+    sincroCajas.deleteMany({ enviado: true, _id: { $lte: UtilesModule.restarDiasTimestamp(Date.now()) } });
 }
 
 export async function guardarMonedas(arrayMonedas: any, tipo: 'APERTURA' | 'CLAUSURA') {
