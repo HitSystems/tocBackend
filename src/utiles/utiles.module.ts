@@ -16,4 +16,8 @@ export class UtilesModule {
     static generateUuid(): string {
         return uuidv4();
     }
+
+    static restarDiasTimestamp(fechaMilisegundos: number): number {
+        return fechaMilisegundos - (15*24*60*60*1000);
+    }
 }

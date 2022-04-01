@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actualizarEstadoMovimiento = exports.getMovimientoMasAntiguo = exports.actualizarCodigoBarras = exports.resetContadorCodigoBarras = exports.getUltimoCodigoBarras = exports.nuevaSalida = exports.getMovimientosIntervalo = void 0;
+exports.actualizarEstadoMovimiento = exports.limpiezaMovimientos = exports.getMovimientoMasAntiguo = exports.actualizarCodigoBarras = exports.resetContadorCodigoBarras = exports.getUltimoCodigoBarras = exports.nuevaSalida = exports.getMovimientosIntervalo = void 0;
+const utiles_module_1 = require("../utiles/utiles.module");
 const mongodb_1 = require("../conexion/mongodb");
 async function getMovimientosIntervalo(inicioTime, finalTime) {
     const database = (await mongodb_1.conexion).db('tocgame');
@@ -44,6 +45,12 @@ async function getMovimientoMasAntiguo() {
     return resultado;
 }
 exports.getMovimientoMasAntiguo = getMovimientoMasAntiguo;
+async function limpiezaMovimientos() {
+    const database = (await mongodb_1.conexion).db('tocgame');
+    const movimientos = database.collection('movimientos');
+    movimientos.deleteMany({ enviado: true, _id: { $lte: utiles_module_1.UtilesModule.restarDiasTimestamp(Date.now()) } });
+}
+exports.limpiezaMovimientos = limpiezaMovimientos;
 async function actualizarEstadoMovimiento(movimiento) {
     const database = (await mongodb_1.conexion).db('tocgame');
     const movimientos = database.collection('movimientos');

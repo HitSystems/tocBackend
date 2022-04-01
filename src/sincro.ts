@@ -6,6 +6,10 @@ import { movimientosInstance } from './movimientos/movimientos.clase';
 import { trabajadoresInstance } from './trabajadores/trabajadores.clase';
 import { devolucionesInstance } from './devoluciones/devoluciones.clase';
 import { tecladoInstance } from './teclado/teclado.clase';
+import { limpiezaTickets } from './tickets/tickets.mongodb';
+import { limpiezaFichajes } from './trabajadores/trabajadores.mongodb';
+import { limpiezaCajas } from './caja/caja.mongodb';
+import { limpiezaMovimientos } from './movimientos/movimientos.mongodb';
 
 function sincronizarTickets() {
     parametrosInstance.getEspecialParametros().then((parametros) => {
@@ -147,11 +151,19 @@ function actualizarTeclados() {
     });
 }
 
+// Borrar datos de más de 15 días y que estén enviados.
+function limpiezaProfunda(): void {
+    limpiezaTickets();
+    limpiezaFichajes();
+    limpiezaCajas();
+    limpiezaMovimientos();
+}
+
 setInterval(sincronizarTickets, 30000);
 setInterval(sincronizarCajas, 40000);
 setInterval(sincronizarMovimientos, 50000);
 setInterval(sincronizarFichajes, 20000);
 setInterval(sincronizarDevoluciones, 60000);
 setInterval(actualizarTeclados, 3600000);
-
+setInterval(limpiezaProfunda, 60000);
 export { sincronizarTickets, sincronizarCajas, sincronizarMovimientos, sincronizarFichajes, sincronizarDevoluciones };
