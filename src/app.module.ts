@@ -27,7 +27,7 @@ import { UtilesModule } from './utiles/utiles.module';
 import { PromocionesController } from './promociones/promociones.controller';
 import { DobleMenusController } from './doble-menus/doble-menus.controller';
 import { TransaccionesController } from './transacciones/transacciones.controller';
-
+import {ApagarController} from './apagar/apagar.controller';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -42,6 +42,7 @@ import { TransaccionesController } from './transacciones/transacciones.controlle
     CestasController, 
     ParametrosController, 
     TicketsController, 
+    ApagarController,
     TrabajadoresController, CajaController, ClientesController, ImpresoraController, DevolucionesController, MovimientosController, PruebasController, InstaladorController, FamiliasController, ParamsTicketController, PaytefController, VersionController, TestController, TurnosController, PromocionesController, DobleMenusController, TransaccionesController],
   providers: [SocketGateway]  
 })
