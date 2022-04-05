@@ -6,7 +6,7 @@ import { UtilesModule } from 'src/utiles/utiles.module';
 import { parametrosInstance } from '../parametros/parametros.clase';
 import { ticketsInstance } from '../tickets/tickets.clase';
 import { paytefInstance } from './paytef.class';
-import find from 'local-devices'
+const find = require('local-devices');
 
 @Controller('paytef')
 export class PaytefController {

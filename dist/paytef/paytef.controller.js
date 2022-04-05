@@ -20,7 +20,7 @@ const transacciones_interface_1 = require("../transacciones/transacciones.interf
 const utiles_module_1 = require("../utiles/utiles.module");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const paytef_class_1 = require("./paytef.class");
-const local_devices_1 = require("local-devices");
+const find = require('local-devices');
 let PaytefController = class PaytefController {
     async iniciarTransaccion(params) {
         if (utiles_module_1.UtilesModule.checkVariable(params)) {
@@ -89,7 +89,7 @@ let PaytefController = class PaytefController {
         });
     }
     buscarDispositivos() {
-        (0, local_devices_1.default)().then(devices => {
+        find().then(devices => {
             console.log(devices);
         });
     }
