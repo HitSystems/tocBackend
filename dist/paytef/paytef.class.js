@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.paytefInstance = void 0;
-const axios_1 = require("axios");
+const axios_1 = __importDefault(require("axios"));
 const movimientos_clase_1 = require("../movimientos/movimientos.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const trabajadores_clase_1 = require("../trabajadores/trabajadores.clase");
