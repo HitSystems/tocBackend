@@ -11,13 +11,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientesController = void 0;
 const common_1 = require("@nestjs/common");
-const axios_1 = __importDefault(require("axios"));
+const axios_1 = require("axios");
 const utiles_module_1 = require("../utiles/utiles.module");
 const articulos_clase_1 = require("../articulos/articulos.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");

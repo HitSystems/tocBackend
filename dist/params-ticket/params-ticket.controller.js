@@ -8,13 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParamsTicketController = void 0;
 const common_1 = require("@nestjs/common");
-const axios_1 = __importDefault(require("axios"));
+const axios_1 = require("axios");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const params_ticket_class_1 = require("./params-ticket.class");
 let ParamsTicketController = class ParamsTicketController {

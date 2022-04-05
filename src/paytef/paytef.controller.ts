@@ -6,7 +6,7 @@ import { UtilesModule } from 'src/utiles/utiles.module';
 import { parametrosInstance } from '../parametros/parametros.clase';
 import { ticketsInstance } from '../tickets/tickets.clase';
 import { paytefInstance } from './paytef.class';
-import find from 'local-devices'
+// import find from 'local-devices'
 
 const exec = require('child_process').exec;
 const os = require('os');
@@ -112,24 +112,24 @@ export class PaytefController {
 
     @Get('scanDevices')
     buscarDispositivos() {
-        // exec("arp -a", (err, stdout, stderr) => {
-        //     if (err) {
-        //         console.log(err);
-        //     } else {
-        //         console.log(`stdout: ${stdout}`);
-        //         console.log(`stderr: ${stderr}`);
-        //     }
-        // });
-        find().then(devices => {
-            devices /*
-            [
-              { name: '?', ip: '192.168.0.10', mac: '...' },
-              { name: '?', ip: '192.168.0.50', mac: '...' },
-              { name: '?', ip: '192.168.0.155', mac: '...' },
-              { name: '?', ip: '192.168.0.211', mac: '...' }
-            ]
-            */
-        })
+        exec("arp -a", (err, stdout, stderr) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+            }
+        });
+        // find().then(devices => {
+        //     devices /*
+        //     [
+        //       { name: '?', ip: '192.168.0.10', mac: '...' },
+        //       { name: '?', ip: '192.168.0.50', mac: '...' },
+        //       { name: '?', ip: '192.168.0.155', mac: '...' },
+        //       { name: '?', ip: '192.168.0.211', mac: '...' }
+        //     ]
+        //     */
+        // })
     }
 
     // @Get('resultadoFinal')

@@ -11,19 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaytefController = void 0;
 const common_1 = require("@nestjs/common");
-const axios_1 = __importDefault(require("axios"));
+const axios_1 = require("axios");
 const transacciones_class_1 = require("../transacciones/transacciones.class");
 const transacciones_interface_1 = require("../transacciones/transacciones.interface");
 const utiles_module_1 = require("../utiles/utiles.module");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const paytef_class_1 = require("./paytef.class");
-const local_devices_1 = __importDefault(require("local-devices"));
 const exec = require('child_process').exec;
 const os = require('os');
 let PaytefController = class PaytefController {
@@ -94,8 +90,14 @@ let PaytefController = class PaytefController {
         });
     }
     buscarDispositivos() {
-        (0, local_devices_1.default)().then(devices => {
-            devices;
+        exec("arp -a", (err, stdout, stderr) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+            }
         });
     }
 };
