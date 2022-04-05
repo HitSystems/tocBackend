@@ -95,8 +95,8 @@ let PaytefController = class PaytefController {
                 console.log(err);
             }
             else {
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
+                const splitLines = str => str.split(/\r?\n/);
+                console.log(splitLines);
             }
         });
     }
