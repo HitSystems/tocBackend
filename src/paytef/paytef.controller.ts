@@ -120,7 +120,7 @@ export class PaytefController {
         //         console.log(`stderr: ${stderr}`);
         //     }
         // });
-        find('192.168.1.134').then(devices => {
+        find().then(devices => {
             devices /*
             [
               { name: '?', ip: '192.168.0.10', mac: '...' },

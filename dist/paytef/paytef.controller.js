@@ -94,7 +94,7 @@ let PaytefController = class PaytefController {
         });
     }
     buscarDispositivos() {
-        (0, local_devices_1.default)('192.168.1.134').then(devices => {
+        (0, local_devices_1.default)().then(devices => {
             devices;
         });
     }
