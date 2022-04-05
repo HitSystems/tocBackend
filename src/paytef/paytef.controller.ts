@@ -6,6 +6,15 @@ import { UtilesModule } from 'src/utiles/utiles.module';
 import { parametrosInstance } from '../parametros/parametros.clase';
 import { ticketsInstance } from '../tickets/tickets.clase';
 import { paytefInstance } from './paytef.class';
+const arpScanner = require('arpscan/promise');
+
+function onResult(data) {
+    console.log(data);
+}
+
+function onError(err) {
+    throw err;
+}
 
 @Controller('paytef')
 export class PaytefController {
@@ -104,6 +113,14 @@ export class PaytefController {
                 return { error: true, mensaje: "Error catch cobro paytef controller" };
             }            
         });
+    }
+
+    @Get('scanDevices')
+    buscarDispositivos() {
+        arpScanner()
+        .then(onResult)
+        .catch(onError);
+    
     }
 
     // @Get('resultadoFinal')
