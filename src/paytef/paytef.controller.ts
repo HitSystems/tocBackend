@@ -6,15 +6,10 @@ import { UtilesModule } from 'src/utiles/utiles.module';
 import { parametrosInstance } from '../parametros/parametros.clase';
 import { ticketsInstance } from '../tickets/tickets.clase';
 import { paytefInstance } from './paytef.class';
-const arpScanner = require('arpscan/promise');
+// const find = require('local-devices');
 
-function onResult(data) {
-    console.log(data);
-}
-
-function onError(err) {
-    throw err;
-}
+const exec = require('child_process').exec;
+const os = require('os');
 
 @Controller('paytef')
 export class PaytefController {
@@ -117,10 +112,14 @@ export class PaytefController {
 
     @Get('scanDevices')
     buscarDispositivos() {
-        arpScanner()
-        .then(onResult)
-        .catch(onError);
-    
+        exec("arp -a", (err, stdout, stderr) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+            }
+        });
     }
 
     // @Get('resultadoFinal')
