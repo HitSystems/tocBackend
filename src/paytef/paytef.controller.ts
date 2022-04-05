@@ -116,8 +116,9 @@ export class PaytefController {
             if (err) {
                 console.log(err);
             } else {
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
+                // console.log(`stdout: ${stdout}`);
+                const splitLines = str => str.split(/\r?\n/);
+                console.log(splitLines);
             }
         });
         // find().then(devices => {
