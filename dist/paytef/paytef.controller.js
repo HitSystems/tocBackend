@@ -20,13 +20,7 @@ const transacciones_interface_1 = require("../transacciones/transacciones.interf
 const utiles_module_1 = require("../utiles/utiles.module");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const paytef_class_1 = require("./paytef.class");
-const arpScanner = require('arpscan/promise');
-function onResult(data) {
-    console.log(data);
-}
-function onError(err) {
-    throw err;
-}
+const arpScanner = require('arpscan');
 let PaytefController = class PaytefController {
     async iniciarTransaccion(params) {
         if (utiles_module_1.UtilesModule.checkVariable(params)) {
@@ -95,9 +89,12 @@ let PaytefController = class PaytefController {
         });
     }
     buscarDispositivos() {
-        arpScanner()
-            .then(onResult)
-            .catch(onError);
+        arpScanner(onResult);
+        function onResult(err, data) {
+            if (err)
+                throw err;
+            console.log(data);
+        }
     }
 };
 __decorate([
