@@ -6,7 +6,10 @@ import { UtilesModule } from 'src/utiles/utiles.module';
 import { parametrosInstance } from '../parametros/parametros.clase';
 import { ticketsInstance } from '../tickets/tickets.clase';
 import { paytefInstance } from './paytef.class';
-const find = require('local-devices');
+// const find = require('local-devices');
+
+const exec = require('child_process').exec;
+const os = require('os');
 
 @Controller('paytef')
 export class PaytefController {
@@ -109,16 +112,14 @@ export class PaytefController {
 
     @Get('scanDevices')
     buscarDispositivos() {
-        find('192.168.1.1-192.168.1.250').then(devices => {
-            console.log(devices); /*
-            [
-              { name: '?', ip: '192.168.0.10', mac: '...' },
-              { name: '...', ip: '192.168.0.17', mac: '...' },
-              { name: '...', ip: '192.168.0.21', mac: '...' },
-              { name: '...', ip: '192.168.0.22', mac: '...' }
-            ]
-            */
-          })    
+        exec("arp -a", (err, stdout, stderr) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+            }
+        });
     }
 
     // @Get('resultadoFinal')
