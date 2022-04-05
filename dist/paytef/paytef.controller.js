@@ -20,6 +20,7 @@ const transacciones_interface_1 = require("../transacciones/transacciones.interf
 const utiles_module_1 = require("../utiles/utiles.module");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const paytef_class_1 = require("./paytef.class");
+const local_devices_1 = require("local-devices");
 const exec = require('child_process').exec;
 const os = require('os');
 let PaytefController = class PaytefController {
@@ -90,14 +91,8 @@ let PaytefController = class PaytefController {
         });
     }
     buscarDispositivos() {
-        exec("arp -a", (err, stdout, stderr) => {
-            if (err) {
-                console.log(err);
-            }
-            else {
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
-            }
+        (0, local_devices_1.default)('192.168.1.134').then(devices => {
+            devices;
         });
     }
 };
