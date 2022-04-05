@@ -95,8 +95,15 @@ let PaytefController = class PaytefController {
                 console.log(err);
             }
             else {
-                const splitLines = stdout.split(/\r?\n/);
-                console.log(splitLines);
+                let ipTefpay = '';
+                const arrayDevices = stdout.split(/\r?\n/);
+                for (let i = 0; i < arrayDevices.length; i++) {
+                    if (arrayDevices[i].includes('A30')) {
+                        ipTefpay = arrayDevices[i].split(' ');
+                        break;
+                    }
+                }
+                console.log(ipTefpay);
             }
         });
     }
