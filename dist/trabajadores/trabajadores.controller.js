@@ -11,13 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TrabajadoresController = void 0;
 const common_1 = require("@nestjs/common");
 const trabajadores_clase_1 = require("./trabajadores.clase");
 const utiles_module_1 = require("../utiles/utiles.module");
 const parametros_clase_1 = require("../parametros/parametros.clase");
-const axios_1 = require("axios");
+const axios_1 = __importDefault(require("axios"));
 let TrabajadoresController = class TrabajadoresController {
     getTrabajadoresFichados() {
         return trabajadores_clase_1.trabajadoresInstance.getTrabajadoresFichados().then((res) => {

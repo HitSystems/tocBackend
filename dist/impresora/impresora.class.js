@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.impresoraInstance = exports.Impresora = void 0;
 const articulos_clase_1 = require("../articulos/articulos.clase");
@@ -9,7 +12,7 @@ const clientes_clase_1 = require("../clientes/clientes.clase");
 const parametros_clase_1 = require("../parametros/parametros.clase");
 const dispositivos_1 = require("../dispositivos");
 const devoluciones_clase_1 = require("../devoluciones/devoluciones.clase");
-const axios_1 = require("axios");
+const axios_1 = __importDefault(require("axios"));
 const dispositivos = new dispositivos_1.Dispositivos();
 const escpos = require('escpos');
 const exec = require('child_process').exec;
