@@ -109,7 +109,7 @@ export class PaytefController {
 
     @Get('scanDevices')
     buscarDispositivos() {
-        find().then(devices => {
+        find('192.168.1.1-192.168.1.250').then(devices => {
             console.log(devices); /*
             [
               { name: '?', ip: '192.168.0.10', mac: '...' },

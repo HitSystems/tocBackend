@@ -89,7 +89,7 @@ let PaytefController = class PaytefController {
         });
     }
     buscarDispositivos() {
-        find().then(devices => {
+        find('192.168.1.1-192.168.1.250').then(devices => {
             console.log(devices);
         });
     }
