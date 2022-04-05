@@ -117,7 +117,7 @@ export class PaytefController {
                 console.log(err);
             } else {
                 // console.log(`stdout: ${stdout}`);
-                const splitLines = str => str.split(/\r?\n/);
+                const splitLines = stdout.split(/\r?\n/);
                 console.log(splitLines);
             }
         });
