@@ -20,5 +20,6 @@ export declare class PaytefController {
         mensaje: string;
         continuo?: undefined;
     }>;
+    cancelarOperacionActual(): Promise<boolean>;
     buscarDispositivos(): void;
 }

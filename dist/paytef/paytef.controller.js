@@ -89,6 +89,20 @@ let PaytefController = class PaytefController {
             }
         });
     }
+    cancelarOperacionActual() {
+        const ipDatafono = parametros_clase_1.parametrosInstance.getParametros().ipTefpay;
+        return axios_1.default.post(`http://${ipDatafono}:8887/pinpad/cancel`, { pinpad: "*" }).then((res) => {
+            if (res.data.info.success === true) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
     buscarDispositivos() {
         exec("arp -a", (err, stdout, stderr) => {
             if (err) {
@@ -121,6 +135,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PaytefController.prototype, "comprobarEstado", null);
+__decorate([
+    (0, common_1.Get)('cancelarOperacionActual'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], PaytefController.prototype, "cancelarOperacionActual", null);
 __decorate([
     (0, common_1.Get)('scanDevices'),
     __metadata("design:type", Function),
