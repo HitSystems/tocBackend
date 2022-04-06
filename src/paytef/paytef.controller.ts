@@ -6,6 +6,10 @@ import { UtilesModule } from 'src/utiles/utiles.module';
 import { parametrosInstance } from '../parametros/parametros.clase';
 import { ticketsInstance } from '../tickets/tickets.clase';
 import { paytefInstance } from './paytef.class';
+// import find from 'local-devices'
+
+const exec = require('child_process').exec;
+const os = require('os');
 
 @Controller('paytef')
 export class PaytefController {
@@ -104,6 +108,35 @@ export class PaytefController {
                 return { error: true, mensaje: "Error catch cobro paytef controller" };
             }            
         });
+    }
+
+    @Get('scanDevices')
+    buscarDispositivos() {
+        exec("arp -a", (err, stdout, stderr) => {
+            if (err) {
+                console.log(err);
+            } else {
+                let ipTefpay = '';
+                const arrayDevices: any = stdout.split(/\r?\n/);
+                for(let i = 0; i < arrayDevices.length; i++) {
+                    if (arrayDevices[i].includes('A30')) {
+                        ipTefpay = arrayDevices[i].split(' ');
+                        break;
+                    }
+                }
+                console.log(ipTefpay);
+            }
+        });
+        // find().then(devices => {
+        //     devices /*
+        //     [
+        //       { name: '?', ip: '192.168.0.10', mac: '...' },
+        //       { name: '?', ip: '192.168.0.50', mac: '...' },
+        //       { name: '?', ip: '192.168.0.155', mac: '...' },
+        //       { name: '?', ip: '192.168.0.211', mac: '...' }
+        //     ]
+        //     */
+        // })
     }
 
     // @Get('resultadoFinal')

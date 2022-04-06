@@ -20,4 +20,5 @@ export declare class PaytefController {
         mensaje: string;
         continuo?: undefined;
     }>;
+    buscarDispositivos(): void;
 }
