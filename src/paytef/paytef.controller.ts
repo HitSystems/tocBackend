@@ -110,6 +110,21 @@ export class PaytefController {
         });
     }
 
+    @Get('cancelarOperacionActual')
+    cancelarOperacionActual() {
+        const ipDatafono = parametrosInstance.getParametros().ipTefpay;
+        return axios.post(`http://${ipDatafono}:8887/pinpad/cancel`, { pinpad: "*" }).then((res: any) => {
+            if (res.data.info.success === true) {
+                return true;
+            } else {
+                return false;
+            }            
+        }).catch((err) => {
+            console.log(err);
+            return false;
+        });
+    }
+
     @Get('scanDevices')
     buscarDispositivos() {
         exec("arp -a", (err, stdout, stderr) => {
