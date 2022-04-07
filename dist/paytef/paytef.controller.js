@@ -75,7 +75,6 @@ let PaytefController = class PaytefController {
                     }
                 }
                 else {
-                    console.log("Entro en el if else CORRECTO");
                     return { error: false, continuo: true };
                 }
             }
