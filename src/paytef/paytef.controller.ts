@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import axios from 'axios';
+import { Console } from 'console';
 import { transaccionesInstance } from 'src/transacciones/transacciones.class';
 import { TransaccionesInterface } from 'src/transacciones/transacciones.interface';
 import { UtilesModule } from 'src/utiles/utiles.module';
@@ -57,6 +58,7 @@ export class PaytefController {
 
     @Get('polling')
     async comprobarEstado() {
+        /* OBTENGO IP PAYTEF & ÚLTIMA TRANSACCIÓN DE MONGODB */
         const ipDatafono = parametrosInstance.getParametros().ipTefpay;
         const ultimaTransaccion: TransaccionesInterface = await transaccionesInstance.getUltimaTransaccion();
         
@@ -86,20 +88,9 @@ export class PaytefController {
                         return { error: false, continuo: true };
                     }
                 } else {
-                    console.log("Entro en el if else CORRECTO");
                     return { error: false, continuo: true };
                 }
             }
-            // if (res.data.info.transactionStatus === 'finished') {
-            //     console.log("ENTRO EN FINISHED");
-            //     console.log("RESULT: ", res.data.result);
-            //     console.log("PAYTEF: ", res.data.result.transactionReference, " ULTIMA: ", ultimaTransaccion._id.toString());
-                
-            //     return { error: false, info: false };
-            // } else {
-            //     console.log("ENTRO EN CONTINUA");
-            //     return { error: false, info: true };
-            // }
         }).catch((err) => {
             if (err.message == 'Request failed with status code 500') {
                 return { error: false, continuo: true };
