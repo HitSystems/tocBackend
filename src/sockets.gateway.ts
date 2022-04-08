@@ -7,6 +7,11 @@ import { movimientosInstance } from "./movimientos/movimientos.clase";
 import { parametrosInstance } from "./parametros/parametros.clase";
 import { Body } from "@nestjs/common";
 import axios from "axios";
+import { UtilesModule } from "./utiles/utiles.module";
+import { TransaccionesInterface } from "./transacciones/transacciones.interface";
+import { transaccionesInstance } from "./transacciones/transacciones.class";
+import { paytefInstance } from "./paytef/paytef.class";
+import { LogsClass } from "./logs/logs.class";
 const net = require('net');
 const fs = require("fs");
 @WebSocketGateway({
@@ -201,6 +206,59 @@ export class SocketGateway{
         mensaje: 'Faltan TODOS los datos en gateway enviarAlDatafono'
       });
     }
+  }
+
+  @SubscribeMessage('polling')
+  async polling(@MessageBody() params) {
+      /* OBTENGO IP PAYTEF & ÚLTIMA TRANSACCIÓN DE MONGODB */
+      const ipDatafono = parametrosInstance.getParametros().ipTefpay;
+      const ultimaTransaccion: TransaccionesInterface = await transaccionesInstance.getUltimaTransaccion();
+      
+      return axios.post(`http://${ipDatafono}:8887/transaction/poll`, {
+        pinpad: "*"
+      }).then((res: any) => {
+        /* ¿Existe resultado de PayTef? */
+          if (UtilesModule.checkVariable(res.data.result)) {
+            /* ¿La transacción de la respuesta es la misma que la última del datáfono? */
+            if (res.data.result.transactionReference === ultimaTransaccion._id.toString()) {
+              /* ¿Está aprobada y no hay error en PayTef? */
+              if (res.data.result.approved && !res.data.result.failed) {
+                /* Cierro (creo) el ticket, buscando los datos en la colección transacciones */
+                return paytefInstance.cerrarTicket(res.data.result.transactionReference).then((resCierreTicket) => {
+                  /* ¿Hay error al cerrar el ticket? */
+                  if (resCierreTicket.error) {
+                    /* Devuelve error, pero ya está cobrado => Fallo grave */
+                    LogsClass.newLog(res.data, 'Error muy grave PayTef: cobrado pero no se crea el ticket. última transacción: ' + ultimaTransaccion._id.toString());
+                    return { error: true, mensaje: resCierreTicket.mensaje };
+                  }
+                  return { error: false, continuo: false };
+                });                        
+              } else {
+                return { error: true, mensaje: 'Operación denegada' };
+              }                    
+            } else {
+              LogsClass.newLog(res.data, 'Error grave PayTef: no se sabe si está cobrado y no coinciden las transacciones. última transacción: ' + ultimaTransaccion._id.toString());
+              return { error: true, mensaje: "No coinciden las transacciones" };
+            }
+          } else {
+              if (res.data.info != null && res.data.info != undefined) {
+                  if (res.data.info.transactionStatus === 'cancelling') {
+                      return { error: true, mensaje: 'Operación cancelada' };
+                  } else {
+                      return { error: false, continuo: true };
+                  }
+              } else {
+                  return { error: false, continuo: true };
+              }
+          }
+      }).catch((err) => {
+          if (err.message == 'Request failed with status code 500') {
+              return { error: false, continuo: true };
+          } else {
+              console.log(err.message);
+              return { error: true, mensaje: "Error catch cobro paytef controller" };
+          }            
+      });
   }
 }
 

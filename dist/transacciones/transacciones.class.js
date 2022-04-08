@@ -8,6 +8,7 @@ class TransaccionesClass {
     crearTransaccion(cesta, total, idCliente) {
         return schTransacciones.crearTransaccion(cesta, total, idCliente).then((res) => {
             if (res.acknowledged) {
+                console.log("el insertedId es: ", res.insertedId);
                 return { error: false, insertedId: res.insertedId };
             }
             else {

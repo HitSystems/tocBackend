@@ -9,6 +9,9 @@ import { TicketsInterface } from "src/tickets/tickets.interface";
 import { CestasInterface } from "src/cestas/cestas.interface";
 import { transaccionesInstance } from "src/transacciones/transacciones.class";
 import { nuevoTicket } from "src/tickets/tickets.mongodb";
+import { UtilesModule } from "src/utiles/utiles.module";
+import { LogsClass } from "src/logs/logs.class";
+import { TransaccionesInterface } from "src/transacciones/transacciones.interface";
 
 function limpiarNombreTienda(cadena: string) {
   const devolver = Number(cadena.replace(/\D/g, ''));
@@ -20,63 +23,123 @@ function limpiarNombreTienda(cadena: string) {
 }
 
 class PaytefClass {
-  iniciarTransaccion(idCliente: string) {
-    return trabajadoresInstance.getCurrentIdTrabajador().then((idTrabajadorActivo) => {
+  async iniciarTransaccion(idCliente: string): Promise<boolean> {
+    try {
+      /* Obtengo el trabajador actual */
+      const idTrabajadorActivo = await trabajadoresInstance.getCurrentIdTrabajador();
+      /* ¿Trabajador activo existe? */
       if (idTrabajadorActivo != null) {
-        cestas.getCestaByTrabajadorID(idTrabajadorActivo).then((cesta) => {
-          if (cesta != null) {
-            const total = cesta.tiposIva.importe1 + cesta.tiposIva.importe2 + cesta.tiposIva.importe3;
-            // La lista no puede estar vacía ni el total puede ser cero.
-            if (cesta.lista.length > 0 && total > 0) {
-              return transaccionesInstance.crearTransaccion(cesta, total, idCliente).then((resTransaccion) => {
-                if (!resTransaccion.error) {
-                  const params = parametrosInstance.getParametros();
-                  if (params.ipTefpay != undefined && params.ipTefpay != null) {
-                    return axios.post(`http://${params.ipTefpay}:8887/transaction/start`, {
-                      pinpad: "*",
-                      opType: "sale",
-                      cardNumberHashDomain: "branch",
-                      createReceipt: true,
-                      executeOptions: {
-                        method: "polling"
-                      },
-                      language: "es",
-                      requestedAmount: Math.round(total*100),
-                      requireConfirmation: false,
-                      transactionReference: resTransaccion.insertedId,
-                      showResultSeconds: 5
-                    }).then((res: any) => {
-                      if (res.data.info.started) {
-                        return true;
-                      }
-                      return false;                      
-                    }).catch((err) => {
-                      console.log(err);
-                      return false
-                    });
-                  } else {
-                    return false;
+        /* Obtengo la cesta del trabajador activo */
+        const cesta = await cestas.getCestaByTrabajadorID(idTrabajadorActivo);
+        /* ¿Existe la cesta del trabajador activo? */
+        if (cesta != null) {
+          /* Consigo el total de la cesta para enviarlo a PayTef */
+          const total = cesta.tiposIva.importe1 + cesta.tiposIva.importe2 + cesta.tiposIva.importe3;
+          // La lista no puede estar vacía ni el total puede ser cero.
+          if (cesta.lista.length > 0 && total > 0) {
+            /* Creo la transacción con los datos de la cesta, total e idCliente => MongoDB */
+            const resTransaccion = await transaccionesInstance.crearTransaccion(cesta, total, idCliente);
+            /* ¿La transacción se ha generado correctamente en MongoDB? */
+            if (resTransaccion.error === false) {
+              /* ¿insertedId es válido? */
+              if (UtilesModule.checkVariable(resTransaccion.insertedId) && resTransaccion.insertedId !== '') {
+                const params = parametrosInstance.getParametros();
+                /* ¿La IP de PayTef está bien definida? */
+                if (UtilesModule.checkVariable(params.ipTefpay)) {
+                  /* COMIENZA LA TRANSACCIÓN */
+                  const respuestaPaytef: any = await axios.post(`http://${params.ipTefpay}:8887/transaction/start`, {
+                    pinpad: "*",
+                    opType: "sale",
+                    createReceipt: true,
+                    executeOptions: {
+                      method: "polling"
+                    },
+                    language: "es",
+                    requestedAmount: Math.round(total*100),
+                    requireConfirmation: false,
+                    transactionReference: resTransaccion.insertedId,
+                    showResultSeconds: 5
+                  });
+                  /* ¿Ha iniciado la operación en el datáfono? */
+                  if (respuestaPaytef.data.info.started) {
+                    this.consultarEstadoOperacion();
+                    return true;
                   }
+                  return false;
                 } else {
-                  console.log(resTransaccion.mensaje);
                   return false;
                 }
-              }).catch((err) => {
-                console.log(err);
-                return false;
-              });
+              }
             } else {
-
+              console.log(resTransaccion.mensaje);
+              return false;
             }
           } else {
             return false;
           }
-        });
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
-    });    
+    } catch(err) {
+      console.log(err.message);
+      LogsClass.newLog('iniciarTransaccion PayTefClass', err.message)
+      return false;
+    }
   }
+
+  async consultarEstadoOperacion(): Promise<void> {
+    try {
+      /* OBTENGO IP PAYTEF & ÚLTIMA TRANSACCIÓN DE MONGODB */
+      const ipDatafono = parametrosInstance.getParametros().ipTefpay;
+      const ultimaTransaccion: TransaccionesInterface = await transaccionesInstance.getUltimaTransaccion();
+
+      /* Inicio consulta de estado de la operación */
+      const res: any = await axios.post(`http://${ipDatafono}:8887/transaction/poll`, { pinpad: "*" });
+
+      /* ¿Ya existe el resultado de PayTef? */
+      if (UtilesModule.checkVariable(res.data.result)) {
+        /* ¿La transacción de PayTef es exactamente la misma que la última obtenida desde MongoDB? */
+        if (res.data.result.transactionReference === ultimaTransaccion._id.toString()) {
+          /* ¿Venta aprobada sin fallos? */
+          if (res.data.result.approved && !res.data.result.failed) {
+            /* Cierro ticket */
+            const resCierreTicket = await paytefInstance.cerrarTicket(res.data.result.transactionReference);
+            if (resCierreTicket.error === true) {
+              socketInterno.server.emit('consultaPaytef', { error: true, mensaje: resCierreTicket.mensaje });
+            } else {
+              /* Operación aprobada y finalizada */
+              socketInterno.server.emit('consultaPaytef', { error: false, operacionCorrecta: true });
+            }
+          } else {
+            /* La operación ha sido denegada */
+            socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Operación denegada' });
+          }
+        } else {
+          await axios.post(`http://${ipDatafono}:8887/pinpad/cancel`, { "pinpad": "*" });
+          socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'La transacción no coincide con la actual de MongoDB' });
+        }
+        /* ¿Existe info de PayTef? NO es igual a RESULT */
+      } else if (UtilesModule.checkVariable(res.data.info)) {
+        if (res.data.info.transactionStatus === 'cancelling') {
+          socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Operación cancelada' });
+        } else {
+          /* Vuelvo a empezar el ciclo */
+          await new Promise(r => setTimeout(r, 1000));
+          this.consultarEstadoOperacion();
+        }
+      } else {
+        socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Error incontrolado PAYTEF' });
+      }
+    } catch(err) {
+      console.log(err);
+      LogsClass.newLog('Error backend paytefClass consultarEstadoOperacion', err.message);
+      socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Error ' + err.message });
+    }
+  }
+  
   // iniciarTransaccion(cantidad: number, idTicket: number, idCesta: number) {
   //   const params = parametrosInstance.getParametros();
   //   if (params.ipTefpay != undefined && params.ipTefpay != null) {

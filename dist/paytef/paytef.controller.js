@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaytefController = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = require("axios");
+const logs_class_1 = require("../logs/logs.class");
 const transacciones_class_1 = require("../transacciones/transacciones.class");
 const transacciones_interface_1 = require("../transacciones/transacciones.interface");
 const utiles_module_1 = require("../utiles/utiles.module");
@@ -30,6 +31,7 @@ let PaytefController = class PaytefController {
                     return res;
                 }).catch((err) => {
                     console.log(err.message);
+                    logs_class_1.LogsClass.newLog(params, err.message);
                     return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion CATCH' };
                 });
             }
