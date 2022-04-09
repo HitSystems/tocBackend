@@ -97,41 +97,51 @@ class PaytefClass {
       const ultimaTransaccion: TransaccionesInterface = await transaccionesInstance.getUltimaTransaccion();
 
       /* Inicio consulta de estado de la operación */
-      const res: any = await axios.post(`http://${ipDatafono}:8887/transaction/poll`, { pinpad: "*" });
+      const resEstadoPaytef: any = await axios.post(`http://${ipDatafono}:8887/transaction/poll`, { pinpad: "*" });
 
       /* ¿Ya existe el resultado de PayTef? */
-      if (UtilesModule.checkVariable(res.data.result)) {
-        /* ¿La transacción de PayTef es exactamente la misma que la última obtenida desde MongoDB? */
-        if (res.data.result.transactionReference === ultimaTransaccion._id.toString()) {
-          /* ¿Venta aprobada sin fallos? */
-          if (res.data.result.approved && !res.data.result.failed) {
-            /* Cierro ticket */
-            const resCierreTicket = await paytefInstance.cerrarTicket(res.data.result.transactionReference);
-            if (resCierreTicket.error === true) {
-              socketInterno.server.emit('consultaPaytef', { error: true, mensaje: resCierreTicket.mensaje });
+      if (UtilesModule.checkVariable(resEstadoPaytef.data.result)) {
+        if (UtilesModule.checkVariable(resEstadoPaytef.data.result.transactionReference) && resEstadoPaytef.data.result.transactionReference != '') {
+          /* ¿La transacción de PayTef es exactamente la misma que la última obtenida desde MongoDB? */
+          if (resEstadoPaytef.data.result.transactionReference === ultimaTransaccion._id.toString()) {
+            /* ¿Venta aprobada sin fallos? */
+            if (resEstadoPaytef.data.result.approved && !resEstadoPaytef.data.result.failed) {
+              // Añadir que la transacción ya ha sido cobrada => pagada: true (antes de que pueda fallar la inserción de ticket) !!!!!!
+              /* Cierro ticket */
+              const resCierreTicket = await paytefInstance.cerrarTicket(resEstadoPaytef.data.result.transactionReference);
+              if (resCierreTicket.error === false) {
+                /* Operación aprobada y finalizada */
+                socketInterno.server.emit('consultaPaytef', { error: false, operacionCorrecta: true });
+              } else {
+                socketInterno.server.emit('consultaPaytef', { error: true, mensaje: resCierreTicket.mensaje });
+              }
             } else {
-              /* Operación aprobada y finalizada */
-              socketInterno.server.emit('consultaPaytef', { error: false, operacionCorrecta: true });
+              /* La operación ha sido denegada */
+              socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Operación denegada' });
             }
           } else {
-            /* La operación ha sido denegada */
-            socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Operación denegada' });
+            await axios.post(`http://${ipDatafono}:8887/pinpad/cancel`, { "pinpad": "*" });
+            socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'La transacción no coincide con la actual de MongoDB' });
           }
         } else {
-          await axios.post(`http://${ipDatafono}:8887/pinpad/cancel`, { "pinpad": "*" });
-          socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'La transacción no coincide con la actual de MongoDB' });
-        }
-        /* ¿Existe info de PayTef? NO es igual a RESULT */
-      } else if (UtilesModule.checkVariable(res.data.info)) {
-        if (res.data.info.transactionStatus === 'cancelling') {
+          /* ¿Cobrado pero sin referencia? */
+          if (resEstadoPaytef.data.result.approved && !resEstadoPaytef.data.result.failed) {
+            // Cobrado y sin transacción definida => PEOR ERROR POSIBLE
+            LogsClass.newLog('PEOR ERROR POSIBLE', `no tengo referencia de la transacción: tiemstamp: ${Date.now()}`);
+          }
+          socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Sin información de la última transacción => REINICIAR DATÁFONO' })
+        }  
+        /* ¿Existe info de PayTef? NO es igual a RESULT. Siempre debería existir, salvo que PayTef esté roto */
+      } else if (UtilesModule.checkVariable(resEstadoPaytef.data.info)) {
+        if (resEstadoPaytef.data.info.transactionStatus === 'cancelling') { // Tal vez se pueda borrar
           socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Operación cancelada' });
         } else {
           /* Vuelvo a empezar el ciclo */
-          await new Promise(r => setTimeout(r, 1000));
+          await new Promise(r => setTimeout(r, 1000)); // Espera de un segundo para evitar bloquear el pinpad
           this.consultarEstadoOperacion();
         }
       } else {
-        socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Error incontrolado PAYTEF' });
+        socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Error, el datáfono no da respuesta' });
       }
     } catch(err) {
       console.log(err);
@@ -140,40 +150,6 @@ class PaytefClass {
     }
   }
   
-  // iniciarTransaccion(cantidad: number, idTicket: number, idCesta: number) {
-  //   const params = parametrosInstance.getParametros();
-  //   if (params.ipTefpay != undefined && params.ipTefpay != null) {
-  //     return axios.post(`http://${params.ipTefpay}:8887/transaction/start`, {
-  //       pinpad: "*",
-  //       opType: "sale",
-  //       cardNumberHashDomain: "branch",
-  //       createReceipt: true,
-  //       executeOptions: {
-  //         method: "polling"
-  //       },
-  //       language: "es",
-  //       requestedAmount: Math.round(cantidad*100),
-  //       requireConfirmation: false,
-  //       transactionReference: `${idTicket}@${idCesta}`,
-  //       showResultSeconds: 5
-  //     }).then((res: any) => {
-  //       if (res.data.info.started) {
-  //         return true;
-  //       } else {
-  //         return false;
-  //       }
-  //     }).catch((err) => {
-  //       console.log(err);
-  //       return false
-  //     });
-  //   } else {
-  //     const devFalse: Promise<boolean> = new Promise((dev, rej) => {
-  //       dev(false);
-  //     });
-  //     return devFalse;
-  //   }
-  // }
-
   async cerrarTicket(idTransaccion: string) {
     return transaccionesInstance.getTransaccionById(idTransaccion).then(async (infoTransaccion) => {
       if (infoTransaccion != null) {
