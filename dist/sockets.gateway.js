@@ -12,16 +12,22 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.socketInterno = exports.SocketGateway = void 0;
+exports.SocketGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const trabajadores_clase_1 = require("./trabajadores/trabajadores.clase");
 const cestas_clase_1 = require("./cestas/cestas.clase");
 const tickets_clase_1 = require("./tickets/tickets.clase");
 const movimientos_clase_1 = require("./movimientos/movimientos.clase");
 const parametros_clase_1 = require("./parametros/parametros.clase");
+const utiles_module_1 = require("./utiles/utiles.module");
+const paytef_class_1 = require("./paytef/paytef.class");
+const dgram_1 = require("dgram");
 const net = require('net');
 const fs = require("fs");
 let SocketGateway = class SocketGateway {
+    enviar(canal, data) {
+        this.server.emit(canal, data);
+    }
     test(params) {
         this.server.emit('test', 'O Rei Ezeee');
     }
@@ -186,10 +192,28 @@ let SocketGateway = class SocketGateway {
             });
         }
     }
+    iniciarPaytef(params, client) {
+        if (utiles_module_1.UtilesModule.checkVariable(params)) {
+            if (utiles_module_1.UtilesModule.checkVariable(params)) {
+                if (utiles_module_1.UtilesModule.checkVariable(params.idClienteFinal)) {
+                    paytef_class_1.paytefInstance.iniciarTransaccion(client, params.idClienteFinal);
+                }
+                else {
+                    client.emit('consultaPaytef', { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan datos idClienteFinal' });
+                }
+            }
+            else {
+                client.emit('consultaPaytef', { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' });
+            }
+        }
+        else {
+            client.emit('consultaPaytef', { error: true, mensaje: 'Error, faltan datos en socket => iniciarTransaccion' });
+        }
+    }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
-    __metadata("design:type", Object)
+    __metadata("design:type", dgram_1.Socket)
 ], SocketGateway.prototype, "server", void 0);
 __decorate([
     (0, websockets_1.SubscribeMessage)('test'),
@@ -212,6 +236,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "cobrarConClearone", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('iniciarTransaccion'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, dgram_1.Socket]),
+    __metadata("design:returntype", void 0)
+], SocketGateway.prototype, "iniciarPaytef", null);
 SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {
@@ -223,5 +255,4 @@ SocketGateway = __decorate([
     })
 ], SocketGateway);
 exports.SocketGateway = SocketGateway;
-exports.socketInterno = new SocketGateway();
 //# sourceMappingURL=sockets.gateway.js.map

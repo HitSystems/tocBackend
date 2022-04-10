@@ -8,13 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaytefController = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = require("axios");
+const logs_class_1 = require("../logs/logs.class");
 const transacciones_class_1 = require("../transacciones/transacciones.class");
 const transacciones_interface_1 = require("../transacciones/transacciones.interface");
 const utiles_module_1 = require("../utiles/utiles.module");
@@ -23,24 +21,6 @@ const paytef_class_1 = require("./paytef.class");
 const exec = require('child_process').exec;
 const os = require('os');
 let PaytefController = class PaytefController {
-    async iniciarTransaccion(params) {
-        if (utiles_module_1.UtilesModule.checkVariable(params)) {
-            if (utiles_module_1.UtilesModule.checkVariable(params.idClienteFinal)) {
-                return paytef_class_1.paytefInstance.iniciarTransaccion(params.idClienteFinal).then((res) => {
-                    return res;
-                }).catch((err) => {
-                    console.log(err.message);
-                    return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion CATCH' };
-                });
-            }
-            else {
-                return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan datos' };
-            }
-        }
-        else {
-            return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
-        }
-    }
     async comprobarEstado() {
         const ipDatafono = parametros_clase_1.parametrosInstance.getParametros().ipTefpay;
         const ultimaTransaccion = await transacciones_class_1.transaccionesInstance.getUltimaTransaccion();
@@ -121,13 +101,6 @@ let PaytefController = class PaytefController {
         });
     }
 };
-__decorate([
-    (0, common_1.Post)('iniciarTransaccion'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], PaytefController.prototype, "iniciarTransaccion", null);
 __decorate([
     (0, common_1.Get)('polling'),
     __metadata("design:type", Function),
