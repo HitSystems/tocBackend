@@ -19,7 +19,6 @@ class TicketsClase {
         });
     }
     getTicketsIntervalo(fechaInicio, fechaFinal) {
-        console.log(fechaInicio, fechaFinal);
         return schTickets.getTicketsIntervalo(fechaInicio, fechaFinal).then((resultado) => {
             return resultado;
         }).catch((err) => {

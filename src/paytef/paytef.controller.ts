@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import axios from 'axios';
 import { Console } from 'console';
+import { LogsClass } from 'src/logs/logs.class';
 import { transaccionesInstance } from 'src/transacciones/transacciones.class';
 import { TransaccionesInterface } from 'src/transacciones/transacciones.interface';
 import { UtilesModule } from 'src/utiles/utiles.module';
@@ -38,23 +39,27 @@ export class PaytefController {
     //         return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
     //     }
     // }
-    @Post('iniciarTransaccion')
-    async iniciarTransaccion(@Body() params) {
-        if (UtilesModule.checkVariable(params)) {
-            if (UtilesModule.checkVariable(params.idClienteFinal)) {
-                return paytefInstance.iniciarTransaccion(params.idClienteFinal).then((res) => {
-                    return res;
-                }).catch((err) => {
-                    console.log(err.message);
-                    return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion CATCH' };
-                });
-            } else {
-                return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan datos' };
-            } 
-        } else {
-            return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
-        }
-    }
+    // @Post('iniciarTransaccion')
+    // async iniciarTransaccion(@Body() params) {
+    //     /* Comprobando que params tenga sentido */
+    //     if (UtilesModule.checkVariable(params)) {
+    //         /* Comprobando que idClienteFinal sea string */
+    //         if (UtilesModule.checkVariable(params.idClienteFinal)) {
+    //             /* Creo la transacción e inicio la petición de cobro a PayTef */
+    //             return paytefInstance.iniciarTransaccion(params.idClienteFinal).then((res) => {
+    //                 return res;
+    //             }).catch((err) => {
+    //                 console.log(err.message);
+    //                 LogsClass.newLog(params, err.message);
+    //                 return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion CATCH' };
+    //             });
+    //         } else {
+    //             return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan datos' };
+    //         } 
+    //     } else {
+    //         return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
+    //     }
+    // }
 
     @Get('polling')
     async comprobarEstado() {

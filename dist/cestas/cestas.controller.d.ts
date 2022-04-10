@@ -53,7 +53,7 @@ export declare class CestasController {
         error: boolean;
         mensaje: string;
     }>;
-    getCestaCurrentTrabajador(params: any): Promise<{
+    getCestaCurrentTrabajador(): Promise<{
         error: boolean;
         info: import("./cestas.interface").CestasInterface;
         mensaje?: undefined;

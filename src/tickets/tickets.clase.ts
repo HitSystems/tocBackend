@@ -21,7 +21,6 @@ export class TicketsClase {
     }
 
     getTicketsIntervalo(fechaInicio: number, fechaFinal: number): Promise<TicketsInterface[]> {
-        console.log(fechaInicio, fechaFinal)
         return schTickets.getTicketsIntervalo(fechaInicio, fechaFinal).then((resultado: TicketsInterface[]) => {
             return resultado;
         }).catch((err) => {

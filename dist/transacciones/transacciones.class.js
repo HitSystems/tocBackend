@@ -8,7 +8,7 @@ class TransaccionesClass {
     crearTransaccion(cesta, total, idCliente) {
         return schTransacciones.crearTransaccion(cesta, total, idCliente).then((res) => {
             if (res.acknowledged) {
-                return { error: false, insertedId: res.insertedId };
+                return { error: false, insertedId: res.insertedId.toString() };
             }
             else {
                 return { error: true, mensaje: 'Error, no se ha podido insertar la transacción' };
