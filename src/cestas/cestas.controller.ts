@@ -128,7 +128,7 @@ export class CestasController {
         });            
     }
     @Get('getCestaCurrentTrabajador')
-    getCestaCurrentTrabajador(@Body() params) {
+    getCestaCurrentTrabajador() {
         return trabajadoresInstance.getCurrentTrabajador().then((res) => {
             if (res != null) {
                 return cestas.getCestaByTrabajadorID(res._id).then((res) => {

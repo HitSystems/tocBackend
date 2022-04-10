@@ -1,24 +1,10 @@
+/// <reference types="node" />
+import { Socket } from 'dgram';
 export declare class SocketGateway {
-    server: any;
+    server: Socket;
+    enviar(canal: string, data: any): void;
     test(params: any): void;
     consultarPuntos(params: any): void;
     cobrarConClearone(params: any): Promise<void>;
-    polling(params: any): Promise<{
-        error: boolean;
-        mensaje: string;
-        continuo?: undefined;
-    } | {
-        error: boolean;
-        continuo: boolean;
-        mensaje?: undefined;
-    } | {
-        error: boolean;
-        continuo: boolean;
-        mensaje?: undefined;
-    } | {
-        error: boolean;
-        mensaje: string;
-        continuo?: undefined;
-    }>;
+    iniciarPaytef(params: any, client: Socket): void;
 }
-export declare const socketInterno: SocketGateway;

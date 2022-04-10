@@ -1,5 +1,5 @@
 import axios from "axios";
-import { socketInterno } from "../sockets.gateway";
+import { SocketGateway } from "../sockets.gateway";
 import { movimientosInstance } from "../movimientos/movimientos.clase";
 import { parametrosInstance } from "src/parametros/parametros.clase";
 import { trabajadoresInstance } from "src/trabajadores/trabajadores.clase";
@@ -12,6 +12,7 @@ import { nuevoTicket } from "src/tickets/tickets.mongodb";
 import { UtilesModule } from "src/utiles/utiles.module";
 import { LogsClass } from "src/logs/logs.class";
 import { TransaccionesInterface } from "src/transacciones/transacciones.interface";
+import { Socket } from 'dgram';
 
 function limpiarNombreTienda(cadena: string) {
   const devolver = Number(cadena.replace(/\D/g, ''));
@@ -23,7 +24,7 @@ function limpiarNombreTienda(cadena: string) {
 }
 
 class PaytefClass {
-  async iniciarTransaccion(idCliente: string): Promise<boolean> {
+  async iniciarTransaccion(client: Socket, idCliente: string): Promise<void> {
     try {
       /* Obtengo el trabajador actual */
       const idTrabajadorActivo = await trabajadoresInstance.getCurrentIdTrabajador();
@@ -62,35 +63,36 @@ class PaytefClass {
                   });
                   /* ¿Ha iniciado la operación en el datáfono? */
                   if (respuestaPaytef.data.info.started) {
-                    this.consultarEstadoOperacion();
-                    return true;
+                    this.consultarEstadoOperacion(client);
+                  } else {
+                    console.log(respuestaPaytef.data);
+                    client.emit('consultaPaytef', { error: true, mensaje: 'La operación no ha podido iniciar' });
                   }
-                  return false;
                 } else {
-                  return false;
+                  client.emit('consultaPaytef', { error: true, mensaje: 'IP TefPay no definida, contacta con informática' });
                 }
               }
             } else {
               console.log(resTransaccion.mensaje);
-              return false;
+              client.emit('consultaPaytef', { error: true, mensaje: 'Error al crear la transacción' });
             }
           } else {
-            return false;
+            client.emit('consultaPaytef', { error: true, mensaje: 'Lista vacía o total a 0€' });
           }
         } else {
-          return false;
+          client.emit('consultaPaytef', { error: true, mensaje: 'No existe la cesta del trabajador activo' });
         }
       } else {
-        return false;
+        client.emit('consultaPaytef', { error: true, mensaje: 'No existe el trabajador activo' });
       }
     } catch(err) {
       console.log(err.message);
+      client.emit('consultaPaytef', { error: true, mensaje: err.message });
       LogsClass.newLog('iniciarTransaccion PayTefClass', err.message)
-      return false;
     }
   }
 
-  async consultarEstadoOperacion(): Promise<void> {
+  async consultarEstadoOperacion(client: Socket): Promise<void> {
     try {
       /* OBTENGO IP PAYTEF & ÚLTIMA TRANSACCIÓN DE MONGODB */
       const ipDatafono = parametrosInstance.getParametros().ipTefpay;
@@ -111,17 +113,17 @@ class PaytefClass {
               const resCierreTicket = await paytefInstance.cerrarTicket(resEstadoPaytef.data.result.transactionReference);
               if (resCierreTicket.error === false) {
                 /* Operación aprobada y finalizada */
-                socketInterno.server.emit('consultaPaytef', { error: false, operacionCorrecta: true });
+                client.emit('consultaPaytef', { error: false, operacionCorrecta: true });
               } else {
-                socketInterno.server.emit('consultaPaytef', { error: true, mensaje: resCierreTicket.mensaje });
+                client.emit('consultaPaytef', { error: true, mensaje: resCierreTicket.mensaje });
               }
             } else {
               /* La operación ha sido denegada */
-              socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Operación denegada' });
+              client.emit('consultaPaytef', { error: true, mensaje: 'Operación denegada' });
             }
           } else {
             await axios.post(`http://${ipDatafono}:8887/pinpad/cancel`, { "pinpad": "*" });
-            socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'La transacción no coincide con la actual de MongoDB' });
+            client.emit('consultaPaytef', { error: true, mensaje: 'La transacción no coincide con la actual de MongoDB' });
           }
         } else {
           /* ¿Cobrado pero sin referencia? */
@@ -129,24 +131,25 @@ class PaytefClass {
             // Cobrado y sin transacción definida => PEOR ERROR POSIBLE
             LogsClass.newLog('PEOR ERROR POSIBLE', `no tengo referencia de la transacción: tiemstamp: ${Date.now()}`);
           }
-          socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Sin información de la última transacción => REINICIAR DATÁFONO' })
+          console.log(resEstadoPaytef.data);
+          client.emit('consultaPaytef', { error: true, mensaje: 'Sin información de la última transacción => REINICIAR DATÁFONO' })
         }  
         /* ¿Existe info de PayTef? NO es igual a RESULT. Siempre debería existir, salvo que PayTef esté roto */
       } else if (UtilesModule.checkVariable(resEstadoPaytef.data.info)) {
         if (resEstadoPaytef.data.info.transactionStatus === 'cancelling') { // Tal vez se pueda borrar
-          socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Operación cancelada' });
+          client.emit('consultaPaytef', { error: true, mensaje: 'Operación cancelada' });
         } else {
           /* Vuelvo a empezar el ciclo */
           await new Promise(r => setTimeout(r, 1000)); // Espera de un segundo para evitar bloquear el pinpad
-          this.consultarEstadoOperacion();
+          this.consultarEstadoOperacion(client);
         }
       } else {
-        socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Error, el datáfono no da respuesta' });
+        client.emit('consultaPaytef', { error: true, mensaje: 'Error, el datáfono no da respuesta' });
       }
     } catch(err) {
       console.log(err);
       LogsClass.newLog('Error backend paytefClass consultarEstadoOperacion', err.message);
-      socketInterno.server.emit('consultaPaytef', { error: true, mensaje: 'Error ' + err.message });
+      client.emit('consultaPaytef', { error: true, mensaje: 'Error ' + err.message });
     }
   }
   

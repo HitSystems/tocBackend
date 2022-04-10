@@ -39,27 +39,27 @@ export class PaytefController {
     //         return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
     //     }
     // }
-    @Post('iniciarTransaccion')
-    async iniciarTransaccion(@Body() params) {
-        /* Comprobando que params tenga sentido */
-        if (UtilesModule.checkVariable(params)) {
-            /* Comprobando que idClienteFinal sea string */
-            if (UtilesModule.checkVariable(params.idClienteFinal)) {
-                /* Creo la transacción e inicio la petición de cobro a PayTef */
-                return paytefInstance.iniciarTransaccion(params.idClienteFinal).then((res) => {
-                    return res;
-                }).catch((err) => {
-                    console.log(err.message);
-                    LogsClass.newLog(params, err.message);
-                    return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion CATCH' };
-                });
-            } else {
-                return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan datos' };
-            } 
-        } else {
-            return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
-        }
-    }
+    // @Post('iniciarTransaccion')
+    // async iniciarTransaccion(@Body() params) {
+    //     /* Comprobando que params tenga sentido */
+    //     if (UtilesModule.checkVariable(params)) {
+    //         /* Comprobando que idClienteFinal sea string */
+    //         if (UtilesModule.checkVariable(params.idClienteFinal)) {
+    //             /* Creo la transacción e inicio la petición de cobro a PayTef */
+    //             return paytefInstance.iniciarTransaccion(params.idClienteFinal).then((res) => {
+    //                 return res;
+    //             }).catch((err) => {
+    //                 console.log(err.message);
+    //                 LogsClass.newLog(params, err.message);
+    //                 return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion CATCH' };
+    //             });
+    //         } else {
+    //             return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan datos' };
+    //         } 
+    //     } else {
+    //         return { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' };
+    //     }
+    // }
 
     @Get('polling')
     async comprobarEstado() {

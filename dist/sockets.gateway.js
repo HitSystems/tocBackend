@@ -12,21 +12,22 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.socketInterno = exports.SocketGateway = void 0;
+exports.SocketGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const trabajadores_clase_1 = require("./trabajadores/trabajadores.clase");
 const cestas_clase_1 = require("./cestas/cestas.clase");
 const tickets_clase_1 = require("./tickets/tickets.clase");
 const movimientos_clase_1 = require("./movimientos/movimientos.clase");
 const parametros_clase_1 = require("./parametros/parametros.clase");
-const axios_1 = require("axios");
 const utiles_module_1 = require("./utiles/utiles.module");
-const transacciones_class_1 = require("./transacciones/transacciones.class");
 const paytef_class_1 = require("./paytef/paytef.class");
-const logs_class_1 = require("./logs/logs.class");
+const dgram_1 = require("dgram");
 const net = require('net');
 const fs = require("fs");
 let SocketGateway = class SocketGateway {
+    enviar(canal, data) {
+        this.server.emit(canal, data);
+    }
     test(params) {
         this.server.emit('test', 'O Rei Ezeee');
     }
@@ -191,59 +192,28 @@ let SocketGateway = class SocketGateway {
             });
         }
     }
-    async polling(params) {
-        const ipDatafono = parametros_clase_1.parametrosInstance.getParametros().ipTefpay;
-        const ultimaTransaccion = await transacciones_class_1.transaccionesInstance.getUltimaTransaccion();
-        return axios_1.default.post(`http://${ipDatafono}:8887/transaction/poll`, {
-            pinpad: "*"
-        }).then((res) => {
-            if (utiles_module_1.UtilesModule.checkVariable(res.data.result)) {
-                if (res.data.result.transactionReference === ultimaTransaccion._id.toString()) {
-                    if (res.data.result.approved && !res.data.result.failed) {
-                        return paytef_class_1.paytefInstance.cerrarTicket(res.data.result.transactionReference).then((resCierreTicket) => {
-                            if (resCierreTicket.error) {
-                                logs_class_1.LogsClass.newLog(res.data, 'Error muy grave PayTef: cobrado pero no se crea el ticket. última transacción: ' + ultimaTransaccion._id.toString());
-                                return { error: true, mensaje: resCierreTicket.mensaje };
-                            }
-                            return { error: false, continuo: false };
-                        });
-                    }
-                    else {
-                        return { error: true, mensaje: 'Operación denegada' };
-                    }
+    iniciarPaytef(params, client) {
+        if (utiles_module_1.UtilesModule.checkVariable(params)) {
+            if (utiles_module_1.UtilesModule.checkVariable(params)) {
+                if (utiles_module_1.UtilesModule.checkVariable(params.idClienteFinal)) {
+                    paytef_class_1.paytefInstance.iniciarTransaccion(client, params.idClienteFinal);
                 }
                 else {
-                    logs_class_1.LogsClass.newLog(res.data, 'Error grave PayTef: no se sabe si está cobrado y no coinciden las transacciones. última transacción: ' + ultimaTransaccion._id.toString());
-                    return { error: true, mensaje: "No coinciden las transacciones" };
+                    client.emit('consultaPaytef', { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan datos idClienteFinal' });
                 }
             }
             else {
-                if (res.data.info != null && res.data.info != undefined) {
-                    if (res.data.info.transactionStatus === 'cancelling') {
-                        return { error: true, mensaje: 'Operación cancelada' };
-                    }
-                    else {
-                        return { error: false, continuo: true };
-                    }
-                }
-                else {
-                    return { error: false, continuo: true };
-                }
+                client.emit('consultaPaytef', { error: true, mensaje: 'Backend: paytef/iniciarTransaccion faltan todos los datos' });
             }
-        }).catch((err) => {
-            if (err.message == 'Request failed with status code 500') {
-                return { error: false, continuo: true };
-            }
-            else {
-                console.log(err.message);
-                return { error: true, mensaje: "Error catch cobro paytef controller" };
-            }
-        });
+        }
+        else {
+            client.emit('consultaPaytef', { error: true, mensaje: 'Error, faltan datos en socket => iniciarTransaccion' });
+        }
     }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
-    __metadata("design:type", Object)
+    __metadata("design:type", dgram_1.Socket)
 ], SocketGateway.prototype, "server", void 0);
 __decorate([
     (0, websockets_1.SubscribeMessage)('test'),
@@ -267,12 +237,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], SocketGateway.prototype, "cobrarConClearone", null);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('polling'),
+    (0, websockets_1.SubscribeMessage)('iniciarTransaccion'),
     __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], SocketGateway.prototype, "polling", null);
+    __metadata("design:paramtypes", [Object, dgram_1.Socket]),
+    __metadata("design:returntype", void 0)
+], SocketGateway.prototype, "iniciarPaytef", null);
 SocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {
@@ -284,5 +255,4 @@ SocketGateway = __decorate([
     })
 ], SocketGateway);
 exports.SocketGateway = SocketGateway;
-exports.socketInterno = new SocketGateway();
 //# sourceMappingURL=sockets.gateway.js.map

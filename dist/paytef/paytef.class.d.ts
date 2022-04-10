@@ -1,6 +1,8 @@
+/// <reference types="node" />
+import { Socket } from 'dgram';
 declare class PaytefClass {
-    iniciarTransaccion(idCliente: string): Promise<boolean>;
-    consultarEstadoOperacion(): Promise<void>;
+    iniciarTransaccion(client: Socket, idCliente: string): Promise<void>;
+    consultarEstadoOperacion(client: Socket): Promise<void>;
     cerrarTicket(idTransaccion: string): Promise<{
         error: boolean;
         mensaje: string;

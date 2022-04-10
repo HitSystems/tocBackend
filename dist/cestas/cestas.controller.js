@@ -126,7 +126,7 @@ let CestasController = class CestasController {
             });
         });
     }
-    getCestaCurrentTrabajador(params) {
+    getCestaCurrentTrabajador() {
         return trabajadores_clase_1.trabajadoresInstance.getCurrentTrabajador().then((res) => {
             if (res != null) {
                 return cestas_clase_1.cestas.getCestaByTrabajadorID(res._id).then((res) => {
@@ -303,9 +303,8 @@ __decorate([
 ], CestasController.prototype, "getCestaByID", null);
 __decorate([
     (0, common_1.Get)('getCestaCurrentTrabajador'),
-    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], CestasController.prototype, "getCestaCurrentTrabajador", null);
 __decorate([
